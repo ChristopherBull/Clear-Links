@@ -1,0 +1,2 @@
+# Clear-Links
+A Chrome extension that shows web links' destination in a customisable tooltip, particularly highlighting a links domain and thus enabling more transparent links and improving explicit awareness of web navigation. One potential use case is to make users more easily aware of phishing emails by making it more user-friendly to see a link's destination domain and allowing the user to determine if the destination is as expected.
