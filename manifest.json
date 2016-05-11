@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Clear Links",
+    "version": "1.0",
+	"author": "Dr. Christopher Bull",
+    "description": "Makes website links more transparent and accessible, enhancing your awareness of your navigational security and privacy.",
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
+	"permissions": [
+		"storage"
+	],
+	"options_ui": {
+		"page": "options.html",
+		"chrome_style": true
+	},
+	"web_accessible_resources": [
+		"img/*"
+	],
+	"content_scripts": [
+        {
+            "matches": [ "<all_urls>" ],
+            "js": [ "jquery-2.2.3.min.js", "defaultSettings.js", "ContentScript.js" ],
+			"run_at": "document_end",
+			"all_frames": true
+        }
+    ]
+}

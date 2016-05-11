@@ -1,0 +1,33 @@
+body: { padding: 10px; }
+fieldset { border: 1px solid #ccc; }
+#divBtnGroup { margin-top: 1em; }
+#confirm { visibility: hidden; padding-top: 10px; }
+
+.divTable{display: table;}
+.divTableBody{display: table-row-group;}
+.divTableRow{display: table-row;}
+.divTableCell{display: table-cell;}
+
+.desc {
+	white-space: nowrap;
+}
+
+#fragment-1 > fieldset{
+	margin-top:1em;
+}
+
+.inputMillis{
+	width: 5em;
+}
+
+.linkDemoContainer{
+	width:100%;
+	text-align:right;
+}
+
+.leftIndent{
+	margin-left:1em;
+}
+
+.enabled{color:black;}
+.disabled{color:lightgrey;}

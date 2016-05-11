@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Link Domain Transparency &mdash; Options</title>
+	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
+	<link href="options.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div id="tabs">
+		<ul>
+			<li><a href="#fragment-1"><span>General</span></a></li>
+			<!--<li><a href="#fragment-2"><span>Position</span></a></li>-->
+			<li><a href="#fragment-3"><span>Style</span></a></li>
+			<li><a href="#fragment-4"><span>Animation</span></a></li>
+		</ul>
+		
+		<div id="fragment-1">
+			<label><input type="checkbox" id="chkDisplayExternalDomainsOnly"/> Show links to external domains only</label><br/>
+			<fieldset>
+				<legend><input type="checkbox" id="chkDisplayDomainOnly"/> Show Domain only</legend>
+				<label><input type="checkbox" id="chkDisplayUrlScheme"/> Show Scheme (Protocol)</label><br/>
+				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth"/> Hide authentication information</label><br/>
+				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlUsername"/> Show Username</label><br/>
+				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlPassword"/> Show Username + Password</label><br/>
+				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask"/> Show Username + Masked Password</label><br/>
+				<label><input type="checkbox" id="chkDisplayUrlHostname"/> Show Hostname/Domain</label><br/>
+				<label><input type="checkbox" id="chkDisplayUrlPort"/> Show Port</label><br/>
+				<label><input type="checkbox" id="chkDisplayUrlPath"/> Show Path</label><br/>
+				<label><input type="checkbox" id="chkDisplayUrlQuery"/> Show Query</label><br/>
+				<label><input type="checkbox" id="chkDisplayUrlFragment"/> Show Fragment (Hash)</label>
+			</fieldset>
+			<fieldset>
+				<legend>Other link types to display:</legend>
+				<label><input type="checkbox" id="chkDisplayJavascriptLinks"/> Javascript</label><br/>
+				<label><input type="checkbox" id="chkDisplayMailtoLinks"/> Mailto</label>
+			</fieldset>
+		</div>
+		
+		<!--<div id="fragment-2">
+			<p>Positional options.</p>
+		</div>-->
+		
+		<div id="fragment-3">
+			<div class="divTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell desc">Background:&nbsp;</div>
+						<div class="divTableCell"><input id="colorBackground" type="color" name="backgroundColor"/></div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell desc">Border Color:&nbsp;</div>
+						<div class="divTableCell"><input id="colorBorder" type="color" name="cssColorBorder"/></div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell desc">URL Text Colour:&nbsp;</div>
+						<div class="divTableCell"><input id="colorGeneralURLText" type="color" name="colorGeneralURLText"/></div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell desc">URL's Domain Text Colour:&nbsp;</div>
+						<div class="divTableCell"><input id="colorDomainText" type="color" name="domainTextColor"/></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="fragment-4">
+			<div class="divTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell desc">Delay before displaying:&nbsp;</div>
+						<div class="divTableCell"><input type="number" id="durationDelay" name="durationDelay" class="inputMillis" />&nbsp;milliseconds</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell desc">Fade in duration:&nbsp;</div>
+						<div class="divTableCell"><input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMillis" />&nbsp;milliseconds</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell desc">Fade out duration:&nbsp;</div>
+						<div class="divTableCell"><input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMillis" />&nbsp;milliseconds</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<p class="linkDemoContainer">Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a><!--<br/>
+	Sample Javascript link: <a href="javascript:void(0);" class="previewLink">Demo</a><br/>
+	Sample mailto link: <a href="mailto:no-reply@example.com" class="previewLink">Demo</a><br/>
+	Sample bookmark link: <a href="#" class="previewLink">Demo</a><br/>
+	Sample relative link: <a href="/example.html" class="previewLink">Demo</a>--></p>
+	
+	<div id="divBtnGroup">
+		<!--<button id="save" disabled>Save All</button>-->
+		<button id="save">Save All</button>
+		<button id="restore">Restore All Defaults</button>
+		<span id="saved">Saved.</span>
+		<div id="confirm">
+			Are you sure?
+			<button id="btnConfirmY">Yes</button>
+			<button id="btnConfirmN">No</button>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+	<script type="text/javascript" src="jquery-ui.min.js"></script>
+	<script type="text/javascript" src="defaultSettings.js"></script>
+	<script type="text/javascript" src="options.js"></script>
+	<script type="text/javascript" src="ContentScript.js"></script>
+</body>
+</html>
