@@ -12,7 +12,6 @@ var defaultSettings = {
 		displayUrlFragment:false,
 	displayMailtoLinks:true,
 	displayJavascriptLinks:true,
-	displayPassMask:true,
 	// Position
 	relativeToMouse: true,
 	// Style - Tooltip

@@ -6,7 +6,8 @@ var secure = tooltip.children().first();
 var emailIcon = secure.next();
 var jsIcon = emailIcon.next();
 var domain = tooltip.children().last();
-$(document.body).append(tooltip); // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
+// Timers
+var resizeEndTimer; // No native resize end event, so timing our own.
 
 // Load settings
 chrome.storage.sync.get(defaultSettings, function(items){
@@ -29,6 +30,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace){
 
 // Main - Document ready
 $(function() {
+	// Listen for window size changes
+	$(window).on('resize', function() {
+		clearTimeout(resizeEndTimer);
+		resizeEndTimer = setTimeout(cacheWinDimensions, 250);
+	});
+	// Store initial window dimensions
+	cacheWinDimensions();
+	
 	// Attach and detach the tooltip; on() works for current and dynamically (future) created elements
 	$(document.body).on('mouseenter', 'a', function(e){
 		if(this.href == ""){
@@ -156,20 +165,20 @@ $(function() {
 });
 
 function showTooltip(urlToDisplay, isSecure, isJS, isMailto/*, elemToAttachTo*/){
+	// When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
 	if(urlToDisplay === undefined || urlToDisplay.trim() == ""){
 		return;
 	}
 	
-	// Cached the window dimensions on each mouse enter event (dimensions may change between events).
-	winDimensions = {
-		h : $(window).height(),
-		w : $(window).width()
-	};
 	// Attach mouse move event
-	// TODO - not necessary if using absolute positioning in options
+	// TODO - not necessary if using absolute corner positioning in options
 	$(window).mousemove(mouseRelativePosition);
 	// Show the tooltip
-	domain.empty().append(urlToDisplay);
+	if (!$.contains(document, tooltip[0])) { // Fast check
+		// Initial attach/Re-attach element - lazilly attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
+		$(document.body).append(tooltip); // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
+	}
+	domain.html(urlToDisplay);
 	secure.css("display", (isSecure ? "inline" : "none"));
 	emailIcon.css("display", (isMailto ? "inline" : "none"));
 	if(isJS){
@@ -217,6 +226,13 @@ function applySettingToTooltip(param, value){
 }
 
 var winDimensions;
+function cacheWinDimensions(){
+	winDimensions = {
+		h : $(window).height(),
+		w : $(window).width()
+	};
+}
+
 function mouseRelativePosition(e){
 	// Determine if tooltip breaches the window
 	var top;
