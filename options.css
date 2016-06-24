@@ -1,5 +1,6 @@
-body: { padding: 10px; }
+body { padding: 10px; width:35em; }
 fieldset { border: 1px solid #ccc; }
+textarea { resize: vertical; }
 #divBtnGroup { margin-top: 1em; }
 #confirm { visibility: hidden; padding-top: 10px; }
 
@@ -31,3 +32,38 @@ fieldset { border: 1px solid #ccc; }
 
 .enabled{color:black;}
 .disabled{color:lightgrey;}
+
+#txtOauthGoogl{
+	width:100%;
+	word-wrap: break-word;
+}
+
+
+#btnTEST{
+	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_normal_web.png');
+	background-repeat:no-repeat;
+	background-color:Transparent;
+	width:191px;
+	height:46px;
+	padding:0;
+	border:0 none transparent;
+	box-shadow: none;
+	cursor:pointer;
+}
+#btnTEST:focus {
+	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_focus_web.png');
+}
+#btnTEST:active {
+	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_pressed_web.png');
+}
+#btnTEST:disabled {
+	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_disabled_web.png');
+	cursor:auto;
+}
+
+.authTick{
+	float:right;
+}
+.authTickHidden{
+	display:none;
+}

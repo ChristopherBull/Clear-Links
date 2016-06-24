@@ -4,6 +4,7 @@
 	<title>Link Domain Transparency &mdash; Options</title>
 	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
 	<link href="options.css" rel="stylesheet" type="text/css">
+	<link href="contentScript.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 	<div id="tabs">
@@ -13,7 +14,7 @@
 			<li><a href="#fragment-3"><span>Position</span></a></li>-->
 			<li><a href="#fragment-4"><span>Style</span></a></li>
 			<li><a href="#fragment-5"><span>Animation</span></a></li>
-			<!--<li><a href="#fragment-6"><span>Short URLs</span></a></li>-->
+			<li><a href="#fragment-6"><span>Short URLs</span></a></li>
 		</ul>
 		
 		<div id="fragment-1">
@@ -76,23 +77,53 @@
 				<div class="divTableBody">
 					<div class="divTableRow">
 						<div class="divTableCell desc">Delay before displaying:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationDelay" name="durationDelay" class="inputMillis" />&nbsp;milliseconds</div>
+						<div class="divTableCell"><input type="number" id="durationDelay" name="durationDelay" class="inputMillis" />&nbsp;ms</div>
 					</div>
 					<div class="divTableRow">
 						<div class="divTableCell desc">Fade in duration:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMillis" />&nbsp;milliseconds</div>
+						<div class="divTableCell"><input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMillis" />&nbsp;ms</div>
 					</div>
 					<div class="divTableRow">
 						<div class="divTableCell desc">Fade out duration:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMillis" />&nbsp;milliseconds</div>
+						<div class="divTableCell"><input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMillis" />&nbsp;ms</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		
-		<!--<div id="fragment-6">
-			<p>Short URL options.</p>
-		</div>-->
+		<div id="fragment-6">
+			<p>These services require you to login because of usage limits placed on each individual service. Logging in to each service will allow Clear Links to expand the short URLs associated with each service (e.g. "goo.gl" is a Google short URL). You can sign into these now (more convenient for future web browsing), or later, as you require them.</p>
+			<p>No usernames or passwords are stored.</p>
+			
+			<div id="accordionOauth">
+				<h3>
+					Bit.ly
+					<img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
+				</h3>
+				<div>
+					<input type="button" id="btnOauthBitly" value="Bit.ly oauth" />
+					<br/>
+					<input type="text" id="txtOauthBitly" size="45" />
+					<br/>
+					<p>To generate your own 'Generic Access Token' <a href="https://bitly.com/a/oauth_apps">click here</a> and paste it in the field above.</p>
+				</div>
+				<h3 id="accordionHeadOauthGoogl">
+					Goo.gl
+					<img src="images/check-mark.png" alt="Google account authorised" id="authTickGooGl" class="authTickHidden"></img>
+				</h3>
+				<div>
+					<input type="button" id="btnTEST" disabled />
+					<br/><br/>
+					<input type="button" id="btnOauthGoogl" value="Get Goo.gl oauth" />
+					<br/><br/>
+					<input type="button" id="btnOauthGoogl_Revoke" value="Revoke Goo.gl oauth" />
+					<br/><br/>
+					<label>Key:<br/><textarea id="txtOauthGoogl"></textarea></label>
+					<!--<p>TODO - Ability to get an auth token (manual input fields, or using official Google+ login button)</p>
+					<p>TODO - btnVerifyAuthToken (in case manually entered)</p>-->
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<p class="linkDemoContainer">Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a><!--<br/>
@@ -115,6 +146,7 @@
 	
 	<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
 	<script type="text/javascript" src="jquery-ui.min.js"></script>
+	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 	<script type="text/javascript" src="defaultSettings.js"></script>
 	<script type="text/javascript" src="options.js"></script>
 	<script type="text/javascript" src="ContentScript.js"></script>

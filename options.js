@@ -1,5 +1,11 @@
 // Init the JQuery UI elems
 $("#tabs").tabs();
+$("#accordionOauth").accordion({
+	active: false,
+	collapsible: true,
+	heightStyle: "content",
+	animate: false
+});
 
 // Cached DOM elems
 var btnSave;
@@ -79,6 +85,13 @@ function initialize()
 	btnSave.addEventListener("click", btnSave_Click);
 	btnRestore.addEventListener("click", btnRestore_Click);
 	chkDisplayDomainOnly.addEventListener("change", chkDisplayDomainOnly_Change);
+	// DEBUG
+	document.getElementById("btnOauthBitly").addEventListener("click", oauth_Bitly);
+	document.getElementById("btnOauthGoogl").addEventListener("click", oauth_Googl);
+	document.getElementById("btnOauthGoogl_Revoke").addEventListener("click", oauth_Googl_Revoke);
+	
+	// Load OAuth tokens to show in the UI which accounts are connected/authorised
+	silentInitialOauth();
 	
 	// Real-time validation
 	$(durationDelay).focusout(function(e){
@@ -145,6 +158,8 @@ function restoreSettings()
 			colorBorder.value = items.cssColorBorder[1];
 			colorDomainText.value = items.cssColorDomainText[1];
 			colorGeneralURLText.value = items.cssColorGeneralURLText[1];
+			// OAuth tokens
+			document.getElementById("txtOauthBitly").value = items.oauthBitly;
 		}
 		
 		// Enable/Diable UI elements depending on selected options.
@@ -173,6 +188,9 @@ function btnSave_Click()
 		durationFadeOut.value = iDurationFadeOut;
 	}
 	
+	// TODO - validate oauth tokens
+	var bitlyOauthTok = document.getElementById("txtOauthBitly").value;
+	
 	// Save values
 	chrome.storage.sync.set({
 		// General
@@ -197,7 +215,9 @@ function btnSave_Click()
 		// Animation
 		durationDelay: iDurationDelay,
 		durationFadeIn: iDurationFadeIn,
-		durationFadeOut: iDurationFadeOut
+		durationFadeOut: iDurationFadeOut,
+		// OAuth tokens
+		oauthBitly: bitlyOauthTok
 	}, function(){ // On saved
 		spnSaved.show().delay(2500).fadeOut();
 	});
@@ -266,6 +286,88 @@ function chkDisplayDomainOnly_Change(){
 		chkDisplayUrlQuery.parentNode.className = 'enabled';
 		chkDisplayUrlFragment.parentNode.className = 'enabled';
 	}
+}
+
+// Retrieve OAuth tokens for UI purposes silently in the background (fails if "OAuth2 not granted or revoked")
+function silentInitialOauth(){
+	// Google OAuth
+	chrome.identity.getAuthToken(function(token) { // interactive=false by default
+		if (!chrome.runtime.lastError) {
+			// Update UI  - acknowledge that Goo.gl is authorised/ready
+			$("#authTickGooGl").attr('class', 'authTick');
+			$("#txtOauthGoogl").text(token);
+		}
+	});
+}
+
+function oauth_Googl(){
+	// Request Google authentication
+	chrome.identity.getAuthToken({ 'interactive': true }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
+		if (chrome.runtime.lastError) {
+			console.log("Auth failed");
+			// TODO
+		}else{
+			// Show Auth token to user
+			$("#authTickGooGl").attr('class', 'authTick');
+			$("#txtOauthGoogl").text(token);
+			// DEBUG ONLY - Test Auth by expanding an example URL
+			chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
+				if(response.ignore || response.result.error){
+					console.log("Problem");
+				}else{
+					console.log(response.result.longUrl);
+				}
+			});
+		}
+	});
+}
+
+// Revoke the Clear Links' OAuth token for the user's Google account
+function oauth_Googl_Revoke(){
+	chrome.identity.getAuthToken({'interactive': false}, function(current_token){
+		if(!chrome.runtime.lastError){
+			// Remove the local cached token
+			chrome.identity.removeCachedAuthToken({ token: current_token }, function(){});
+			// Make a request to revoke token in the server
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + current_token);
+			xhr.send();
+
+			// Update UI.
+			// TODO - Update sign-in button (enable)
+			$("#authTickGooGl").attr('class', 'authTickHidden');
+			$("#txtOauthGoogl").text("");
+		}
+	});
+}
+
+function oauth_Bitly(){
+	var YOURUSERNAME = 'user';
+	var YOURPASSWORD = 'pass';
+	
+	console.log("Sending: " + btoa(YOURUSERNAME + ':' + YOURPASSWORD));
+	
+	$.ajax({
+        url: 'https://api-ssl.bitly.com/oauth/access_token',
+        method: 'POST',
+        headers: {
+            'Authorization' : 'Basic ' + btoa(YOURUSERNAME + ':' + YOURPASSWORD),
+            'Content-Type' : 'application/x-www-form-urlencoded',
+        },
+        success: function (result) {
+			if(typeof yourVariable !== 'object'){
+				document.getElementById("txtOauthBitly").value = result;
+			}
+			else{ // Error - perhaps invalid login credentials
+				// TODO
+			}
+			console.log(result);
+        },
+        error: function (response) {
+            console.log("Cannot get data");
+			console.log(response);
+        }
+    });
 }
 
 // MAIN

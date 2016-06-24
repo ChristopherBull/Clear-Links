@@ -29,5 +29,7 @@ var defaultSettings = {
 	// Animation
 	durationDelay: 100,
 	durationFadeIn: 150,
-	durationFadeOut: 200
+	durationFadeOut: 200,
+	// Oauth tokens
+	oauthBitly: '',
 };

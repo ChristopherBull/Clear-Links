@@ -1,0 +1,37 @@
+@keyframes ClLoadingAnimation {
+    100% {
+		animation-timing-function:cubic-bezier(0,.4,1,.6);
+        transform:rotate(360deg);
+    }
+}
+
+#ClContainer{
+	all:initial;
+	display:none;
+	position:fixed;
+	top:0;
+	left:0;
+	z-index:9999;
+	max-width:30em;
+	padding:4px 5px;
+}
+
+#ClURL{
+	all:initial;
+	float:none;
+	margin:0 2px 0 0;
+	word-wrap:break-word;
+}
+
+.ClIcon{
+	display:none;
+	float:left;
+	margin-top:2px;
+	margin-right:3px;
+	width:14px;
+	height:14px;
+}
+
+.ClLoading{
+	animation:ClLoadingAnimation 1s infinite;
+}
