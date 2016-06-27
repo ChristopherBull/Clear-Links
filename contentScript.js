@@ -294,6 +294,7 @@ function mouseRelativeCursorPosition(e){
 	});
 }
 
+var checkShortUrlCache = true;
 function expandShortUrl(href, hostname, pathname){
 	if(pathname && pathname != "/"){ // No need to request full URL if no pathname (or just '/') present.
 		switch (hostname){
@@ -304,9 +305,9 @@ function expandShortUrl(href, hostname, pathname){
 					return {isShort:true,toExpand:false};
 				}
 			case 'goo.gl':
-				if(true){
+				if(true){// TODO - Check if we are to expand this short URL in the user options (e.g. is an API key available?)
 					// Request URL Expansion
-					chrome.runtime.sendMessage({shortURL: href}, function(response) {
+					chrome.runtime.sendMessage({shortURL: href, checkCache: checkShortUrlCache}, function(response) {
 						if(response.ignore || response.result.error){
 							// Disable rotating loading image
 							loadingIcon.css("display", "none");
@@ -315,6 +316,8 @@ function expandShortUrl(href, hostname, pathname){
 							var tmpUrl = new URL(response.result.longUrl);
 							domain.html(formatDisectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.pword, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
 							loadingIcon.css("display", "none");
+							// Re-check tooltip position to ensure it doesn't not exceed window bounds
+							// TODO
 						}
 					});
 					return {isShort:true,toExpand:true};

@@ -42,11 +42,15 @@ var colorBorder;
 var colorDomainText;
 var colorGeneralURLText;
 
+// DOM elems - Short URL
+//var btnOauthBitly;
+var btnOauthGoogl;
+var btnOauthGoogl_Revoke;
+
 // Cached retrieved settigns values.
 var currentSettingsVals = defaultSettings;
 
-function initialize()
-{
+function initialize(){
 	// Cache DOM elems
 	btnSave = document.getElementById("save");
 	btnRestore = document.getElementById("restore");
@@ -77,6 +81,10 @@ function initialize()
 	colorBorder = document.getElementById("colorBorder");
 	colorDomainText = document.getElementById("colorDomainText");
 	colorGeneralURLText = document.getElementById("colorGeneralURLText");
+	// Short URL DOM elems
+	//btnOauthBitly = document.getElementById("btnOauthBitly");
+	btnOauthGoogl = document.getElementById("btnOauthGoogl");
+	btnOauthGoogl_Revoke = document.getElementById("btnOauthGoogl_Revoke");
 	
 	// Get all the settings, update the UI
 	restoreSettings();
@@ -86,12 +94,12 @@ function initialize()
 	btnRestore.addEventListener("click", btnRestore_Click);
 	chkDisplayDomainOnly.addEventListener("change", chkDisplayDomainOnly_Change);
 	// DEBUG
-	document.getElementById("btnOauthBitly").addEventListener("click", oauth_Bitly);
-	document.getElementById("btnOauthGoogl").addEventListener("click", oauth_Googl);
-	document.getElementById("btnOauthGoogl_Revoke").addEventListener("click", oauth_Googl_Revoke);
+	//btnOauthBitly.addEventListener("click", oauth_Bitly);
+	btnOauthGoogl.addEventListener("click", oauth_Googl);
+	btnOauthGoogl_Revoke.addEventListener("click", oauth_Googl_Revoke);
 	
 	// Load OAuth tokens to show in the UI which accounts are connected/authorised
-	silentInitialOauth();
+	oauth_Googl_Silent();
 	
 	// Real-time validation
 	$(durationDelay).focusout(function(e){
@@ -116,13 +124,10 @@ function initialize()
 	});
 }
 
-function restoreSettings()
-{
+function restoreSettings(){
 	// Get all the settings, update the UI
-	chrome.storage.sync.get(defaultSettings, function(items)
-	{
-		if (!chrome.runtime.lastError)
-		{
+	chrome.storage.sync.get(defaultSettings, function(items){
+		if (!chrome.runtime.lastError){
 			// Cache the settings
 			currentSettingsVals = items;
 			// Update the Options menu UI - General
@@ -159,7 +164,7 @@ function restoreSettings()
 			colorDomainText.value = items.cssColorDomainText[1];
 			colorGeneralURLText.value = items.cssColorGeneralURLText[1];
 			// OAuth tokens
-			document.getElementById("txtOauthBitly").value = items.oauthBitly;
+			//document.getElementById("txtOauthBitly").value = items.oauthBitly;
 		}
 		
 		// Enable/Diable UI elements depending on selected options.
@@ -169,8 +174,7 @@ function restoreSettings()
 
 // Click Events
 
-function btnSave_Click()
-{
+function btnSave_Click(){
 	// Get option values that require validation.
 	var iDurationDelay = parseInt(durationDelay.value);
 	if(isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0){
@@ -189,7 +193,7 @@ function btnSave_Click()
 	}
 	
 	// TODO - validate oauth tokens
-	var bitlyOauthTok = document.getElementById("txtOauthBitly").value;
+	//var bitlyOauthTok = document.getElementById("txtOauthBitly").value;
 	
 	// Save values
 	chrome.storage.sync.set({
@@ -217,7 +221,7 @@ function btnSave_Click()
 		durationFadeIn: iDurationFadeIn,
 		durationFadeOut: iDurationFadeOut,
 		// OAuth tokens
-		oauthBitly: bitlyOauthTok
+		//oauthBitly: bitlyOauthTok
 	}, function(){ // On saved
 		spnSaved.show().delay(2500).fadeOut();
 	});
@@ -263,8 +267,7 @@ function chkDisplayDomainOnly_Change(){
 		chkDisplayUrlPath.parentNode.className = 'disabled';
 		chkDisplayUrlQuery.parentNode.className = 'disabled';
 		chkDisplayUrlFragment.parentNode.className = 'disabled';
-	}
-	else{
+	}else{
 		chkDisplayUrlScheme.disabled = false;
 		rdoDisplayUrlNoAuth.disabled = false;
 		rdoDisplayUrlUsername.disabled = false;
@@ -288,36 +291,39 @@ function chkDisplayDomainOnly_Change(){
 	}
 }
 
-// Retrieve OAuth tokens for UI purposes silently in the background (fails if "OAuth2 not granted or revoked")
-function silentInitialOauth(){
-	// Google OAuth
-	chrome.identity.getAuthToken(function(token) { // interactive=false by default
-		if (!chrome.runtime.lastError) {
-			// Update UI  - acknowledge that Goo.gl is authorised/ready
-			$("#authTickGooGl").attr('class', 'authTick');
-			$("#txtOauthGoogl").text(token);
-		}
-	});
+// Retrieve OAuth tokens for UI purposes silently in the background
+function oauth_Googl_Silent(){
+	oauth_Googl(null, true);
 }
 
-function oauth_Googl(){
-	// Request Google authentication
-	chrome.identity.getAuthToken({ 'interactive': true }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
-		if (chrome.runtime.lastError) {
-			console.log("Auth failed");
+// Retrieve Google OAuth token
+// Fails if "OAuth2 not granted or revoked"
+function oauth_Googl(e, silent){
+	// Check if 'silent' is undefined
+	if (typeof silent === 'undefined' || silent === null) {
+		silent = false; // Default
+	}
+	// Request Google OAuth
+	chrome.identity.getAuthToken({ 'interactive': !silent }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
+		if (chrome.runtime.lastError){
+			console.log("Google OAuth failed (silent: " + silent + ")");
 			// TODO
+			// Update UI
+			btnOauthGoogl.disabled = false;
+			$(btnOauthGoogl_Revoke).hide();
 		}else{
-			// Show Auth token to user
+			// Update UI - Show Auth token to user
+			btnOauthGoogl.disabled = true;
+			$(btnOauthGoogl_Revoke).show();
 			$("#authTickGooGl").attr('class', 'authTick');
-			$("#txtOauthGoogl").text(token);
 			// DEBUG ONLY - Test Auth by expanding an example URL
-			chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
+			/*chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
 				if(response.ignore || response.result.error){
 					console.log("Problem");
 				}else{
 					console.log(response.result.longUrl);
 				}
-			});
+			});*/
 		}
 	});
 }
@@ -325,7 +331,9 @@ function oauth_Googl(){
 // Revoke the Clear Links' OAuth token for the user's Google account
 function oauth_Googl_Revoke(){
 	chrome.identity.getAuthToken({'interactive': false}, function(current_token){
-		if(!chrome.runtime.lastError){
+		if(chrome.runtime.lastError){
+			// TODO
+		}else{
 			// Remove the local cached token
 			chrome.identity.removeCachedAuthToken({ token: current_token }, function(){});
 			// Make a request to revoke token in the server
@@ -334,14 +342,14 @@ function oauth_Googl_Revoke(){
 			xhr.send();
 
 			// Update UI.
-			// TODO - Update sign-in button (enable)
+			btnOauthGoogl.disabled = false;
+			$(btnOauthGoogl_Revoke).hide();
 			$("#authTickGooGl").attr('class', 'authTickHidden');
-			$("#txtOauthGoogl").text("");
 		}
 	});
 }
 
-function oauth_Bitly(){
+/*function oauth_Bitly(){
 	var YOURUSERNAME = 'user';
 	var YOURPASSWORD = 'pass';
 	
@@ -357,8 +365,7 @@ function oauth_Bitly(){
         success: function (result) {
 			if(typeof yourVariable !== 'object'){
 				document.getElementById("txtOauthBitly").value = result;
-			}
-			else{ // Error - perhaps invalid login credentials
+			}else{ // Error - perhaps invalid login credentials
 				// TODO
 			}
 			console.log(result);
@@ -368,7 +375,7 @@ function oauth_Bitly(){
 			console.log(response);
         }
     });
-}
+}*/
 
 // MAIN
 window.addEventListener("load", initialize);

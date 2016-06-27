@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		});
 	// URL expansion request
 	}else if(request.shortURL){
-		expandURL(request.shortURL, function(response){
+		expandURL(request.shortURL, request.checkCache, function(response){
 			sendResponse(response);
 		});
 		return true; // necessary to inform contentScript to expect an Async message response
@@ -50,12 +50,17 @@ function activateOnTab(url, tabId, activationCallback){
 }
 
 // TODO - Long/Short URL cache
+// Store in local storage, not synced.
 // TODO - Periodically (24hr) clean cache of old unaccessed short urls (e.g. not accessed for 7 days)
 
 // Short URL Expansion
-function expandURL(url, callbackAfterExpansion){
+function expandURL(url, checkCache, callbackAfterExpansion){
 	var expandedUrl = "";
-	// TODO - check hash cache first before making an API request
+	// Check hash cache first before making an API request
+	if(typeof checkCache !== 'undefined' && checkCache == true){
+		// TODO
+	}
+	// Determine short URL service
 	switch(new URL(url).hostname){
 		//case 'bit.ly':
 		//	break;
