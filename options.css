@@ -1,4 +1,4 @@
-body { padding: 10px; width:35em; }
+body { padding: 10px; width:50em; }
 fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #divBtnGroup { margin-top: 1em; }
@@ -33,11 +33,38 @@ textarea { resize: vertical; }
 .enabled{color:black;}
 .disabled{color:lightgrey;}
 
+/*Page Activation*/
+#formActivationType > label > input{
+	margin-bottom:3px;
+}
+#formWhitelist,#formBlacklist{
+	margin-top:1em;
+}
+#txtDomainsWhitelist,#listDomainsWhitelist,#txtDomainsBlacklist,#listDomainsBlacklist{
+	width:400px;
+}
+#listDomainsWhitelist,#listDomainsBlacklist{
+	background:white;
+}
+#btnDomainsWhitelistAdd,#btnDomainsWhitelistRemove,#btnDomainsBlacklistAdd,#btnDomainsBlacklistRemove{
+	width:10.5em;
+	text-align:left;
+}
+#btnDomainsWhitelistAdd,#txtDomainsWhitelist,#btnClearErrMsgWhitelist,#btnDomainsBlacklistAdd,#txtDomainsBlacklist,#btnClearErrMsgBlacklist{
+	margin-bottom:5px;
+}
+#btnDomainsWhitelistAdd,#btnDomainsBlacklistAdd{
+	margin-left:1px;
+}
+#btnDomainsWhitelistRemove,#btnDomainsBlacklistRemove{
+	vertical-align:top;
+}
 
+/*Short URLs*/
 .authTick{
 	float:right;
 }
-.authTickHidden{
+.authTickHidden,#divErrAreaWhitelist,#divErrAreaBlacklist{
 	display:none;
 }
 #btnOauthGoogl{

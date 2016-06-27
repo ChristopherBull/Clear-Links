@@ -42,6 +42,16 @@ var colorBorder;
 var colorDomainText;
 var colorGeneralURLText;
 
+// DOM elems - Domain Activation
+var btnDomainsWhitelistAdd;
+var btnDomainsWhitelistRemove;
+var txtDomainsWhitelist;
+var listDomainsWhitelist;
+var btnDomainsBlacklistAdd;
+var btnDomainsBlacklistRemove;
+var txtDomainsBlacklist;
+var listDomainsBlacklist;
+
 // DOM elems - Short URL
 //var btnOauthBitly;
 var btnOauthGoogl;
@@ -85,6 +95,18 @@ function initialize(){
 	//btnOauthBitly = document.getElementById("btnOauthBitly");
 	btnOauthGoogl = document.getElementById("btnOauthGoogl");
 	btnOauthGoogl_Revoke = document.getElementById("btnOauthGoogl_Revoke");
+	// DOM elems - Domain activation
+	$('#formActivationType input').on('change', showActivationTypeOptions);
+	btnDomainsWhitelistAdd = document.getElementById("btnDomainsWhitelistAdd");
+	btnDomainsWhitelistRemove = document.getElementById("btnDomainsWhitelistRemove");
+	txtDomainsWhitelist = document.getElementById("txtDomainsWhitelist");
+	listDomainsWhitelist = document.getElementById("listDomainsWhitelist");
+	$('#btnClearErrMsgWhitelist').click(hideWhitelistErrMsg);
+	btnDomainsBlacklistAdd = document.getElementById("btnDomainsBlacklistAdd");
+	btnDomainsBlacklistRemove = document.getElementById("btnDomainsBlacklistRemove");
+	txtDomainsBlacklist = document.getElementById("txtDomainsBlacklist");
+	listDomainsBlacklist = document.getElementById("listDomainsBlacklist");
+	$('#btnClearErrMsgBlacklist').click(hideBlacklistErrMsg);
 	
 	// Get all the settings, update the UI
 	restoreSettings();
@@ -93,7 +115,12 @@ function initialize(){
 	btnSave.addEventListener("click", btnSave_Click);
 	btnRestore.addEventListener("click", btnRestore_Click);
 	chkDisplayDomainOnly.addEventListener("change", chkDisplayDomainOnly_Change);
-	// DEBUG
+	// Page Activation
+	btnDomainsWhitelistAdd.addEventListener("click", addToWhitelist);
+	btnDomainsWhitelistRemove.addEventListener("click", removeFromWhitelist);
+	btnDomainsBlacklistAdd.addEventListener("click", addToBlacklist);
+	btnDomainsBlacklistRemove.addEventListener("click", removeFromBlacklist);
+	// Short URLs
 	//btnOauthBitly.addEventListener("click", oauth_Bitly);
 	btnOauthGoogl.addEventListener("click", oauth_Googl);
 	btnOauthGoogl_Revoke.addEventListener("click", oauth_Googl_Revoke);
@@ -155,6 +182,8 @@ function restoreSettings(){
 			chkDisplayUrlFragment.checked = items.displayUrlFragment;
 			chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
 			chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
+			// Page Activation
+			$('#activationType' + items.activationFilter).prop("checked", true).change();
 			// Update the Options menu UI
 			durationDelay.value = items.durationDelay;
 			durationFadeIn.value = items.durationFadeIn;
@@ -169,6 +198,12 @@ function restoreSettings(){
 		
 		// Enable/Diable UI elements depending on selected options.
 		chkDisplayDomainOnly_Change();
+	});
+	// Get non-synced settings
+	chrome.storage.local.get({domainBlacklist:[], domainWhitelist:[]}, function(items){
+		if (!chrome.runtime.lastError){
+			// TODO
+		}
 	});
 }
 
@@ -211,6 +246,8 @@ function btnSave_Click(){
 		displayUrlFragment: chkDisplayUrlFragment.checked,
 		displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
 		displayMailtoLinks: chkDisplayMailtoLinks.checked,
+		// Page Activation
+		activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val()),
 		// Style
 		background: colorBackground.value,
 		cssColorBorder: ['border-color', colorBorder.value],
@@ -290,6 +327,121 @@ function chkDisplayDomainOnly_Change(){
 		chkDisplayUrlFragment.parentNode.className = 'enabled';
 	}
 }
+
+/* Page activation */
+
+function showActivationTypeOptions(e){
+	switch($('input[name=activationType]:checked', '#formActivationType').val()){
+		case '1': // == All
+			$('#formWhitelist').hide();
+			$('#formBlacklist').hide();
+			break;
+		case '2': // == Whitelist
+			$('#formWhitelist').show();
+			$('#formBlacklist').hide();
+			break;
+		case '3': // == Blacklist
+			$('#formWhitelist').hide();
+			$('#formBlacklist').show();
+			break;
+	}
+}
+
+function isValidUrl(sUrl){
+	if(sUrl == ""){
+		return null;
+	}else{
+		// include URL protocol if not specified (otherwise URL constructor will throw exception)
+		if(!sUrl.includes("://")){
+			sUrl = "http://" + sUrl;
+		}
+		// Create URL object
+		try{
+			return new URL(sUrl);
+		}catch(err){
+			console.log(err.message);
+			throw err;
+		}
+	}
+}
+
+function addToWhitelist(clickEvt){
+	var tmpUrl;
+	try{
+		tmpUrl = isValidUrl(txtDomainsWhitelist.value);
+		hideWhitelistErrMsg();
+	}catch(err){
+		// TODO - inform user of invalid URL
+		$('#txtErrMsgDomainWhitelist').text(err.message);
+		$('#divErrAreaWhitelist').show();
+		return;
+	}
+	if(tmpUrl != null){ // null == silently skip
+		// Is domain not already in Storage?
+		
+		// Add to Whitelist Storage
+		
+		// Add to Whitelist UI
+		var option = document.createElement("option");
+		option.text = tmpUrl.hostname;
+		listDomainsWhitelist.add(option);
+		// Clean UI
+		txtDomainsWhitelist.value = "";
+	}
+}
+
+function removeFromWhitelist(clickEvt){
+	for(var count = listDomainsWhitelist.options.length-1; count >= 0; count--){
+		if(listDomainsWhitelist.options[count].selected == true){
+			// Remove from Whitelist UI
+			listDomainsWhitelist.remove(count);
+		}
+	}
+}
+
+function addToBlacklist(clickEvt){
+	var tmpUrl;
+	try{
+		tmpUrl = isValidUrl(txtDomainsBlacklist.value);
+		hideBlacklistErrMsg();
+	}catch(err){
+		// TODO - inform user of invalid URL
+		$('#txtErrMsgDomainBlacklist').text(err.message);
+		$('#divErrAreaBlacklist').show();
+		return;
+	}
+	if(tmpUrl != null){ // null == silently skip
+		// Is domain not already in Storage?
+		
+		// Add to Blacklist Storage
+		
+		// Add to Blacklist UI
+		var option = document.createElement("option");
+		option.text = tmpUrl.hostname;
+		listDomainsBlacklist.add(option);
+		// Clean UI
+		txtDomainsBlacklist.value = "";
+	}
+}
+
+function removeFromBlacklist(clickEvt){
+	for(var count = listDomainsBlacklist.options.length-1; count >= 0; count--){
+		if(listDomainsBlacklist.options[count].selected == true){
+			// Remove from Blacklist UI
+			listDomainsBlacklist.remove(count);
+		}
+	}
+}
+
+function hideWhitelistErrMsg(){
+	$('#divErrAreaWhitelist').hide();
+}
+
+function hideBlacklistErrMsg(){
+	$('#divErrAreaBlacklist').hide();
+}
+
+/* Short URLs */
 
 // Retrieve OAuth tokens for UI purposes silently in the background
 function oauth_Googl_Silent(){
