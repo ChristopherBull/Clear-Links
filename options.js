@@ -58,7 +58,8 @@ var btnOauthGoogl;
 var btnOauthGoogl_Revoke;
 
 // Cached retrieved settigns values.
-var currentSettingsVals = defaultSettings;
+var currentSyncSettingsVals = defaultSettings;
+var currentLocalSettingsVals = defaultSettingsLocal;
 
 function initialize(){
 	// Cache DOM elems
@@ -131,17 +132,17 @@ function initialize(){
 	// Real-time validation
 	$(durationDelay).focusout(function(e){
 		if(durationDelay.value < 0){
-			durationDelay.value = currentSettingsVals.durationDelay;
+			durationDelay.value = currentSyncSettingsVals.durationDelay;
 		}
 	});
 	$(durationFadeIn).focusout(function(e){
 		if(durationFadeIn.value < 0){
-			durationFadeIn.value = currentSettingsVals.durationFadeIn;
+			durationFadeIn.value = currentSyncSettingsVals.durationFadeIn;
 		}
 	});
 	$(durationFadeOut).focusout(function(e){
 		if(durationFadeOut.value < 0){
-			durationFadeOut.value = currentSettingsVals.durationFadeOut;
+			durationFadeOut.value = currentSyncSettingsVals.durationFadeOut;
 		}
 	});
 	
@@ -156,7 +157,7 @@ function restoreSettings(){
 	chrome.storage.sync.get(defaultSettings, function(items){
 		if (!chrome.runtime.lastError){
 			// Cache the settings
-			currentSettingsVals = items;
+			currentSyncSettingsVals = items;
 			// Update the Options menu UI - General
 			chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
 			chkDisplayDomainOnly.checked = items.displayDomainOnly;
@@ -182,8 +183,6 @@ function restoreSettings(){
 			chkDisplayUrlFragment.checked = items.displayUrlFragment;
 			chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
 			chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
-			// Page Activation
-			$('#activationType' + items.activationFilter).prop("checked", true).change();
 			// Update the Options menu UI
 			durationDelay.value = items.durationDelay;
 			durationFadeIn.value = items.durationFadeIn;
@@ -200,9 +199,33 @@ function restoreSettings(){
 		chkDisplayDomainOnly_Change();
 	});
 	// Get non-synced settings
-	chrome.storage.local.get({domainBlacklist:[], domainWhitelist:[]}, function(items){
+	chrome.storage.local.get(defaultSettingsLocal, function(items){
 		if (!chrome.runtime.lastError){
-			// TODO
+			// Cache the local settings
+			currentLocalSettingsVals = items;
+			// Page Activation
+			$('#activationType' + items.activationFilter).prop("checked", true).change();
+			// Page Activation - Load whitelist
+			var i;
+			for(i = listDomainsWhitelist.options.length - 1 ; i >= 0 ; i--){ // Empty list UI
+				listDomainsWhitelist.remove(i);
+			}
+			for(i = 0; i < currentLocalSettingsVals.domainWhitelist.length; i++){ // Re-fill list UI
+				// Add to Whitelist UI
+				var option = document.createElement("option");
+				option.text = currentLocalSettingsVals.domainWhitelist[i];
+				listDomainsWhitelist.add(option);
+			}
+			// Page Activation - Load blacklist
+			for(i = listDomainsBlacklist.options.length - 1 ; i >= 0 ; i--){ // Empty list UI
+				listDomainsBlacklist.remove(i);
+			}
+			for(i = 0; i < currentLocalSettingsVals.domainBlacklist.length; i++){ // Re-fill list UI
+				// Add to Blacklist UI
+				var option = document.createElement("option");
+				option.text = currentLocalSettingsVals.domainBlacklist[i];
+				listDomainsBlacklist.add(option);
+			}
 		}
 	});
 }
@@ -246,8 +269,6 @@ function btnSave_Click(){
 		displayUrlFragment: chkDisplayUrlFragment.checked,
 		displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
 		displayMailtoLinks: chkDisplayMailtoLinks.checked,
-		// Page Activation
-		activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val()),
 		// Style
 		background: colorBackground.value,
 		cssColorBorder: ['border-color', colorBorder.value],
@@ -260,19 +281,32 @@ function btnSave_Click(){
 		// OAuth tokens
 		//oauthBitly: bitlyOauthTok
 	}, function(){ // On saved
-		spnSaved.show().delay(2500).fadeOut();
+		chrome.storage.local.set({
+			// Page Activation
+			activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val())
+		}, function(){ // On (local only) saved
+			// Must occur after both sync and local are set (hence chained callback functions).
+			spnSaved.show().delay(2500).fadeOut();
+		});
 	});
 }
 
 function btnRestore_Click(){
 	btnConfirmY.onclick = function(){
-		chrome.storage.sync.clear(function(){ // On cleared
-			// Re-Save default values
-			chrome.storage.sync.set(defaultSettings, function(){ // On saved
-				// Update Options menu UI
-				restoreSettings();
-				divConfirm.style.visibility='hidden';
-				spnSaved.show().delay(2500).fadeOut();
+		// Clear synced settings
+		chrome.storage.sync.clear(function(){ // On sync cleared
+			// Re-Save default sync values
+			chrome.storage.sync.set(defaultSettings, function(){ // On sync saved
+				// Clear local settings
+				chrome.storage.local.clear(function(){ // On local cleared
+					// Re-Save default local values
+					chrome.storage.local.set(defaultSettingsLocal, function(){ // On local saved
+						// Update Options menu UI
+						restoreSettings();
+						divConfirm.style.visibility='hidden';
+						spnSaved.show().delay(2500).fadeOut();
+					});
+				});
 			});
 		});
 	};
@@ -371,32 +405,43 @@ function addToWhitelist(clickEvt){
 		tmpUrl = isValidUrl(txtDomainsWhitelist.value);
 		hideWhitelistErrMsg();
 	}catch(err){
-		// TODO - inform user of invalid URL
 		$('#txtErrMsgDomainWhitelist').text(err.message);
 		$('#divErrAreaWhitelist').show();
 		return;
 	}
 	if(tmpUrl != null){ // null == silently skip
 		// Is domain not already in Storage?
-		
-		// Add to Whitelist Storage
-		
-		// Add to Whitelist UI
-		var option = document.createElement("option");
-		option.text = tmpUrl.hostname;
-		listDomainsWhitelist.add(option);
-		// Clean UI
-		txtDomainsWhitelist.value = "";
+		if(currentLocalSettingsVals.domainWhitelist.indexOf(tmpUrl.hostname) == -1){
+			// Add to Whitelist Storage
+			currentLocalSettingsVals.domainWhitelist.push(tmpUrl.hostname);
+			chrome.storage.local.set({domainWhitelist: currentLocalSettingsVals.domainWhitelist}, function(){ // On local settings saved
+				// Add to Whitelist UI
+				var option = document.createElement("option");
+				option.text = tmpUrl.hostname;
+				listDomainsWhitelist.add(option);
+				// Clean UI
+				txtDomainsWhitelist.value = "";
+			});
+		}
 	}
 }
 
 function removeFromWhitelist(clickEvt){
+	// Determine which whitelist entries to remove
+	var indiciesToRemove = [];
 	for(var count = listDomainsWhitelist.options.length-1; count >= 0; count--){
 		if(listDomainsWhitelist.options[count].selected == true){
-			// Remove from Whitelist UI
-			listDomainsWhitelist.remove(count);
+			indiciesToRemove.push(count); // Cache index for UI updating after successful storage update
+			currentLocalSettingsVals.domainWhitelist.splice(count, 1); // Remove entry from model
 		}
 	}
+	// Update the local storage
+	chrome.storage.local.set({domainWhitelist: currentLocalSettingsVals.domainWhitelist}, function(){ // On (local only) saved
+		// Update the UI
+		for(var i = 0; i < indiciesToRemove.length; i++){
+			listDomainsWhitelist.remove(indiciesToRemove[i]);
+		}
+	});
 }
 
 function addToBlacklist(clickEvt){
@@ -405,32 +450,43 @@ function addToBlacklist(clickEvt){
 		tmpUrl = isValidUrl(txtDomainsBlacklist.value);
 		hideBlacklistErrMsg();
 	}catch(err){
-		// TODO - inform user of invalid URL
 		$('#txtErrMsgDomainBlacklist').text(err.message);
 		$('#divErrAreaBlacklist').show();
 		return;
 	}
 	if(tmpUrl != null){ // null == silently skip
 		// Is domain not already in Storage?
-		
-		// Add to Blacklist Storage
-		
-		// Add to Blacklist UI
-		var option = document.createElement("option");
-		option.text = tmpUrl.hostname;
-		listDomainsBlacklist.add(option);
-		// Clean UI
-		txtDomainsBlacklist.value = "";
+		if(currentLocalSettingsVals.domainBlacklist.indexOf(tmpUrl.hostname) == -1){
+			// Add to Blacklist Storage
+			currentLocalSettingsVals.domainBlacklist.push(tmpUrl.hostname);
+			chrome.storage.local.set({domainBlacklist: currentLocalSettingsVals.domainBlacklist}, function(){ // On local settings saved
+				// Add to Blacklist UI
+				var option = document.createElement("option");
+				option.text = tmpUrl.hostname;
+				listDomainsBlacklist.add(option);
+				// Clean UI
+				txtDomainsBlacklist.value = "";
+			});
+		}
 	}
 }
 
 function removeFromBlacklist(clickEvt){
+	// Determine which blacklist entries to remove
+	var indiciesToRemove = [];
 	for(var count = listDomainsBlacklist.options.length-1; count >= 0; count--){
 		if(listDomainsBlacklist.options[count].selected == true){
-			// Remove from Blacklist UI
-			listDomainsBlacklist.remove(count);
+			indiciesToRemove.push(count); // Cache index for UI updating after successful storage update
+			currentLocalSettingsVals.domainBlacklist.splice(count, 1); // Remove entry from model
 		}
 	}
+	// Update the local storage
+	chrome.storage.local.set({domainBlacklist: currentLocalSettingsVals.domainBlacklist}, function(){ // On (local only) saved
+		// Update the UI
+		for(var i = 0; i < indiciesToRemove.length; i++){
+			listDomainsBlacklist.remove(indiciesToRemove[i]);
+		}
+	});
 }
 
 function hideWhitelistErrMsg(){

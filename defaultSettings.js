@@ -12,8 +12,6 @@ var defaultSettings = {
 		displayUrlFragment:false,
 	displayMailtoLinks:true,
 	displayJavascriptLinks:true,
-	// Page Activation
-	activationFilter:1,// 1=All, 2=Whitelist, 3=Blacklist
 	// Position
 	relativeToMouse: true,
 	// Style - Tooltip
@@ -34,4 +32,11 @@ var defaultSettings = {
 	durationFadeOut: 200,
 	// Oauth tokens
 	oauthBitly: '',
+};
+// Local (not synced) default settings
+var defaultSettingsLocal = {
+	// Page Activation
+	activationFilter:1, // 1=All, 2=Whitelist, 3=Blacklist
+	domainWhitelist:[],
+	domainBlacklist:[]
 };

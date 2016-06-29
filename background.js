@@ -1,19 +1,36 @@
+// Load local settings (e.g. page activation options)
+var currentLocalSettingsVals = defaultSettingsLocal;
+chrome.storage.local.get(defaultSettingsLocal, function(items){
+	if (!chrome.runtime.lastError){
+		// Cache the local settings
+		currentLocalSettingsVals = items;
+	}
+});
+// Listen for options changes
+chrome.storage.onChanged.addListener(function(changes, namespace){
+	if(namespace == "local"){
+		for (var key in changes) {
+			if (changes.hasOwnProperty(key) && changes[key].newValue !== undefined) {
+				currentLocalSettingsVals[key] = changes[key].newValue;
+			}
+		}
+	}
+});
+
 // Message Passing
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	// Page activation (black/whitelist)
 	// Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
 	// Allows users to blacklist/whitelist sites. Also reduces overall CPU/RAM usage, at the cost of a few additional cycles on each pages startup.
-	if(request.activationFilter && sender.tab){
-		activateOnTab(new URL(request.activationFilter), sender.tab.id, function(){
-			chrome.tabs.insertCSS(sender.tab.id, {file:"contentScript.css"}, function() {
+	if(request.activationHostname && sender.tab){
+		activateOnTab(sender.tab.id, request.activationHostname, function(){
+			chrome.tabs.insertCSS(sender.tab.id, {allFrames: true, file:"contentScript.css"}, function(){
 				//css finished injecting
-				chrome.tabs.executeScript(sender.tab.id, {file:"jquery-2.2.3.min.js"}, function() {
+				chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"jquery-2.2.3.min.js"}, function(){
 					//script finished injecting
-					chrome.tabs.executeScript(sender.tab.id, {file:"defaultSettings.js"}, function() {
+					chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"defaultSettings.js"}, function(){
 						//script finished injecting
-						chrome.tabs.executeScript(sender.tab.id, {file:"contentScript.js"}, function() {
-							//script finished injecting
-						});
+						chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"contentScript.js"});
 					});
 				});
 			});
@@ -27,24 +44,41 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}
 });
 
-function activateOnTab(url, tabId, activationCallback){
-	// activate on all pages?
-	// or, check whitelist
-	// or, check blacklist
-	
-	//console.log("url.hostname: " + url.hostname);
-	//console.log("url.href: " + url.href);
-	
-	// TEST - example of a site to skip
-	/*if(url.hostname.endsWith('.com')){
-		return;
-	}*/
-	
-	// Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
-	chrome.tabs.get(tabId,function(){
+function activateOnTab(tabId, docHostname, activationCallback){
+	tabExists(tabId, function(tabHostname){ // i.e. don't activate on Options page
+		switch(currentLocalSettingsVals.activationFilter){
+			case 1: // Allow All
+				activationCallback();
+				break;
+			case 2: // Whitelisted sites only
+				if(isUrlToBeFiltered(tabHostname, currentLocalSettingsVals.domainWhitelist)){
+					activationCallback();
+				}
+				break;
+			case 3: // Blacklisted sites only
+				if(!isUrlToBeFiltered(tabHostname, currentLocalSettingsVals.domainBlacklist)){
+					activationCallback();
+				}
+				break;
+		}
+	});
+}
+
+// Checks if given URL (tabHostname) resides within the given array (filterListArray)
+function isUrlToBeFiltered(tabHostname, filterListArray){
+	if(filterListArray.indexOf(tabHostname) > -1){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+// Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
+function tabExists(tabId, callback){
+	chrome.tabs.get(tabId,function(tab){
 		if(!chrome.runtime.lastError){
 			// Tab exists
-			activationCallback();
+			callback(new URL(tab.url).hostname);
 		}
 	});
 }
