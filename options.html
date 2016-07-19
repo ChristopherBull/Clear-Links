@@ -18,7 +18,7 @@
 		</ul>
 		
 		<div id="fragment-1">
-			<label><input type="checkbox" id="chkDisplayExternalDomainsOnly"/> Show links to external domains only</label><br/>
+			<label><input type="checkbox" id="chkDisplayExternalDomainsOnly"/> Show Clear Links' tooltip for links to external domains only</label><br/>
 			<fieldset>
 				<legend><input type="checkbox" id="chkDisplayDomainOnly"/> Show Domain only</legend>
 				<label><input type="checkbox" id="chkDisplayUrlScheme"/> Show Scheme (Protocol)</label><br/>
@@ -35,7 +35,8 @@
 			<fieldset>
 				<legend>Other link types to display:</legend>
 				<label><input type="checkbox" id="chkDisplayJavascriptLinks"/> Javascript</label><br/>
-				<label><input type="checkbox" id="chkDisplayMailtoLinks"/> Mailto</label>
+				<label><input type="checkbox" id="chkDisplayMailtoLinks"/> Mailto</label><br/>
+				<label><input type="checkbox" id="chkDisplayShortUrlsOnly"/> Known short URLs only (currently: goo.gl)</label>
 			</fieldset>
 		</div>
 		
@@ -72,7 +73,8 @@
 		</div>-->
 		
 		<div id="fragment-4">
-			<div class="divTable">
+			<!-- Colour pickers -->
+			<div class="divTable inlineBlock">
 				<div class="divTableBody">
 					<div class="divTableRow">
 						<div class="divTableCell desc">Background:&nbsp;</div>
@@ -89,6 +91,31 @@
 					<div class="divTableRow">
 						<div class="divTableCell desc">URL's Domain Text Colour:&nbsp;</div>
 						<div class="divTableCell"><input id="colorDomainText" type="color" name="domainTextColor"/></div>
+					</div>
+				</div>
+			</div>
+			<div class="divTable colTwo">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<span>Themes:</span>
+							<select id="themeSelect">
+								<option value="1" selected>Light</option>
+								<option value="2">Dark</option>
+								<option value="3">Original</option>
+								<option value="0">Custom</option>
+							</select>
+						</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">
+							<div id="stylePreview">
+								<div class='ClContainer'><p class='ClURL'><span class="ClDomain">www.preview.com</span>/index.html</p></div><br/>
+								<div class='ClContainer'><img src='chrome-extension://banknjcfbmhcbebgekpcenheaghfcood/images/green-padlock.png' alt='Secure protocol used in link' class='ClIcon'></img><p class='ClURL'><span class="ClDomain">www.secure-preview.com</span>/index.html</p></div><br/>
+								<div class='ClContainer'><img src='chrome-extension://banknjcfbmhcbebgekpcenheaghfcood/images/email-icon.png' alt='This is a Mailto link' class='ClIcon'></img><p class='ClURL'><span class="ClDomain">bob@example.com</span></p></div><br/>
+								<div class='ClContainer'><img src='chrome-extension://banknjcfbmhcbebgekpcenheaghfcood/images/JS-icon.png' alt='This link uses Javascript' class='ClIcon JsIconNoText'></img><p class='ClURL'>&nbsp;</p></div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,18 +143,35 @@
 		<div id="fragment-6">
 			<p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
 			<div id="accordionOauth">
-				<!--<h3>
+				<h3>
 					Bit.ly
 					<img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
 				</h3>
 				<div>
-					<input type="button" id="btnOauthBitly" value="Bit.ly oauth" />
-					<br/>
-					<input type="text" id="txtOauthBitly" size="45" />
-					<br/>
-					<p>To generate your own 'Generic Access Token' <a href="https://bitly.com/a/oauth_apps">click here</a> and paste it in the field above.</p>
-				</div>-->
-				<h3 id="accordionHeadOauthGoogl">
+					<div id="divOauthBitly_LoggedOut" class="divTable">
+						<div class="divTableBody">
+							<div class="divTableRow">
+								<div class="divTableCell desc">Username:&nbsp;</div>
+								<div class="divTableCell"><input type="text" id="txtBitlyUser"/></div>
+							</div>
+							<div class="divTableRow">
+								<div class="divTableCell desc">Password:&nbsp;</div>
+								<div class="divTableCell"><input type="password" id="pwdBitlyPass"/></div>
+							</div>
+							<div class="divTableRow">
+								<div class="divTableCell desc">&nbsp;</div>
+								<div class="divTableCell rightAlign"><input type="button" id="btnOauthBitly" value="Login"/></div>
+							</div>
+						</div>
+					</div>
+					<div id="divOauthBitly_LoggedIn">
+						<p>OAuth access token: <span id="lblOauthBitly_Token"></span></p>
+						<span>Forget Bit.ly OAuth token: </span><input type="button" id="btnOauthBitly_ForgetToken" value="Logout"/>
+					</div>
+					<!--<p>To generate your own 'Generic Access Token' <a href="https://bitly.com/a/oauth_apps">click here</a> and paste it in the field above.</p>
+					<input type="text" id="txtOauthBitly" size="45" />-->
+				</div>
+				<h3>
 					Goo.gl
 					<img src="images/check-mark.png" alt="Google account authorised" id="authTickGooGl" class="authTickHidden"></img>
 				</h3>
@@ -147,12 +191,16 @@
 	
 	<div id="divBtnGroup">
 		<button id="save">Save All</button>
-		<button id="restore">Restore All Defaults</button>
+		<button id="restore">Restore Defaults</button>
+		<button id="delAll">Delete All Saved Info</button>
 		<span id="saved">Saved.</span>
 		<div id="confirm">
 			Are you sure?
 			<button id="btnConfirmY">Yes</button>
 			<button id="btnConfirmN">No</button>
+			<br/>
+			<span id="delAll_FurtherInfo"><em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.</span>
+			<span id="restore_FurtherInfo"><em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").</span>
 		</div>
 	</div>
 	
@@ -160,6 +208,7 @@
 	<script type="text/javascript" src="jquery-ui.min.js"></script>
 	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 	<script type="text/javascript" src="defaultSettings.js"></script>
+	<script type="text/javascript" src="themes.js"></script>
 	<script type="text/javascript" src="options.js"></script>
 	<script type="text/javascript" src="contentScript.js"></script>
 	<script type="text/javascript" src="contentScriptOptionsMenuOverrides.js"></script>

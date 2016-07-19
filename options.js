@@ -32,6 +32,7 @@ var chkDisplayUrlFragment;
 // Other link types
 var chkDisplayJavascriptLinks;
 var chkDisplayMailtoLinks;
+var chkDisplayShortUrlsOnly;
 
 // DOM elems - Option fields
 var durationDelay;
@@ -41,6 +42,10 @@ var colorBackground;
 var colorBorder;
 var colorDomainText;
 var colorGeneralURLText;
+/*var tooltipPreview;
+var tooltipPreviewText;
+var tooltipPreviewTextDomain;*/
+var themeSelect;
 
 // DOM elems - Domain Activation
 var btnDomainsWhitelistAdd;
@@ -53,7 +58,9 @@ var txtDomainsBlacklist;
 var listDomainsBlacklist;
 
 // DOM elems - Short URL
-//var btnOauthBitly;
+var txtBitlyUser;
+var pwdBitlyPass;
+var btnOauthBitly;
 var btnOauthGoogl;
 var btnOauthGoogl_Revoke;
 
@@ -84,6 +91,7 @@ function initialize(){
 	chkDisplayUrlFragment = document.getElementById("chkDisplayUrlFragment");
 	chkDisplayJavascriptLinks = document.getElementById("chkDisplayJavascriptLinks");
 	chkDisplayMailtoLinks = document.getElementById("chkDisplayMailtoLinks");
+	chkDisplayShortUrlsOnly = document.getElementById("chkDisplayShortUrlsOnly");
 	// Option fields
 	durationDelay = document.getElementById("durationDelay");
 	durationFadeIn = document.getElementById("durationFadeIn");
@@ -92,8 +100,14 @@ function initialize(){
 	colorBorder = document.getElementById("colorBorder");
 	colorDomainText = document.getElementById("colorDomainText");
 	colorGeneralURLText = document.getElementById("colorGeneralURLText");
+	/*tooltipPreview = document.getElementById("tooltipPreview");
+	tooltipPreviewText = document.getElementById("tooltipPreviewText");
+	tooltipPreviewTextDomain = document.getElementById("tooltipPreviewTextDomain");*/
+	themeSelect = document.getElementById("themeSelect");
 	// Short URL DOM elems
-	//btnOauthBitly = document.getElementById("btnOauthBitly");
+	txtBitlyUser = document.getElementById('txtBitlyUser');
+	pwdBitlyPass = document.getElementById('pwdBitlyPass');
+	btnOauthBitly = document.getElementById("btnOauthBitly");
 	btnOauthGoogl = document.getElementById("btnOauthGoogl");
 	btnOauthGoogl_Revoke = document.getElementById("btnOauthGoogl_Revoke");
 	// DOM elems - Domain activation
@@ -109,25 +123,58 @@ function initialize(){
 	listDomainsBlacklist = document.getElementById("listDomainsBlacklist");
 	$('#btnClearErrMsgBlacklist').click(hideBlacklistErrMsg);
 	
+	// Event handlers (prior to restoring settings)
+	colorBackground.addEventListener("change", function(){
+		//tooltipPreview.style.background = colorBackground.value;
+		$('.ClContainer').css('background', colorBackground.value);
+		themeSelect.value = "0";
+	});
+	colorBorder.addEventListener("change", function(){
+		//tooltipPreview.style.borderColor = colorBorder.value;
+		$('.ClContainer').css('border-color', colorBorder.value);
+		themeSelect.value = "0";
+	});
+	colorGeneralURLText.addEventListener("change", function(){
+		//tooltipPreviewText.style.color = colorGeneralURLText.value;
+		$('.ClURL').css('color', colorGeneralURLText.value);
+		themeSelect.value = "0";
+	});
+	colorDomainText.addEventListener("change", function(){
+		//tooltipPreviewTextDomain.style.color = colorDomainText.value;
+		$('.ClDomain').css('color', colorDomainText.value);
+		themeSelect.value = "0";
+	});
+	
 	// Get all the settings, update the UI
 	restoreSettings();
 	
 	// Add event listeners to UI elems.
 	btnSave.addEventListener("click", btnSave_Click);
 	btnRestore.addEventListener("click", btnRestore_Click);
+	$('#delAll').click(btnDelAllSavedData_Click);
 	chkDisplayDomainOnly.addEventListener("change", chkDisplayDomainOnly_Change);
 	// Page Activation
 	btnDomainsWhitelistAdd.addEventListener("click", addToWhitelist);
 	btnDomainsWhitelistRemove.addEventListener("click", removeFromWhitelist);
 	btnDomainsBlacklistAdd.addEventListener("click", addToBlacklist);
 	btnDomainsBlacklistRemove.addEventListener("click", removeFromBlacklist);
+	// Style
+	themeSelect.addEventListener("change", previewPresetTheme);
 	// Short URLs
-	//btnOauthBitly.addEventListener("click", oauth_Bitly);
+	btnOauthBitly.addEventListener("click", function(){
+		oauth_Bitly_BasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
+	});
 	btnOauthGoogl.addEventListener("click", oauth_Googl);
 	btnOauthGoogl_Revoke.addEventListener("click", oauth_Googl_Revoke);
 	
-	// Load OAuth tokens to show in the UI which accounts are connected/authorised
-	oauth_Googl_Silent();
+	document.getElementById('btnOauthBitly_ForgetToken').addEventListener("click", function(){
+		chrome.storage.local.set({
+			OAuth_BitLy: {enabled:false,token:""}
+		}, function(){ // On saved
+			currentLocalSettingsVals.OAuth_BitLy = {enabled:false,token:""}; // Update local copy of settings
+			oauth_Bitly_UpdateUI();
+		});
+	});
 	
 	// Real-time validation
 	$(durationDelay).focusout(function(e){
@@ -183,16 +230,19 @@ function restoreSettings(){
 			chkDisplayUrlFragment.checked = items.displayUrlFragment;
 			chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
 			chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
+			chkDisplayShortUrlsOnly.checked = items.displayOnKnownShortUrlDomainsOnly;
 			// Update the Options menu UI
 			durationDelay.value = items.durationDelay;
 			durationFadeIn.value = items.durationFadeIn;
 			durationFadeOut.value = items.durationFadeOut;
+			themeSelect.value = items.theme;
 			colorBackground.value = items.background;
-			colorBorder.value = items.cssColorBorder[1];
-			colorDomainText.value = items.cssColorDomainText[1];
-			colorGeneralURLText.value = items.cssColorGeneralURLText[1];
-			// OAuth tokens
-			//document.getElementById("txtOauthBitly").value = items.oauthBitly;
+			colorBorder.value = items.cssColorBorder;
+			colorDomainText.value = items.cssColorDomainText;
+			colorGeneralURLText.value = items.cssColorGeneralURLText;
+			
+			// Update Style preview
+			previewPresetTheme();
 		}
 		
 		// Enable/Diable UI elements depending on selected options.
@@ -226,7 +276,12 @@ function restoreSettings(){
 				option.text = currentLocalSettingsVals.domainBlacklist[i];
 				listDomainsBlacklist.add(option);
 			}
+			// Short URLs -- OAuth tokens
+			document.getElementById("lblOauthBitly_Token").textContent = items.OAuth_BitLy.token;
 		}
+		// Load OAuth tokens to show in the UI which accounts are connected/authorised
+		oauth_Googl_Silent();
+		oauth_Bitly_UpdateUI();
 	});
 }
 
@@ -250,9 +305,6 @@ function btnSave_Click(){
 		durationFadeOut.value = iDurationFadeOut;
 	}
 	
-	// TODO - validate oauth tokens
-	//var bitlyOauthTok = document.getElementById("txtOauthBitly").value;
-	
 	// Save values
 	chrome.storage.sync.set({
 		// General
@@ -269,17 +321,20 @@ function btnSave_Click(){
 		displayUrlFragment: chkDisplayUrlFragment.checked,
 		displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
 		displayMailtoLinks: chkDisplayMailtoLinks.checked,
+		displayOnKnownShortUrlDomainsOnly: chkDisplayShortUrlsOnly.checked,
 		// Style
-		background: colorBackground.value,
-		cssColorBorder: ['border-color', colorBorder.value],
-		cssColorDomainText: ['color', colorDomainText.value],
-		cssColorGeneralURLText: ['color', colorGeneralURLText.value],
+		theme: themeSelect.value,
+			// div
+			background: colorBackground.value,
+			cssColorBorder: colorBorder.value,
+			// p
+			cssColorGeneralURLText: colorGeneralURLText.value,
+			// spanDomain
+			cssColorDomainText: colorDomainText.value, // color
 		// Animation
 		durationDelay: iDurationDelay,
 		durationFadeIn: iDurationFadeIn,
 		durationFadeOut: iDurationFadeOut,
-		// OAuth tokens
-		//oauthBitly: bitlyOauthTok
 	}, function(){ // On saved
 		chrome.storage.local.set({
 			// Page Activation
@@ -292,6 +347,27 @@ function btnSave_Click(){
 }
 
 function btnRestore_Click(){
+	btnConfirmY.onclick = function(){
+		// Clear synced settings
+		chrome.storage.sync.clear(function(){ // On sync cleared
+			// Re-Save default sync values
+			chrome.storage.sync.set(defaultSettings, function(){ // On sync saved
+				// Update Options menu UI
+				restoreSettings();
+				divConfirm.style.visibility='hidden';
+				spnSaved.show().delay(2500).fadeOut();
+			});
+		});
+	};
+	btnConfirmN.onclick = function(){
+		divConfirm.style.visibility='hidden';
+	};
+	divConfirm.style.visibility='visible';
+	$('#restore_FurtherInfo').show();
+	$('#delAll_FurtherInfo').hide();
+}
+
+function btnDelAllSavedData_Click(){
 	btnConfirmY.onclick = function(){
 		// Clear synced settings
 		chrome.storage.sync.clear(function(){ // On sync cleared
@@ -314,6 +390,8 @@ function btnRestore_Click(){
 		divConfirm.style.visibility='hidden';
 	};
 	divConfirm.style.visibility='visible';
+	$('#delAll_FurtherInfo').show();
+	$('#restore_FurtherInfo').hide();
 }
 
 function chkDisplayDomainOnly_Change(){
@@ -497,6 +575,33 @@ function hideBlacklistErrMsg(){
 	$('#divErrAreaBlacklist').hide();
 }
 
+/* Styles */
+
+function previewPresetTheme(){
+	var sTheme;
+	switch(themeSelect.value){
+		case "0": // Custom
+			return;
+		case "1": // Light/Default
+			sTheme = 'light';
+			break;
+		case "2": // Dark
+			sTheme = 'dark';
+			break;
+		case "3": // Original
+			sTheme = 'original';
+			break;
+	}
+	colorBackground.value = themes[sTheme].div.background;
+	colorBorder.value = themes[sTheme].div['border-color'];
+	$('.ClContainer').css('background', colorBackground.value)
+		.css('border-color', colorBorder.value);
+	colorGeneralURLText.value = themes[sTheme].p.color;
+	$('.ClURL').css('color', colorGeneralURLText.value);
+	colorDomainText.value = themes[sTheme].spanDomain.color;
+	$('.ClDomain').css('color', colorDomainText.value);
+}
+
 /* Short URLs */
 
 // Retrieve OAuth tokens for UI purposes silently in the background
@@ -515,11 +620,17 @@ function oauth_Googl(e, silent){
 	chrome.identity.getAuthToken({ 'interactive': !silent }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
 		if (chrome.runtime.lastError){
 			console.log("Google OAuth failed (silent: " + silent + ")");
+			if(currentLocalSettingsVals.OAuth_GooGl.enabled){
+				chrome.storage.local.set({OAuth_GooGl:{enabled:false}});
+			}
 			// TODO
 			// Update UI
 			btnOauthGoogl.disabled = false;
 			$(btnOauthGoogl_Revoke).hide();
 		}else{
+			if(!currentLocalSettingsVals.OAuth_GooGl.enabled){
+				chrome.storage.local.set({OAuth_GooGl:{enabled:true}});
+			}
 			// Update UI - Show Auth token to user
 			btnOauthGoogl.disabled = true;
 			$(btnOauthGoogl_Revoke).show();
@@ -549,6 +660,9 @@ function oauth_Googl_Revoke(){
 			xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + current_token);
 			xhr.send();
 
+			// Update local storage
+			chrome.storage.local.set({OAuth_GooGl:{enabled:false}});
+			
 			// Update UI.
 			btnOauthGoogl.disabled = false;
 			$(btnOauthGoogl_Revoke).hide();
@@ -557,33 +671,62 @@ function oauth_Googl_Revoke(){
 	});
 }
 
-/*function oauth_Bitly(){
-	var YOURUSERNAME = 'user';
-	var YOURPASSWORD = 'pass';
-	
-	console.log("Sending: " + btoa(YOURUSERNAME + ':' + YOURPASSWORD));
-	
+function oauth_Bitly_UpdateUI(){
+	if(currentLocalSettingsVals.OAuth_BitLy.enabled){
+		$('#btnOauthBitly').prop("disabled", true);
+		$('#btnOauthBitly_ForgetToken').show();
+		$("#authTickBitLy").attr('class', 'authTick');
+		$("#divOauthBitly_LoggedIn").show();
+		$("#divOauthBitly_LoggedOut").hide();
+	}else{
+		$('#btnOauthBitly').prop("disabled", false);
+		$('#btnOauthBitly_ForgetToken').hide();
+		$("#authTickBitLy").attr('class', 'authTickHidden');
+		$("#divOauthBitly_LoggedIn").hide();
+		$("#divOauthBitly_LoggedOut").show();
+	}
+}
+
+function oauth_Bitly_BasicAuth(user_id, user_secret){
+	// Update UI (logging in)
+	$('#btnOauthBitly').prop("disabled", true);
+	// HTTP Basic Authentication Flow (with hashed username and password)
+	// Note 1: Unable to use "Resource Owner Credentials Grants" as "client_secret" is not secret in a public Chrome extension
+	// Note 2: Unable to use "OAuth Web Flow", as it requires a "redirect_uri"; unable to get BitLy's implementation to work with Chrome Extensions' Options' pages. Also requires "client_secret" (see Note 2 for details)
 	$.ajax({
         url: 'https://api-ssl.bitly.com/oauth/access_token',
         method: 'POST',
-        headers: {
-            'Authorization' : 'Basic ' + btoa(YOURUSERNAME + ':' + YOURPASSWORD),
+        headers:{
+            'Authorization' : 'Basic ' + btoa(user_id + ':' + user_secret),
             'Content-Type' : 'application/x-www-form-urlencoded',
         },
-        success: function (result) {
-			if(typeof yourVariable !== 'object'){
-				document.getElementById("txtOauthBitly").value = result;
+        success: function (result){
+			if(typeof result !== 'object'){
+				// On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
+				chrome.storage.local.set({
+					OAuth_BitLy: {enabled:true,token:result}
+				}, function(){ // On saved
+					currentLocalSettingsVals.OAuth_BitLy = {enabled:true,token:result}; // Update local copy of settings
+					document.getElementById("lblOauthBitly_Token").textContent = result;
+					oauth_Bitly_UpdateUI();
+				});
 			}else{ // Error - perhaps invalid login credentials
 				// TODO
 			}
+			// Update UI
+			document.getElementById('pwdBitlyPass').value = "";
+			$('#btnOauthBitly').prop("disabled", false);
 			console.log(result);
         },
-        error: function (response) {
+        error: function (response){
             console.log("Cannot get data");
 			console.log(response);
+			// Update UI
+			document.getElementById('pwdBitlyPass').value = "";
+			$('#btnOauthBitly').prop("disabled", false);
         }
     });
-}*/
+}
 
 // MAIN
 window.addEventListener("load", initialize);

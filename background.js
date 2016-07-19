@@ -23,26 +23,42 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	// Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
 	// Allows users to blacklist/whitelist sites. Also reduces overall CPU/RAM usage, at the cost of a few additional cycles on each pages startup.
 	if(request.activationHostname && sender.tab){
-		activateOnTab(sender.tab.id, request.activationHostname, function(){
-			chrome.tabs.insertCSS(sender.tab.id, {allFrames: true, file:"contentScript.css"}, function(){
-				//css finished injecting
-				chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"jquery-2.2.3.min.js"}, function(){
-					//script finished injecting
-					chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"defaultSettings.js"}, function(){
-						//script finished injecting
-						chrome.tabs.executeScript(sender.tab.id, {allFrames: true, file:"contentScript.js"});
-					});
-				});
-			});
-		});
+		injectExtension(sender.tab.id, request.activationHostname);
 	// URL expansion request
 	}else if(request.shortURL){
 		expandURL(request.shortURL, request.checkCache, function(response){
+			// TODO - Store response.result.longUrl into a cache/map
 			sendResponse(response);
 		});
 		return true; // necessary to inform contentScript to expect an Async message response
 	}
 });
+
+// Some sites may load as prerendered and later tab is replaced (e.g. initial google searches from a new tab).
+// Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
+chrome.webNavigation.onTabReplaced.addListener(function(details){
+	chrome.tabs.get(details.tabId,function(tab){
+		if(!chrome.runtime.lastError){
+			// Tab exists
+			injectExtension(tab.id, new URL(tab.url).hostname);
+		}
+	});
+});
+
+function injectExtension(tabID, hostname){
+	activateOnTab(tabID, hostname, function(){
+		chrome.tabs.insertCSS(tabID, {allFrames: true, runAt: "document_end", file:"contentScript.css"}, function(){
+			//css finished injecting
+			chrome.tabs.executeScript(tabID, {allFrames: true, runAt: "document_end", file:"jquery-2.2.3.min.js"}, function(){
+				//script finished injecting
+				chrome.tabs.executeScript(tabID, {allFrames: true, runAt: "document_end", file:"defaultSettings.js"}, function(){
+					//script finished injecting
+					chrome.tabs.executeScript(tabID, {allFrames: true, runAt: "document_end", file:"contentScript.js"});
+				});
+			});
+		});
+	});
+}
 
 function activateOnTab(tabId, docHostname, activationCallback){
 	tabExists(tabId, function(tabHostname){ // i.e. don't activate on Options page
@@ -96,8 +112,9 @@ function expandURL(url, checkCache, callbackAfterExpansion){
 	}
 	// Determine short URL service
 	switch(new URL(url).hostname){
-		//case 'bit.ly':
-		//	break;
+		case 'bit.ly':
+			expandUrl_BitLy(url, callbackAfterExpansion);
+			break;
 		case 'goo.gl':
 			// TODO - Check user options to see if goo.gl links should be expanded (a checkbox in the options menu, or (e.g.) is an API key available?)
 			Auth_GooGl(function(bAuthSuccess){
@@ -142,11 +159,38 @@ function expandUrl_GooGl(url, callbackAfterExpansion){
 	var request = gapi.client.urlshortener.url.get({
 		'shortUrl': url
 	});
-	request.then(function(response) {
-		// TODO - Store response.result.longUrl into a cache
-		callbackAfterExpansion(response);
+	request.then(function(response){
+		if(response.result.status == "OK"){
+			callbackAfterExpansion(response);
+		}else{ // Deal with malicious/removed links (which are known to Google)
+			callbackAfterExpansion({result:{error:{message:"Goo.gl link "+response.result.status}}});
+		}
 	}, function(reason) {
 		console.log('Error (Goo.gl): "' + url + '" - ' + reason.result.error.message);
 		callbackAfterExpansion(reason);
 	});
+}
+
+function expandUrl_BitLy(url, callbackAfterExpansion){
+	if(currentLocalSettingsVals.OAuth_BitLy.enabled){
+		$.ajax('https://api-ssl.bitly.com/v3/expand?access_token='+currentLocalSettingsVals.OAuth_BitLy.token+'&shortUrl=' + encodeURI(url), {
+			success: function (result){
+				if(result['status_code'] != 200){
+					console.log("Bit.ly: Bad request - " + result['status_txt']);
+					// Create the JSON formmated response expected in contentScript: response.result.error.message
+					callbackAfterExpansion({result:{error:{message:result['status_txt']}}});
+				}else{
+					// Create the JSON formmated response expected in contentScript: response.result.longUrl
+					callbackAfterExpansion({result:{longUrl:result.data.expand[0].long_url}});
+				}
+			},
+			error: function (response){
+				console.log("AJAX Error: Cannot get data");
+				console.log(response);
+				// TODO
+			}
+		});
+	}else{
+		callbackAfterExpansion({ignore: true});
+	}
 }

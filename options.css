@@ -3,14 +3,24 @@ fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #divBtnGroup { margin-top: 1em; }
 #confirm { visibility: hidden; padding-top: 10px; }
+/*#restore_FurtherInfo{visibility:hidden;}
+#delAll_FurtherInfo{visibility:hidden;}*/
+#restore_FurtherInfo{display:none;}
+#delAll_FurtherInfo{display:none;}
 
 .divTable{display: table;}
 .divTableBody{display: table-row-group;}
 .divTableRow{display: table-row;}
 .divTableCell{display: table-cell;}
 
+.inlineBlock{display:inline-block;}
+
 .desc {
 	white-space: nowrap;
+}
+
+.rightAlign{
+	text-align:right;
 }
 
 #fragment-1 > fieldset{
@@ -32,6 +42,45 @@ textarea { resize: vertical; }
 
 .enabled{color:black;}
 .disabled{color:lightgrey;}
+
+/*Style tab*/
+.colTwo{
+	display:inline-block;
+	vertical-align:top;
+	margin-left:3em;
+}
+#stylePreview{
+	border:2px inset #ccc;
+	margin-top:1em;
+	padding:0 1em 1em 1em;
+}
+#stylePreview .ClContainer{
+	display:inline-block;
+	position:relative;
+	margin-top:1em;
+	width:auto;
+}
+#stylePreview .ClContainer{
+	border:1px solid #5F7F99;
+	border-radius:3px;
+}
+#stylePreview .ClIcon{
+	display:inline-block;
+	/*Filters: http://www.html5rocks.com/en/tutorials/filters/understanding-css/ */
+	/*filter: sepia(100%);-webkit-filter: sepia(100%);*/
+	/*filter: hue-rotate(240deg) saturate(3.3);-webkit-filter: hue-rotate(240deg) saturate(3.3);/*randomises color, doesn't affect greyscale*/
+	/*filter: invert(100%);-webkit-filter: invert(100%);*/
+}
+#stylePreview .ClURL{
+	font-family:sans-serif;
+	font-size:small;
+}
+#stylePreview .JsIconNoText{
+	margin-right:-6px;
+}
+#themeSelect{
+	margin-left:5px;
+}
 
 /*Page Activation*/
 #formActivationType > label > input{
@@ -66,6 +115,9 @@ textarea { resize: vertical; }
 }
 .authTickHidden,#divErrAreaWhitelist,#divErrAreaBlacklist{
 	display:none;
+}
+#lblOauthBitly_Token{
+	font-style:italic;
 }
 #btnOauthGoogl{
 	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_normal_web.png');

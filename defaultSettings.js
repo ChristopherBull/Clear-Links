@@ -2,6 +2,7 @@
 var defaultSettings = {
 	// General Behaviour
 	displayExternalDomainsOnly:true,
+	displayOnKnownShortUrlDomainsOnly:false,
 	displayDomainOnly:true,
 		displayUrlScheme:true,
 		displayUrlAuth:1, // 0=No auth, 1=Username, 2=username+password, 3=user+masked password
@@ -11,32 +12,37 @@ var defaultSettings = {
 		displayUrlQuery:false,
 		displayUrlFragment:false,
 	displayMailtoLinks:true,
-	displayJavascriptLinks:true,
+	displayJavascriptLinks:false,
 	// Position
-	relativeToMouse: true,
+	relativeToMouse:true,
 	// Style - Tooltip
-	background: '#294F6D',
-	border: '1px solid #5F7F99',
-	'border-radius': '3px',
-	cssColorBorder: ['border-color', '#5F7F99'],
-	cssColorGeneralURLText: ['color', '#808080'],
-	// Style - Tooltip:Domain
-	cssColorDomainText: ['color', '#BBCCD9'],
-	'font-family': 'sans-serif',
-	'font-size': 'small',
-	// Style - span CSS (no need to specify CSS attr name)
-	cssColorMailto: '#BBCCD9',
+	theme:"3", // Original blue theme
+		// Style - div
+		background:'#ffffff',
+		border:'1px solid #A2A0A0',
+		'border-radius':'3px',
+		cssColorBorder:'#A2A0A0', // border-color
+		// Style - p
+		cssColorGeneralURLText:'#dddddd', // color
+		'font-family':'sans-serif',
+		'font-size':'small',
+		// Style - span Domain
+		cssColorDomainText:'#808080', // color
+		// Style - span MailTo
+		cssColorMailto:'#808080', // color
 	// Animation
-	durationDelay: 100,
-	durationFadeIn: 150,
-	durationFadeOut: 200,
-	// Oauth tokens
-	oauthBitly: '',
+	durationDelay:100,
+	durationFadeIn:150,
+	durationFadeOut:200,
+	//oauthBitly:'', // TODO - moved and refactored to local storage
 };
 // Local (not synced) default settings
 var defaultSettingsLocal = {
-	// Page Activation
+	// Page Activation - size of filter list may exceed storage limits in sync, so must be local, not synced.
 	activationFilter:1, // 1=All, 2=Whitelist, 3=Blacklist
 	domainWhitelist:[],
-	domainBlacklist:[]
+	domainBlacklist:[],
+	// Oauth tokens - requires signing in and authorising accounts, so must be stored locally, not synced.
+	OAuth_GooGl:{enabled:false},
+	OAuth_BitLy:{enabled:false,token:''}
 };
