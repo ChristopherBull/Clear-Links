@@ -16,7 +16,7 @@ var defaultSettings = {
 	// Position
 	relativeToMouse:true,
 	// Style - Tooltip
-	theme:"3", // Original blue theme
+	theme:"1", // Light theme
 		// Style - div
 		background:'#ffffff',
 		border:'1px solid #A2A0A0',

@@ -334,6 +334,17 @@ function expandShortUrl(sourceElem){
 				return {isShort:true,toExpand:true};
 			case 't.co':
 				if(window.location.hostname == "twitter.com" && sourceElem.dataset && sourceElem.dataset.expandedUrl){ // only guarentee correct URL if on Twitter.com
+					try{
+						// Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefintie recursive loops).
+						var expandedUrl = new URL(sourceElem.dataset.expandedUrl);
+						//console.log(expandedUrl.href);
+						if(expandedUrl.hostname != "t.co"){
+							return expandShortUrl(expandedUrl); // Give it the new URL obj, not the source element
+						}
+					}catch(err){
+						console.log(err);
+						return {isShort:true,toExpand:false}; // TODO indicate an error
+					}
 					return {isShort:true,toExpand:true,quickExpand:sourceElem.dataset.expandedUrl};
 				}else{
 					return {isShort:true,toExpand:false};
