@@ -113,6 +113,7 @@ function expandURL(url, checkCache, callbackAfterExpansion){
 	// Determine short URL service
 	switch(new URL(url).hostname){
 		case 'bit.ly':
+		case 'j.mp':
 			expandUrl_BitLy(url, callbackAfterExpansion);
 			break;
 		case 'goo.gl':

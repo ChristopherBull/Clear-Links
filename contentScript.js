@@ -64,7 +64,7 @@ $(function() {
 				break;
 			case 'https:':
 			case 'http:':
-			case 'file':
+			case 'file:':
 			default:
 				
 				//1=external domains
@@ -77,7 +77,7 @@ $(function() {
 					// TODO (?) - move to more appropriate position (does this need to be before, during , or after URL disection? If a short URL is detected, do we cancel URL disection below until we receive the full long URL from any APIs?
 					var isShortAndExpandable = expandShortUrl(this);
 					if(isShortAndExpandable.isShort){
-						if(typeof isShortAndExpandable.quickExpand !== 'undefined'){
+						if(typeof isShortAndExpandable.quickExpand !== 'undefined' && isShortAndExpandable.quickExpand != ""){
 							loadingIcon.css("display", "none");
 							unexpandableIcon.css("display", "none");
 							var tmpUrl;
@@ -312,10 +312,11 @@ function mouseRelativeCursorPosition(e){
 }
 
 var checkShortUrlCache = true;
-function expandShortUrl(sourceElem){
+function expandShortUrl(sourceElem, quickExpandUrl="", bRecursiveIsShort=false){
 	if(sourceElem.pathname && sourceElem.pathname != "/"){ // No need to request full URL if no pathname (or just '/') present.
 		switch (sourceElem.hostname){
 			case 'bit.ly':
+			case 'j.mp':
 			case 'goo.gl':
 				// Request URL Expansion
 				chrome.runtime.sendMessage({shortURL: sourceElem.href, checkCache: checkShortUrlCache}, function(response) {
@@ -331,26 +332,25 @@ function expandShortUrl(sourceElem){
 						// TODO
 					}
 				});
-				return {isShort:true,toExpand:true};
+				return {isShort:true,toExpand:true,quickExpand:quickExpandUrl};
 			case 't.co':
 				if(window.location.hostname == "twitter.com" && sourceElem.dataset && sourceElem.dataset.expandedUrl){ // only guarentee correct URL if on Twitter.com
 					try{
 						// Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefintie recursive loops).
 						var expandedUrl = new URL(sourceElem.dataset.expandedUrl);
-						//console.log(expandedUrl.href);
 						if(expandedUrl.hostname != "t.co"){
-							return expandShortUrl(expandedUrl); // Give it the new URL obj, not the source element
+							return expandShortUrl(expandedUrl, expandedUrl.href, true); // Give it the new URL obj, not the source element
 						}
 					}catch(err){
 						console.log(err);
-						return {isShort:true,toExpand:false}; // TODO indicate an error
+						return {isShort:true,toExpand:false,quickExpand:quickExpandUrl}; // TODO indicate an error
 					}
 					return {isShort:true,toExpand:true,quickExpand:sourceElem.dataset.expandedUrl};
 				}else{
-					return {isShort:true,toExpand:false};
+					return {isShort:true,toExpand:false,quickExpand:quickExpandUrl};
 				}
 		}
 	}
-	return {isShort:false,toExpand:false};
+	return {isShort:bRecursiveIsShort,toExpand:false,quickExpand:quickExpandUrl};
 }
 }
