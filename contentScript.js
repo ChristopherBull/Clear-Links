@@ -14,7 +14,7 @@ var resizeEndTimer; // No native resize end event, so timing our own.
 
 // Load settings
 chrome.storage.sync.get(defaultSettings, function(items){
-	settings = items;	
+	settings = items;
 	for (var key in settings){
 		if (settings.hasOwnProperty(key)){
 			applySettingToTooltip(key, settings[key]);
@@ -45,7 +45,7 @@ $(function() {
 	});
 	// Store initial window dimensions
 	cacheWinDimensions();
-	
+
 	// Attach and detach the tooltip; on() works for current and dynamically (future) created elements
 	$(document.body).on('mouseenter', 'a', function(e){
 		if(this.href == ""){
@@ -66,11 +66,11 @@ $(function() {
 			case 'http:':
 			case 'file:':
 			default:
-				
+
 				//1=external domains
 				//2=external page (may be same domain)
 				//3=any page
-				
+
 				// Determine if this is an external domain (if only showing external domains), otherwise always true
 				if(displayingExternalDomainsOnly(this.hostname)){
 					var urlToDisplay = '';
@@ -100,11 +100,11 @@ $(function() {
 					}else{
 						break;
 					}
-					
+
 					if(urlToDisplay == ''){
 						urlToDisplay = formatDisectedURL(this.href, this.protocol, this.username, this.password, this.hostname, this.port, this.pathname, this.search, this.hash);
 					}
-					
+
 					// TODO - check if link uses JS (in addition to the href attr), and if the user has set the option to show it
 					var issecureIcon = false;
 					if(this.protocol && this.protocol == "https:"){
@@ -137,7 +137,7 @@ $(function() {
 	.on('mouseleave', 'input', function(e){
 		hideTooltip();
 	});*/
-	
+
 	/*//$('iframe').load(function(){
 	$('#iframeResult').load(function(){
 		console.log('iframe loaded');
@@ -212,13 +212,13 @@ function showTooltip(jqDomElem, urlToDisplay, issecureIcon, isJS, isMailto){
 	if(urlToDisplay === undefined || urlToDisplay.trim() == ""){
 		return;
 	}
-	
+
 	tooltip.finish(); // Stop all animations on other elements
 	tooltip
 		.delay(settings.durationDelay)
 		.fadeIn(settings.durationFadeIn)
 		.css("width", "auto"); // Run at start of animation, not after the fade animation.
-	
+
 	// Attach mouse move event
 	var titleAttr = jqDomElem.attr('title');
 	// TODO - not necessary if using absolute corner positioning in options
@@ -243,7 +243,7 @@ function showTooltip(jqDomElem, urlToDisplay, issecureIcon, isJS, isMailto){
 	else{
 		jsIcon.css("display", "none");
 	}
-	
+
 	// Attach a specific mouseleave event to the target of the mouseenter event (reduces likelihood of multiuple orphaned tooltips when a site interfers with this extension)
 	var localTooltip = tooltip;
 	function localMouseLeave(e){
@@ -334,14 +334,20 @@ function expandShortUrl(sourceElem, quickExpandUrl="", bRecursiveIsShort=false){
 				});
 				return {isShort:true,toExpand:true,quickExpand:quickExpandUrl};
 			case 't.co':
-				if(window.location.hostname == "twitter.com" && sourceElem.dataset && sourceElem.dataset.expandedUrl){ // only guarentee correct URL if on Twitter.com
+				if(window.location.hostname == "twitter.com"){ // only guarentee correct URL if on Twitter.com
 					try{
 						// Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefintie recursive loops).
-						var expandedUrl = new URL(sourceElem.dataset.expandedUrl);
+						var expandedUrl;
+						if(sourceElem.dataset && sourceElem.dataset.expandedUrl){
+							expandedUrl = new URL(sourceElem.dataset.expandedUrl);
+						} else { // Some t.co links do not have a expandedUrl attr, but may have URL in 'title' attr.
+							expandedUrl = new URL(sourceElem.title);
+						}
+						// Avoid recursive t.co expansions.
 						if(expandedUrl.hostname != "t.co"){
 							return expandShortUrl(expandedUrl, expandedUrl.href, true); // Give it the new URL obj, not the source element
 						}
-					}catch(err){
+					}catch(err){ // Catch errors thrown by 'new URL()' if URL is malformed.
 						console.log(err);
 						return {isShort:true,toExpand:false,quickExpand:quickExpandUrl}; // TODO indicate an error
 					}
