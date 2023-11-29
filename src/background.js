@@ -174,23 +174,29 @@ function expandUrl_GooGl(url, callbackAfterExpansion){
 
 function expandUrl_BitLy(url, callbackAfterExpansion){
 	if(currentLocalSettingsVals.OAuth_BitLy.enabled){
-		$.ajax('https://api-ssl.bitly.com/v3/expand?access_token='+currentLocalSettingsVals.OAuth_BitLy.token+'&shortUrl=' + encodeURI(url), {
-			success: function (result){
-				if(result['status_code'] != 200){
-					console.log("Bit.ly: Bad request - " + result['status_txt']);
-					// Create the JSON formmated response expected in contentScript: response.result.error.message
-					callbackAfterExpansion({result:{error:{message:result['status_txt']}}});
-				}else{
-					// Create the JSON formmated response expected in contentScript: response.result.longUrl
-					callbackAfterExpansion({result:{longUrl:result.data.expand[0].long_url}});
-				}
+		// Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
+		const oURL = new URL(url);
+		urlHostAndPathname = oURL.hostname + oURL.pathname;
+		// Make API request to expand the short URL
+		fetch('https://api-ssl.bitly.com/v4/expand', {
+			method: 'POST',
+			headers: {
+				'Authorization': 'Bearer ' + currentLocalSettingsVals.OAuth_BitLy.token,
+				'Content-Type': 'application/json'
 			},
-			error: function (response){
-				console.log("AJAX Error: Cannot get data");
-				console.log(response);
-				// TODO
-			}
-		});
+			body: JSON.stringify({ "bitlink_id": urlHostAndPathname })
+		}).then(function (response) {
+			response.json().then(function (jsonResponse) {
+				if (response.ok) {
+					// Create the JSON formatted response expected in contentScript: response.result.longUrl
+					callbackAfterExpansion({ result: { longUrl: jsonResponse.long_url } });
+				} else {
+					console.error("Bit.ly error (" + response.status + "): " + jsonResponse.message + " - " + jsonResponse.description);
+					// Create the JSON formatted response expected in contentScript: response.result.error.message
+					callbackAfterExpansion({ result: { error: { message: jsonResponse.message } } });
+				}
+			});
+		}).catch((err) => console.error(err));
 	}else{
 		callbackAfterExpansion({ignore: true});
 	}
