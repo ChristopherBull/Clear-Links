@@ -12,3 +12,7 @@ https://github.com/CaffeinatedAndroid/Clear-Links
 
 Keywords:
 URL, link, domain, hostname
+
+## Build
+
+Use the Makefile with the command `make` to prepare this extension. Files are copied and prepared within the `dist/` directory.
