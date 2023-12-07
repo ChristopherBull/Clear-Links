@@ -2,3 +2,6 @@
 
 # Build directory
 dist/
+
+# NodeJS
+node_modules/

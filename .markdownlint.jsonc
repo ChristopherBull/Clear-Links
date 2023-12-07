@@ -1,0 +1,10 @@
+// Config for MarkdownLint wrappers:
+// Node package: markdownlint-cli2
+// VS Code extension: vscode-markdownlint
+{
+    // Line length - Paragraphs automatically wrap when viewed online, so 
+    // ignoring line lengths avoids polluting git diffs if a few characters
+    // are added, which requires each line to be manually rewrapped to retain
+    // line lengths.
+    "MD013": false
+}

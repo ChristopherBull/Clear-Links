@@ -1,0 +1,30 @@
+{
+    "language": "en",
+    "dictionaries": [
+        "en-gb",
+        // "companies",
+        "softwareTerms",
+        "typescript", // inc. JS
+        "html",
+        "css",
+        "misc"
+    ],
+    "enabledLanguageIds": [
+        "markdown",
+        "plaintext",
+        "text",
+        "yml",
+        "javascript"
+    ],
+    "ignorePaths": [
+        "**.json",
+        "**.jsonc",
+        "**.lock",
+        ".git/**",
+        ".vscode/**",
+        "node_modules/**",
+        "package.json"
+    ],
+    "words": [
+    ]
+}
