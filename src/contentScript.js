@@ -1,13 +1,13 @@
-if(!!window.jQuery){// silence errors occuring from multi-frame JS insertion
+if(!!window.jQuery){// silence errors occurring from multi-frame JS insertion
 // Cache settings
 var settings;
 // Init the tooltip
-var tooltip = $($.parseHTML("<div id='ClContainer'><img src='" + chrome.extension.getURL("images/green-padlock.png") + "' alt='Secure protocol used in link' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/email-icon.png") + "' alt='This is a Mailto link' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/JS-icon.png") + "' alt='This link uses Javascript' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/hourglass.svg") + "' alt='Requesting Full URL' class='ClIcon ClLoading'></img><img src='" + chrome.extension.getURL("images/BrokenGlass.png") + "' alt='Unexpandable Short URL' class='ClIcon'></img><p class='ClURL'></p></div>"));
+var tooltip = $($.parseHTML("<div id='ClContainer'><img src='" + chrome.extension.getURL("images/green-padlock.png") + "' alt='Secure protocol used in link' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/email-icon.png") + "' alt='This is a Mailto link' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/JS-icon.png") + "' alt='This link uses Javascript' class='ClIcon'></img><img src='" + chrome.extension.getURL("images/hourglass.svg") + "' alt='Requesting Full URL' class='ClIcon ClLoading'></img><img src='" + chrome.extension.getURL("images/BrokenGlass.png") + "' alt='Short URL is not expandable' class='ClIcon'></img><p class='ClURL'></p></div>"));
 var secureIcon = tooltip.children().first();
 var emailIcon = secureIcon.next();
 var jsIcon = emailIcon.next();
 var loadingIcon = jsIcon.next();
-var unexpandableIcon = loadingIcon.next();
+var notExpandableIcon = loadingIcon.next();
 var urlText = tooltip.children().last();
 // Timers
 var resizeEndTimer; // No native resize end event, so timing our own.
@@ -74,46 +74,46 @@ $(function() {
 				// Determine if this is an external domain (if only showing external domains), otherwise always true
 				if(displayingExternalDomainsOnly(this.hostname)){
 					var urlToDisplay = '';
-					// TODO (?) - move to more appropriate position (does this need to be before, during , or after URL disection? If a short URL is detected, do we cancel URL disection below until we receive the full long URL from any APIs?
+					// TODO (?) - move to more appropriate position (does this need to be before, during , or after URL dissection? If a short URL is detected, do we cancel URL dissection below until we receive the full long URL from any APIs?
 					var isShortAndExpandable = expandShortUrl(this);
 					if(isShortAndExpandable.isShort){
 						if(typeof isShortAndExpandable.quickExpand !== 'undefined' && isShortAndExpandable.quickExpand != ""){
 							loadingIcon.css("display", "none");
-							unexpandableIcon.css("display", "none");
+							notExpandableIcon.css("display", "none");
 							var tmpUrl;
 							try{
 								tmpUrl = new URL(isShortAndExpandable.quickExpand);
 							}catch(err){
 								break;
 							}
-							urlToDisplay = formatDisectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
+							urlToDisplay = formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
 						}else if(isShortAndExpandable.toExpand){
 							loadingIcon.css("display", "inline");
-							unexpandableIcon.css("display", "none");
+							notExpandableIcon.css("display", "none");
 						}else{
 							loadingIcon.css("display", "none");
-							unexpandableIcon.css("display", "inline");
+							notExpandableIcon.css("display", "inline");
 						}
 					}else if(!settings.displayOnKnownShortUrlDomainsOnly){
 						loadingIcon.css("display", "none");
-						unexpandableIcon.css("display", "none");
+						notExpandableIcon.css("display", "none");
 					}else{
 						break;
 					}
 
 					if(urlToDisplay == ''){
-						urlToDisplay = formatDisectedURL(this.href, this.protocol, this.username, this.password, this.hostname, this.port, this.pathname, this.search, this.hash);
+						urlToDisplay = formatDissectedURL(this.href, this.protocol, this.username, this.password, this.hostname, this.port, this.pathname, this.search, this.hash);
 					}
 
 					// TODO - check if link uses JS (in addition to the href attr), and if the user has set the option to show it
-					var issecureIcon = false;
+					var isSecureIcon = false;
 					if(this.protocol && this.protocol == "https:"){
-						issecureIcon = true;
+						isSecureIcon = true;
 					}else{
-						issecureIcon = false;
+						isSecureIcon = false;
 					}
 					var isJS = false;
-					showTooltip($(this), urlToDisplay, issecureIcon, isJS, false);
+					showTooltip($(this), urlToDisplay, isSecureIcon, isJS, false);
 				}
 				break;
 		}
@@ -160,7 +160,7 @@ function displayingExternalDomainsOnly(hostname){
 	}
 }
 
-function formatDisectedURL(href, protocol, username, pword, hostname, port, pathname, search, hash){
+function formatDissectedURL(href, protocol, username, password, hostname, port, pathname, search, hash){
 	var urlToDisplay = "";
 	if(settings.displayDomainOnly){
 		if(hostname){
@@ -174,12 +174,12 @@ function formatDisectedURL(href, protocol, username, pword, hostname, port, path
 		}
 		if(settings.displayUrlAuth >= 1 && username){
 			urlToDisplay += username;
-			if(settings.displayUrlAuth >= 2 && pword){
+			if(settings.displayUrlAuth >= 2 && password){
 				if(settings.displayUrlAuth >= 3){
-					urlToDisplay += ':' + pword.replace(/./g, '*');
+					urlToDisplay += ':' + password.replace(/./g, '*');
 				}
 				else{
-					urlToDisplay += ':' + pword;
+					urlToDisplay += ':' + password;
 				}
 			}
 			urlToDisplay += '@';
@@ -207,7 +207,7 @@ function formatDisectedURL(href, protocol, username, pword, hostname, port, path
 	return urlToDisplay;
 }
 
-function showTooltip(jqDomElem, urlToDisplay, issecureIcon, isJS, isMailto){
+function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto){
 	// When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
 	if(urlToDisplay === undefined || urlToDisplay.trim() == ""){
 		return;
@@ -225,11 +225,11 @@ function showTooltip(jqDomElem, urlToDisplay, issecureIcon, isJS, isMailto){
 	$(window).mousemove({'hasTooltipAttr': titleAttr !== undefined && titleAttr != ""}, mouseRelativeCursorPosition);
 	// Show the tooltip
 	if (!$.contains(document, tooltip[0])){ // Fast check
-		// Initial attach/Re-attach element - lazilly attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
+		// Initial attach/Re-attach element - lazily attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
 		$(document.body).append(tooltip); // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
 	}
 	urlText.html(urlToDisplay);
-	secureIcon.css("display", (issecureIcon ? "inline-block" : "none"));
+	secureIcon.css("display", (isSecureIcon ? "inline-block" : "none"));
 	emailIcon.css("display", (isMailto ? "inline" : "none"));
 	if(isJS){
 		jsIcon.css("display", "inline");
@@ -244,7 +244,7 @@ function showTooltip(jqDomElem, urlToDisplay, issecureIcon, isJS, isMailto){
 		jsIcon.css("display", "none");
 	}
 
-	// Attach a specific mouseleave event to the target of the mouseenter event (reduces likelihood of multiuple orphaned tooltips when a site interfers with this extension)
+	// Attach a specific mouseleave event to the target of the mouseenter event (reduces likelihood of multiple orphaned tooltips when a site interferes with this extension)
 	var localTooltip = tooltip;
 	function localMouseLeave(e){
 		// Hide the Tooltip
@@ -323,10 +323,10 @@ function expandShortUrl(sourceElem, quickExpandUrl="", bRecursiveIsShort=false){
 					if(response.ignore || response.result.error){
 						// Disable rotating loading image
 						loadingIcon.css("display", "none");
-						unexpandableIcon.css("display", "inline");
+						notExpandableIcon.css("display", "inline");
 					}else{
 						var tmpUrl = new URL(response.result.longUrl);
-						urlText.html(formatDisectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.pword, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
+						urlText.html(formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
 						loadingIcon.css("display", "none");
 						// Re-check tooltip position to ensure it doesn't not exceed window bounds
 						// TODO
@@ -334,9 +334,9 @@ function expandShortUrl(sourceElem, quickExpandUrl="", bRecursiveIsShort=false){
 				});
 				return {isShort:true,toExpand:true,quickExpand:quickExpandUrl};
 			case 't.co':
-				if(window.location.hostname == "twitter.com"){ // only guarentee correct URL if on Twitter.com
+				if(window.location.hostname == "twitter.com"){ // only guarantee correct URL if on Twitter.com
 					try{
-						// Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefintie recursive loops).
+						// Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefinite recursive loops).
 						var expandedUrl;
 						if(sourceElem.dataset && sourceElem.dataset.expandedUrl){
 							expandedUrl = new URL(sourceElem.dataset.expandedUrl);

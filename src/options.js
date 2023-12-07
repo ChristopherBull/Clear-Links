@@ -1,4 +1,4 @@
-// Init the JQuery UI elems
+// Init the JQuery UI elements
 $("#tabs").tabs();
 $("#accordionOauth").accordion({
 	active: false,
@@ -7,7 +7,7 @@ $("#accordionOauth").accordion({
 	animate: false
 });
 
-// Cached DOM elems
+// Cached DOM elements
 var btnSave;
 var btnRestore;
 var divConfirm;
@@ -15,7 +15,7 @@ var btnConfirmY;
 var btnConfirmN;
 var spnSaved;
 
-// General Options - DOM elems
+// General Options - DOM elements
 var chkDisplayExternalDomainsOnly;
 // URL parts
 var chkDisplayDomainOnly;
@@ -34,7 +34,7 @@ var chkDisplayJavascriptLinks;
 var chkDisplayMailtoLinks;
 var chkDisplayShortUrlsOnly;
 
-// DOM elems - Option fields
+// DOM elements - Option fields
 var durationDelay;
 var durationFadeIn;
 var durationFadeOut;
@@ -47,7 +47,7 @@ var tooltipPreviewText;
 var tooltipPreviewTextDomain;*/
 var themeSelect;
 
-// DOM elems - Domain Activation
+// DOM elements - Domain Activation
 var btnDomainsWhitelistAdd;
 var btnDomainsWhitelistRemove;
 var txtDomainsWhitelist;
@@ -57,19 +57,19 @@ var btnDomainsBlacklistRemove;
 var txtDomainsBlacklist;
 var listDomainsBlacklist;
 
-// DOM elems - Short URL
+// DOM elements - Short URL
 var txtBitlyUser;
 var pwdBitlyPass;
 var btnOauthBitly;
 var btnOauthGoogl;
 var btnOauthGoogl_Revoke;
 
-// Cached retrieved settigns values.
-var currentSyncSettingsVals = defaultSettings;
-var currentLocalSettingsVals = defaultSettingsLocal;
+// Cached retrieved settings values.
+var currentSyncSettingsValues = defaultSettings;
+var currentLocalSettingsValues = defaultSettingsLocal;
 
 function initialize(){
-	// Cache DOM elems
+	// Cache DOM elements
 	btnSave = document.getElementById("save");
 	btnRestore = document.getElementById("restore");
 	divConfirm = document.getElementById("confirm");
@@ -104,13 +104,13 @@ function initialize(){
 	tooltipPreviewText = document.getElementById("tooltipPreviewText");
 	tooltipPreviewTextDomain = document.getElementById("tooltipPreviewTextDomain");*/
 	themeSelect = document.getElementById("themeSelect");
-	// Short URL DOM elems
+	// Short URL DOM elements
 	txtBitlyUser = document.getElementById('txtBitlyUser');
 	pwdBitlyPass = document.getElementById('pwdBitlyPass');
 	btnOauthBitly = document.getElementById("btnOauthBitly");
 	btnOauthGoogl = document.getElementById("btnOauthGoogl");
 	btnOauthGoogl_Revoke = document.getElementById("btnOauthGoogl_Revoke");
-	// DOM elems - Domain activation
+	// DOM elements - Domain activation
 	$('#formActivationType input').on('change', showActivationTypeOptions);
 	btnDomainsWhitelistAdd = document.getElementById("btnDomainsWhitelistAdd");
 	btnDomainsWhitelistRemove = document.getElementById("btnDomainsWhitelistRemove");
@@ -148,7 +148,7 @@ function initialize(){
 	// Get all the settings, update the UI
 	restoreSettings();
 	
-	// Add event listeners to UI elems.
+	// Add event listeners to UI elements.
 	btnSave.addEventListener("click", btnSave_Click);
 	btnRestore.addEventListener("click", btnRestore_Click);
 	$('#delAll').click(btnDelAllSavedData_Click);
@@ -171,7 +171,7 @@ function initialize(){
 		chrome.storage.local.set({
 			OAuth_BitLy: {enabled:false,token:""}
 		}, function(){ // On saved
-			currentLocalSettingsVals.OAuth_BitLy = {enabled:false,token:""}; // Update local copy of settings
+			currentLocalSettingsValues.OAuth_BitLy = {enabled:false,token:""}; // Update local copy of settings
 			oauth_Bitly_UpdateUI();
 		});
 	});
@@ -179,17 +179,17 @@ function initialize(){
 	// Real-time validation
 	$(durationDelay).focusout(function(e){
 		if(durationDelay.value < 0){
-			durationDelay.value = currentSyncSettingsVals.durationDelay;
+			durationDelay.value = currentSyncSettingsValues.durationDelay;
 		}
 	});
 	$(durationFadeIn).focusout(function(e){
 		if(durationFadeIn.value < 0){
-			durationFadeIn.value = currentSyncSettingsVals.durationFadeIn;
+			durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
 		}
 	});
 	$(durationFadeOut).focusout(function(e){
 		if(durationFadeOut.value < 0){
-			durationFadeOut.value = currentSyncSettingsVals.durationFadeOut;
+			durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
 		}
 	});
 	
@@ -204,7 +204,7 @@ function restoreSettings(){
 	chrome.storage.sync.get(defaultSettings, function(items){
 		if (!chrome.runtime.lastError){
 			// Cache the settings
-			currentSyncSettingsVals = items;
+			currentSyncSettingsValues = items;
 			// Update the Options menu UI - General
 			chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
 			chkDisplayDomainOnly.checked = items.displayDomainOnly;
@@ -245,14 +245,14 @@ function restoreSettings(){
 			previewPresetTheme();
 		}
 		
-		// Enable/Diable UI elements depending on selected options.
+		// Enable/Disable UI elements depending on selected options.
 		chkDisplayDomainOnly_Change();
 	});
 	// Get non-synced settings
 	chrome.storage.local.get(defaultSettingsLocal, function(items){
 		if (!chrome.runtime.lastError){
 			// Cache the local settings
-			currentLocalSettingsVals = items;
+			currentLocalSettingsValues = items;
 			// Page Activation
 			$('#activationType' + items.activationFilter).prop("checked", true).change();
 			// Page Activation - Load whitelist
@@ -260,20 +260,20 @@ function restoreSettings(){
 			for(i = listDomainsWhitelist.options.length - 1 ; i >= 0 ; i--){ // Empty list UI
 				listDomainsWhitelist.remove(i);
 			}
-			for(i = 0; i < currentLocalSettingsVals.domainWhitelist.length; i++){ // Re-fill list UI
+			for(i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++){ // Re-fill list UI
 				// Add to Whitelist UI
 				var option = document.createElement("option");
-				option.text = currentLocalSettingsVals.domainWhitelist[i];
+				option.text = currentLocalSettingsValues.domainWhitelist[i];
 				listDomainsWhitelist.add(option);
 			}
 			// Page Activation - Load blacklist
 			for(i = listDomainsBlacklist.options.length - 1 ; i >= 0 ; i--){ // Empty list UI
 				listDomainsBlacklist.remove(i);
 			}
-			for(i = 0; i < currentLocalSettingsVals.domainBlacklist.length; i++){ // Re-fill list UI
+			for(i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++){ // Re-fill list UI
 				// Add to Blacklist UI
 				var option = document.createElement("option");
-				option.text = currentLocalSettingsVals.domainBlacklist[i];
+				option.text = currentLocalSettingsValues.domainBlacklist[i];
 				listDomainsBlacklist.add(option);
 			}
 			// Short URLs -- OAuth tokens
@@ -489,10 +489,10 @@ function addToWhitelist(clickEvt){
 	}
 	if(tmpUrl != null){ // null == silently skip
 		// Is domain not already in Storage?
-		if(currentLocalSettingsVals.domainWhitelist.indexOf(tmpUrl.hostname) == -1){
+		if(currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) == -1){
 			// Add to Whitelist Storage
-			currentLocalSettingsVals.domainWhitelist.push(tmpUrl.hostname);
-			chrome.storage.local.set({domainWhitelist: currentLocalSettingsVals.domainWhitelist}, function(){ // On local settings saved
+			currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
+			chrome.storage.local.set({domainWhitelist: currentLocalSettingsValues.domainWhitelist}, function(){ // On local settings saved
 				// Add to Whitelist UI
 				var option = document.createElement("option");
 				option.text = tmpUrl.hostname;
@@ -506,18 +506,18 @@ function addToWhitelist(clickEvt){
 
 function removeFromWhitelist(clickEvt){
 	// Determine which whitelist entries to remove
-	var indiciesToRemove = [];
+	var indicesToRemove = [];
 	for(var count = listDomainsWhitelist.options.length-1; count >= 0; count--){
 		if(listDomainsWhitelist.options[count].selected == true){
-			indiciesToRemove.push(count); // Cache index for UI updating after successful storage update
-			currentLocalSettingsVals.domainWhitelist.splice(count, 1); // Remove entry from model
+			indicesToRemove.push(count); // Cache index for UI updating after successful storage update
+			currentLocalSettingsValues.domainWhitelist.splice(count, 1); // Remove entry from model
 		}
 	}
 	// Update the local storage
-	chrome.storage.local.set({domainWhitelist: currentLocalSettingsVals.domainWhitelist}, function(){ // On (local only) saved
+	chrome.storage.local.set({domainWhitelist: currentLocalSettingsValues.domainWhitelist}, function(){ // On (local only) saved
 		// Update the UI
-		for(var i = 0; i < indiciesToRemove.length; i++){
-			listDomainsWhitelist.remove(indiciesToRemove[i]);
+		for(var i = 0; i < indicesToRemove.length; i++){
+			listDomainsWhitelist.remove(indicesToRemove[i]);
 		}
 	});
 }
@@ -534,10 +534,10 @@ function addToBlacklist(clickEvt){
 	}
 	if(tmpUrl != null){ // null == silently skip
 		// Is domain not already in Storage?
-		if(currentLocalSettingsVals.domainBlacklist.indexOf(tmpUrl.hostname) == -1){
+		if(currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) == -1){
 			// Add to Blacklist Storage
-			currentLocalSettingsVals.domainBlacklist.push(tmpUrl.hostname);
-			chrome.storage.local.set({domainBlacklist: currentLocalSettingsVals.domainBlacklist}, function(){ // On local settings saved
+			currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
+			chrome.storage.local.set({domainBlacklist: currentLocalSettingsValues.domainBlacklist}, function(){ // On local settings saved
 				// Add to Blacklist UI
 				var option = document.createElement("option");
 				option.text = tmpUrl.hostname;
@@ -551,18 +551,18 @@ function addToBlacklist(clickEvt){
 
 function removeFromBlacklist(clickEvt){
 	// Determine which blacklist entries to remove
-	var indiciesToRemove = [];
+	var indicesToRemove = [];
 	for(var count = listDomainsBlacklist.options.length-1; count >= 0; count--){
 		if(listDomainsBlacklist.options[count].selected == true){
-			indiciesToRemove.push(count); // Cache index for UI updating after successful storage update
-			currentLocalSettingsVals.domainBlacklist.splice(count, 1); // Remove entry from model
+			indicesToRemove.push(count); // Cache index for UI updating after successful storage update
+			currentLocalSettingsValues.domainBlacklist.splice(count, 1); // Remove entry from model
 		}
 	}
 	// Update the local storage
-	chrome.storage.local.set({domainBlacklist: currentLocalSettingsVals.domainBlacklist}, function(){ // On (local only) saved
+	chrome.storage.local.set({domainBlacklist: currentLocalSettingsValues.domainBlacklist}, function(){ // On (local only) saved
 		// Update the UI
-		for(var i = 0; i < indiciesToRemove.length; i++){
-			listDomainsBlacklist.remove(indiciesToRemove[i]);
+		for(var i = 0; i < indicesToRemove.length; i++){
+			listDomainsBlacklist.remove(indicesToRemove[i]);
 		}
 	});
 }
@@ -620,7 +620,7 @@ function oauth_Googl(e, silent){
 	chrome.identity.getAuthToken({ 'interactive': !silent }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
 		if (chrome.runtime.lastError){
 			console.log("Google OAuth failed (silent: " + silent + ")");
-			if(currentLocalSettingsVals.OAuth_GooGl.enabled){
+			if(currentLocalSettingsValues.OAuth_GooGl.enabled){
 				chrome.storage.local.set({OAuth_GooGl:{enabled:false}});
 			}
 			// TODO
@@ -628,7 +628,7 @@ function oauth_Googl(e, silent){
 			btnOauthGoogl.disabled = false;
 			$(btnOauthGoogl_Revoke).hide();
 		}else{
-			if(!currentLocalSettingsVals.OAuth_GooGl.enabled){
+			if(!currentLocalSettingsValues.OAuth_GooGl.enabled){
 				chrome.storage.local.set({OAuth_GooGl:{enabled:true}});
 			}
 			// Update UI - Show Auth token to user
@@ -672,7 +672,7 @@ function oauth_Googl_Revoke(){
 }
 
 function oauth_Bitly_UpdateUI(){
-	if(currentLocalSettingsVals.OAuth_BitLy.enabled){
+	if(currentLocalSettingsValues.OAuth_BitLy.enabled){
 		$('#btnOauthBitly').prop("disabled", true);
 		$('#btnOauthBitly_ForgetToken').show();
 		$("#authTickBitLy").attr('class', 'authTick');
@@ -706,7 +706,7 @@ function oauth_Bitly_BasicAuth(user_id, user_secret){
 				chrome.storage.local.set({
 					OAuth_BitLy: {enabled:true,token:result}
 				}, function(){ // On saved
-					currentLocalSettingsVals.OAuth_BitLy = {enabled:true,token:result}; // Update local copy of settings
+					currentLocalSettingsValues.OAuth_BitLy = {enabled:true,token:result}; // Update local copy of settings
 					document.getElementById("lblOauthBitly_Token").textContent = result;
 					oauth_Bitly_UpdateUI();
 				});

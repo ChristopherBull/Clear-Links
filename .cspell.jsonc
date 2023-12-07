@@ -26,5 +26,11 @@
         "package.json"
     ],
     "words": [
+        // IDs
+        "banknjcfbmhcbebgekpcenheaghfcood", // Chrome extension's Websotore ID
+        // Libraries / APIs
+        "gapi",
+        "urlshortener",
+        "bitlink"
     ]
 }

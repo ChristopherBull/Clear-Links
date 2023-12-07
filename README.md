@@ -6,7 +6,7 @@ It is important to note that this extension does not identify malicious links fo
 
 In addition, this extension optionally supports automatically expanding some [shortened URLs](https://en.wikipedia.org/wiki/URL_shortening), such as those offered by Bit.ly, so you can see the full location of the web page rather than its obfuscated shortened URL.
 
-This will make a fine addition to your security and privacy digital toolbelt.
+This will make a fine addition to your security and privacy digital tool belt.
 
 ## Build
 

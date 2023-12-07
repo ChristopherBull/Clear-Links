@@ -1,9 +1,9 @@
 // Load local settings (e.g. page activation options)
-var currentLocalSettingsVals = defaultSettingsLocal;
+var currentLocalSettingsValues = defaultSettingsLocal;
 chrome.storage.local.get(defaultSettingsLocal, function(items){
 	if (!chrome.runtime.lastError){
 		// Cache the local settings
-		currentLocalSettingsVals = items;
+		currentLocalSettingsValues = items;
 	}
 });
 // Listen for options changes
@@ -11,7 +11,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace){
 	if(namespace == "local"){
 		for (var key in changes) {
 			if (changes.hasOwnProperty(key) && changes[key].newValue !== undefined) {
-				currentLocalSettingsVals[key] = changes[key].newValue;
+				currentLocalSettingsValues[key] = changes[key].newValue;
 			}
 		}
 	}
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}
 });
 
-// Some sites may load as prerendered and later tab is replaced (e.g. initial google searches from a new tab).
+// Some sites may load as pre-rendered and later tab is replaced (e.g. initial google searches from a new tab).
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
 chrome.webNavigation.onTabReplaced.addListener(function(details){
 	chrome.tabs.get(details.tabId,function(tab){
@@ -62,17 +62,17 @@ function injectExtension(tabID, hostname){
 
 function activateOnTab(tabId, docHostname, activationCallback){
 	tabExists(tabId, function(tabHostname){ // i.e. don't activate on Options page
-		switch(currentLocalSettingsVals.activationFilter){
+		switch(currentLocalSettingsValues.activationFilter){
 			case 1: // Allow All
 				activationCallback();
 				break;
 			case 2: // Whitelisted sites only
-				if(isUrlToBeFiltered(tabHostname, currentLocalSettingsVals.domainWhitelist)){
+				if(isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainWhitelist)){
 					activationCallback();
 				}
 				break;
 			case 3: // Blacklisted sites only
-				if(!isUrlToBeFiltered(tabHostname, currentLocalSettingsVals.domainBlacklist)){
+				if(!isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainBlacklist)){
 					activationCallback();
 				}
 				break;
@@ -101,7 +101,7 @@ function tabExists(tabId, callback){
 
 // TODO - Long/Short URL cache
 // Store in local storage, not synced.
-// TODO - Periodically (24hr) clean cache of old unaccessed short urls (e.g. not accessed for 7 days)
+// TODO - Periodically (24hr) clean cache of old not accessed short urls (e.g. not accessed for 7 days)
 
 // Short URL Expansion
 function expandURL(url, checkCache, callbackAfterExpansion){
@@ -173,7 +173,7 @@ function expandUrl_GooGl(url, callbackAfterExpansion){
 }
 
 function expandUrl_BitLy(url, callbackAfterExpansion){
-	if(currentLocalSettingsVals.OAuth_BitLy.enabled){
+	if(currentLocalSettingsValues.OAuth_BitLy.enabled){
 		// Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
 		const oURL = new URL(url);
 		urlHostAndPathname = oURL.hostname + oURL.pathname;
@@ -181,7 +181,7 @@ function expandUrl_BitLy(url, callbackAfterExpansion){
 		fetch('https://api-ssl.bitly.com/v4/expand', {
 			method: 'POST',
 			headers: {
-				'Authorization': 'Bearer ' + currentLocalSettingsVals.OAuth_BitLy.token,
+				'Authorization': 'Bearer ' + currentLocalSettingsValues.OAuth_BitLy.token,
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ "bitlink_id": urlHostAndPathname })
