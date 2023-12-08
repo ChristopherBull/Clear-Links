@@ -8,7 +8,19 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "plugins": [
+        "@stylistic/js"
+      ],
     "rules": {
-        "no-tabs": 0
+        "@stylistic/js/semi": ["error", "always"],
+        // TODO old style rules that conflict/override stylistic plugin. Figure out how ot migrate properly.
+        // This is a migration guide somewhere.
+        "semi": 0,
+        "keyword-spacing": 0, // ?? e.g., stop it complaingin about 'catch(err)' without a space before '('
+        "space-before-function-paren": 0, // Same as above. My not need to explicitly disable rule if the imports/plugins configured correctly.
+
+        // TEMP disbale until I migrate to ES Modules
+        "no-undef": 0,
+        "no-unused-vars": 0
     }
 }

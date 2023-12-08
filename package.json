@@ -10,6 +10,7 @@
     "spell": "cspell README.md \"/src/*.*\""
   },
   "devDependencies": {
+    "@stylistic/eslint-plugin-js": "^1.5.0",
     "cspell": "^8.1.2",
     "eslint": "^8.55.0",
     "eslint-config-standard": "^17.1.0",
