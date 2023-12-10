@@ -3,10 +3,10 @@ fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #divBtnGroup { margin-top: 1em; }
 #confirm { visibility: hidden; padding-top: 10px; }
-/*#restore_FurtherInfo{visibility:hidden;}
-#delAll_FurtherInfo{visibility:hidden;}*/
-#restore_FurtherInfo{display:none;}
-#delAll_FurtherInfo{display:none;}
+/*#restoreFurtherInfo{visibility:hidden;}
+#delAllFurtherInfo{visibility:hidden;}*/
+#restoreFurtherInfo{display:none;}
+#delAllFurtherInfo{display:none;}
 
 .divTable{display: table;}
 .divTableBody{display: table-row-group;}
@@ -116,7 +116,7 @@ textarea { resize: vertical; }
 .authTickHidden,#divErrAreaWhitelist,#divErrAreaBlacklist{
 	display:none;
 }
-#lblOauthBitly_Token{
+#lblOauthBitlyToken{
 	font-style:italic;
 }
 #btnOauthGoogl{

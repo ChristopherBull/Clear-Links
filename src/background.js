@@ -113,13 +113,13 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
   switch(new URL(url).hostname) {
     case 'bit.ly':
     case 'j.mp':
-      expandUrl_BitLy(url, callbackAfterExpansion);
+      expandUrlBitLy(url, callbackAfterExpansion);
       break;
     case 'goo.gl':
       // TODO - Check user options to see if goo.gl links should be expanded (a checkbox in the options menu, or (e.g.) is an API key available?)
-      Auth_GooGl(function(bAuthSuccess) {
+      AuthGooGl(function(bAuthSuccess) {
         if(bAuthSuccess) {
-          expandUrl_GooGl(url, callbackAfterExpansion);
+          expandUrlGooGl(url, callbackAfterExpansion);
         } else {
           callbackAfterExpansion({ ignore: true });
         }
@@ -129,9 +129,9 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
 }
 
 // Google API - Authenticate
-let oauthToken_Googl = '';
-function Auth_GooGl(postAuthCallback) {
-  if(oauthToken_Googl === '') {
+let oauthTokenGoogl = '';
+function AuthGooGl(postAuthCallback) {
+  if(oauthTokenGoogl === '') {
     // TODO - check if should Auth with stored API key, or use chrome.identity.
     chrome.identity.getAuthToken(function(token) { // interactive=false // Async
       if(chrome.runtime.lastError) {
@@ -142,7 +142,7 @@ function Auth_GooGl(postAuthCallback) {
         gapi.auth.authorize({ client_id: manifest.oauth2.client_id, scope: manifest.oauth2.scopes, immediate: true }, function(authResult) {
           if (authResult && !authResult.error) {
             gapi.client.load('urlshortener', 'v1').then(function() {
-              oauthToken_Googl = token; // Cache auth token
+              oauthTokenGoogl = token; // Cache auth token
               postAuthCallback(true); // Auth success
             });
           }
@@ -155,7 +155,7 @@ function Auth_GooGl(postAuthCallback) {
 }
 
 // Google API - Expand URL
-function expandUrl_GooGl(url, callbackAfterExpansion) {
+function expandUrlGooGl(url, callbackAfterExpansion) {
   const request = gapi.client.urlshortener.url.get({
     shortUrl: url
   });
@@ -171,8 +171,8 @@ function expandUrl_GooGl(url, callbackAfterExpansion) {
   });
 }
 
-function expandUrl_BitLy(url, callbackAfterExpansion) {
-  if(currentLocalSettingsValues.OAuth_BitLy.enabled) {
+function expandUrlBitLy(url, callbackAfterExpansion) {
+  if(currentLocalSettingsValues.OAuthBitLy.enabled) {
     // Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
     const oURL = new URL(url);
     urlHostAndPathname = oURL.hostname + oURL.pathname;
@@ -180,7 +180,7 @@ function expandUrl_BitLy(url, callbackAfterExpansion) {
     fetch('https://api-ssl.bitly.com/v4/expand', {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer ' + currentLocalSettingsValues.OAuth_BitLy.token,
+        Authorization: 'Bearer ' + currentLocalSettingsValues.OAuthBitLy.token,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ bitlink_id: urlHostAndPathname })

@@ -148,7 +148,7 @@
 					<img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
 				</h3>
 				<div>
-					<div id="divOauthBitly_LoggedOut" class="divTable">
+					<div id="divOauthBitlyLoggedOut" class="divTable">
 						<div class="divTableBody">
 							<div class="divTableRow">
 								<div class="divTableCell desc">Username:&nbsp;</div>
@@ -164,9 +164,9 @@
 							</div>
 						</div>
 					</div>
-					<div id="divOauthBitly_LoggedIn">
-						<p>OAuth access token: <span id="lblOauthBitly_Token"></span></p>
-						<span>Forget Bit.ly OAuth token: </span><input type="button" id="btnOauthBitly_ForgetToken" value="Logout"/>
+					<div id="divOauthBitlyLoggedIn">
+						<p>OAuth access token: <span id="lblOauthBitlyToken"></span></p>
+						<span>Forget Bit.ly OAuth token: </span><input type="button" id="btnOauthBitlyForgetToken" value="Logout"/>
 					</div>
 					<!--<p>To generate your own 'Generic Access Token' <a href="https://bitly.com/a/oauth_apps">click here</a> and paste it in the field above.</p>
 					<input type="text" id="txtOauthBitly" size="45" />-->
@@ -179,7 +179,7 @@
 					<input type="button" id="btnOauthGoogl" />
 					<!--<p>TODO - Ability to get an auth token (manual input fields, or using official Google+ login button)</p>-->
 					<p>Example link which points to <em>www.google.com</em>: <a href="http://goo.gl/fbsS">goo.gl/fbsS</a></p>
-					<input type="button" id="btnOauthGoogl_Revoke" value="Revoke Google OAuth" />
+					<input type="button" id="btnOauthGooglRevoke" value="Revoke Google OAuth" />
 				</div>
 			</div>
 		</div>
@@ -199,8 +199,8 @@
 			<button id="btnConfirmY">Yes</button>
 			<button id="btnConfirmN">No</button>
 			<br/>
-			<span id="delAll_FurtherInfo"><em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.</span>
-			<span id="restore_FurtherInfo"><em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").</span>
+			<span id="delAllFurtherInfo"><em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.</span>
+			<span id="restoreFurtherInfo"><em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").</span>
 		</div>
 	</div>
 	

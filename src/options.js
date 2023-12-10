@@ -62,7 +62,7 @@ let txtBitlyUser;
 let pwdBitlyPass;
 let btnOauthBitly;
 let btnOauthGoogl;
-let btnOauthGoogl_Revoke;
+let btnOauthGooglRevoke;
 
 // Cached retrieved settings values.
 let currentSyncSettingsValues = defaultSettings;
@@ -109,7 +109,7 @@ function initialize() {
   pwdBitlyPass = document.getElementById('pwdBitlyPass');
   btnOauthBitly = document.getElementById('btnOauthBitly');
   btnOauthGoogl = document.getElementById('btnOauthGoogl');
-  btnOauthGoogl_Revoke = document.getElementById('btnOauthGoogl_Revoke');
+  btnOauthGooglRevoke = document.getElementById('btnOauthGooglRevoke');
   // DOM elements - Domain activation
   $('#formActivationType input').on('change', showActivationTypeOptions);
   btnDomainsWhitelistAdd = document.getElementById('btnDomainsWhitelistAdd');
@@ -149,10 +149,10 @@ function initialize() {
   restoreSettings();
 
   // Add event listeners to UI elements.
-  btnSave.addEventListener('click', btnSave_Click);
-  btnRestore.addEventListener('click', btnRestore_Click);
-  $('#delAll').click(btnDelAllSavedData_Click);
-  chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnly_Change);
+  btnSave.addEventListener('click', btnSaveClick);
+  btnRestore.addEventListener('click', btnRestoreClick);
+  $('#delAll').click(btnDelAllSavedDataClick);
+  chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
   // Page Activation
   btnDomainsWhitelistAdd.addEventListener('click', addToWhitelist);
   btnDomainsWhitelistRemove.addEventListener('click', removeFromWhitelist);
@@ -162,17 +162,17 @@ function initialize() {
   themeSelect.addEventListener('change', previewPresetTheme);
   // Short URLs
   btnOauthBitly.addEventListener('click', function() {
-    oauth_Bitly_BasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
+    oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
   });
-  btnOauthGoogl.addEventListener('click', oauth_Googl);
-  btnOauthGoogl_Revoke.addEventListener('click', oauth_Googl_Revoke);
+  btnOauthGoogl.addEventListener('click', oauthGoogl);
+  btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
 
-  document.getElementById('btnOauthBitly_ForgetToken').addEventListener('click', function() {
+  document.getElementById('btnOauthBitlyForgetToken').addEventListener('click', function() {
     chrome.storage.local.set({
-      OAuth_BitLy: { enabled: false, token: '' }
+      OAuthBitLy: { enabled: false, token: '' }
     }, function() { // On saved
-      currentLocalSettingsValues.OAuth_BitLy = { enabled: false, token: '' }; // Update local copy of settings
-      oauth_Bitly_UpdateUI();
+      currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' }; // Update local copy of settings
+      oauthBitlyUpdateUI();
     });
   });
 
@@ -246,7 +246,7 @@ function restoreSettings() {
     }
 
     // Enable/Disable UI elements depending on selected options.
-    chkDisplayDomainOnly_Change();
+    chkDisplayDomainOnlyChange();
   });
   // Get non-synced settings
   chrome.storage.local.get(defaultSettingsLocal, function(items) {
@@ -277,17 +277,17 @@ function restoreSettings() {
         listDomainsBlacklist.add(option);
       }
       // Short URLs -- OAuth tokens
-      document.getElementById('lblOauthBitly_Token').textContent = items.OAuth_BitLy.token;
+      document.getElementById('lblOauthBitlyToken').textContent = items.OAuthBitLy.token;
     }
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
-    oauth_Googl_Silent();
-    oauth_Bitly_UpdateUI();
+    oauthGooglSilent();
+    oauthBitlyUpdateUI();
   });
 }
 
 // Click Events
 
-function btnSave_Click() {
+function btnSaveClick() {
   // Get option values that require validation.
   let iDurationDelay = parseInt(durationDelay.value);
   if(isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
@@ -348,7 +348,7 @@ function btnSave_Click() {
   });
 }
 
-function btnRestore_Click() {
+function btnRestoreClick() {
   btnConfirmY.onclick = function() {
     // Clear synced settings
     chrome.storage.sync.clear(function() { // On sync cleared
@@ -365,11 +365,11 @@ function btnRestore_Click() {
     divConfirm.style.visibility = 'hidden';
   };
   divConfirm.style.visibility = 'visible';
-  $('#restore_FurtherInfo').show();
-  $('#delAll_FurtherInfo').hide();
+  $('#restoreFurtherInfo').show();
+  $('#delAllFurtherInfo').hide();
 }
 
-function btnDelAllSavedData_Click() {
+function btnDelAllSavedDataClick() {
   btnConfirmY.onclick = function() {
     // Clear synced settings
     chrome.storage.sync.clear(function() { // On sync cleared
@@ -392,11 +392,11 @@ function btnDelAllSavedData_Click() {
     divConfirm.style.visibility = 'hidden';
   };
   divConfirm.style.visibility = 'visible';
-  $('#delAll_FurtherInfo').show();
-  $('#restore_FurtherInfo').hide();
+  $('#delAllFurtherInfo').show();
+  $('#restoreFurtherInfo').hide();
 }
 
-function chkDisplayDomainOnly_Change() {
+function chkDisplayDomainOnlyChange() {
   if(chkDisplayDomainOnly.checked) {
     chkDisplayUrlScheme.disabled = true;
     rdoDisplayUrlNoAuth.disabled = true;
@@ -607,13 +607,13 @@ function previewPresetTheme() {
 /* Short URLs */
 
 // Retrieve OAuth tokens for UI purposes silently in the background
-function oauth_Googl_Silent() {
-  oauth_Googl(null, true);
+function oauthGooglSilent() {
+  oauthGoogl(null, true);
 }
 
 // Retrieve Google OAuth token
 // Fails if "OAuth2 not granted or revoked"
-function oauth_Googl(e, silent) {
+function oauthGoogl(e, silent) {
   // Check if 'silent' is undefined
   if (typeof silent === 'undefined' || silent === null) {
     silent = false; // Default
@@ -622,20 +622,20 @@ function oauth_Googl(e, silent) {
   chrome.identity.getAuthToken({ interactive: !silent }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
     if (chrome.runtime.lastError) {
       console.log('Google OAuth failed (silent: ' + silent + ')');
-      if(currentLocalSettingsValues.OAuth_GooGl.enabled) {
-        chrome.storage.local.set({ OAuth_GooGl: { enabled: false } });
+      if(currentLocalSettingsValues.OAuthGooGl.enabled) {
+        chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
       }
       // TODO
       // Update UI
       btnOauthGoogl.disabled = false;
-      $(btnOauthGoogl_Revoke).hide();
+      $(btnOauthGooglRevoke).hide();
     } else {
-      if(!currentLocalSettingsValues.OAuth_GooGl.enabled) {
-        chrome.storage.local.set({ OAuth_GooGl: { enabled: true } });
+      if(!currentLocalSettingsValues.OAuthGooGl.enabled) {
+        chrome.storage.local.set({ OAuthGooGl: { enabled: true } });
       }
       // Update UI - Show Auth token to user
       btnOauthGoogl.disabled = true;
-      $(btnOauthGoogl_Revoke).show();
+      $(btnOauthGooglRevoke).show();
       $('#authTickGooGl').attr('class', 'authTick');
       // DEBUG ONLY - Test Auth by expanding an example URL
       /* chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
@@ -650,46 +650,46 @@ function oauth_Googl(e, silent) {
 }
 
 // Revoke the Clear Links' OAuth token for the user's Google account
-function oauth_Googl_Revoke() {
-  chrome.identity.getAuthToken({ interactive: false }, function(current_token) {
+function oauthGooglRevoke() {
+  chrome.identity.getAuthToken({ interactive: false }, function(currentToken) {
     if(chrome.runtime.lastError) {
       // TODO
     } else {
       // Remove the local cached token
-      chrome.identity.removeCachedAuthToken({ token: current_token }, function() {});
+      chrome.identity.removeCachedAuthToken({ token: currentToken }, function() {});
       // Make a request to revoke token in the server
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + current_token);
+      xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + currentToken);
       xhr.send();
 
       // Update local storage
-      chrome.storage.local.set({ OAuth_GooGl: { enabled: false } });
+      chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
 
       // Update UI.
       btnOauthGoogl.disabled = false;
-      $(btnOauthGoogl_Revoke).hide();
+      $(btnOauthGooglRevoke).hide();
       $('#authTickGooGl').attr('class', 'authTickHidden');
     }
   });
 }
 
-function oauth_Bitly_UpdateUI() {
-  if(currentLocalSettingsValues.OAuth_BitLy.enabled) {
+function oauthBitlyUpdateUI() {
+  if(currentLocalSettingsValues.OAuthBitLy.enabled) {
     $('#btnOauthBitly').prop('disabled', true);
-    $('#btnOauthBitly_ForgetToken').show();
+    $('#btnOauthBitlyForgetToken').show();
     $('#authTickBitLy').attr('class', 'authTick');
-    $('#divOauthBitly_LoggedIn').show();
-    $('#divOauthBitly_LoggedOut').hide();
+    $('#divOauthBitlyLoggedIn').show();
+    $('#divOauthBitlyLoggedOut').hide();
   } else {
     $('#btnOauthBitly').prop('disabled', false);
-    $('#btnOauthBitly_ForgetToken').hide();
+    $('#btnOauthBitlyForgetToken').hide();
     $('#authTickBitLy').attr('class', 'authTickHidden');
-    $('#divOauthBitly_LoggedIn').hide();
-    $('#divOauthBitly_LoggedOut').show();
+    $('#divOauthBitlyLoggedIn').hide();
+    $('#divOauthBitlyLoggedOut').show();
   }
 }
 
-function oauth_Bitly_BasicAuth(user_id, user_secret) {
+function oauthBitlyBasicAuth(userID, userSecret) {
   // Update UI (logging in)
   $('#btnOauthBitly').prop('disabled', true);
   // HTTP Basic Authentication Flow (with hashed username and password)
@@ -699,18 +699,18 @@ function oauth_Bitly_BasicAuth(user_id, user_secret) {
     url: 'https://api-ssl.bitly.com/oauth/access_token',
     method: 'POST',
     headers: {
-      Authorization: 'Basic ' + btoa(user_id + ':' + user_secret),
+      Authorization: 'Basic ' + btoa(userID + ':' + userSecret),
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     success: function (result) {
       if(typeof result !== 'object') {
         // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
         chrome.storage.local.set({
-          OAuth_BitLy: { enabled: true, token: result }
+          OAuthBitLy: { enabled: true, token: result }
         }, function() { // On saved
-          currentLocalSettingsValues.OAuth_BitLy = { enabled: true, token: result }; // Update local copy of settings
-          document.getElementById('lblOauthBitly_Token').textContent = result;
-          oauth_Bitly_UpdateUI();
+          currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: result }; // Update local copy of settings
+          document.getElementById('lblOauthBitlyToken').textContent = result;
+          oauthBitlyUpdateUI();
         });
       } else { // Error - perhaps invalid login credentials
         // TODO

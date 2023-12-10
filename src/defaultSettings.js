@@ -43,6 +43,6 @@ const defaultSettingsLocal = {
   domainWhitelist: [],
   domainBlacklist: [],
   // Oauth tokens - requires signing in and authorising accounts, so must be stored locally, not synced.
-  OAuth_GooGl: { enabled: false },
-  OAuth_BitLy: { enabled: false, token: '' }
+  OAuthGooGl: { enabled: false },
+  OAuthBitLy: { enabled: false, token: '' }
 };
