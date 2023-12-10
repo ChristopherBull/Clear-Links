@@ -1,4 +1,4 @@
-if(!!window.jQuery) { // silence errors occurring from multi-frame JS insertion
+if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
 // Cache settings
   let settings;
   let winDimensions;
@@ -17,7 +17,7 @@ if(!!window.jQuery) { // silence errors occurring from multi-frame JS insertion
   chrome.storage.sync.get(defaultSettings, function(items) {
     settings = items;
     for (const key in settings) {
-      if (settings.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(settings, key)) {
         applySettingToTooltip(key, settings[key]);
       }
     }
@@ -29,7 +29,7 @@ if(!!window.jQuery) { // silence errors occurring from multi-frame JS insertion
       // Is this necessary? What does the contentScript need to be notified about?
     } else { // Synced storage
       for (const key in changes) {
-        if (changes.hasOwnProperty(key) && changes[key].newValue !== undefined) {
+        if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
           settings[key] = changes[key].newValue;
           applySettingToTooltip(key, settings[key]);
         }

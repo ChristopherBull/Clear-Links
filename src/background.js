@@ -10,7 +10,7 @@ chrome.storage.local.get(defaultSettingsLocal, function(items) {
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   if(namespace === 'local') {
     for (const key in changes) {
-      if (changes.hasOwnProperty(key) && changes[key].newValue !== undefined) {
+      if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
         currentLocalSettingsValues[key] = changes[key].newValue;
       }
     }
