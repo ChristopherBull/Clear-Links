@@ -34,3 +34,5 @@ jobs:
         run: npm run spell
       - name: Lint Markdown
         run: npm run lint-md
+      - name: Lint Src files
+        run: npm run lint
