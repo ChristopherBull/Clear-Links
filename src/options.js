@@ -695,39 +695,39 @@ function oauthBitlyBasicAuth(userID, userSecret) {
   // HTTP Basic Authentication Flow (with hashed username and password)
   // Note 1: Unable to use "Resource Owner Credentials Grants" as "client_secret" is not secret in a public Chrome extension
   // Note 2: Unable to use "OAuth Web Flow", as it requires a "redirect_uri"; unable to get BitLy's implementation to work with Chrome Extensions' Options' pages. Also requires "client_secret" (see Note 2 for details)
-  $.ajax({
-    url: 'https://api-ssl.bitly.com/oauth/access_token',
+  fetch('https://api-ssl.bitly.com/oauth/access_token', {
     method: 'POST',
     headers: {
       Authorization: 'Basic ' + btoa(userID + ':' + userSecret),
       'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    success: function (result) {
-      if(typeof result !== 'object') {
-        // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
+    }
+  }).then(function (response) {
+    if (response.ok) {
+      // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
+      response.text().then(function (txtResponse) {
         chrome.storage.local.set({
-          OAuthBitLy: { enabled: true, token: result }
+          OAuthBitLy: { enabled: true, token: txtResponse }
         }, function() { // On saved
-          currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: result }; // Update local copy of settings
-          document.getElementById('lblOauthBitlyToken').textContent = result;
+          // Update local copy of settings
+          currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: txtResponse };
+          // Update UI (after saved)
+          document.getElementById('lblOauthBitlyToken').textContent = txtResponse;
           oauthBitlyUpdateUI();
         });
-      } else { // Error - perhaps invalid login credentials
-        // TODO
-      }
-      // Update UI
-      document.getElementById('pwdBitlyPass').value = '';
-      $('#btnOauthBitly').prop('disabled', false);
-      console.log(result);
-    },
-    error: function (response) {
-      console.log('Cannot get data');
-      console.log(response);
+        // Update UI (immediately)
+        document.getElementById('pwdBitlyPass').value = '';
+        $('#btnOauthBitly').prop('disabled', false);
+      });
+    } else {
+      response.json().then(function (jsonResponse) {
+        console.error('Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description);
+        // TODO show error to user
+      });
       // Update UI
       document.getElementById('pwdBitlyPass').value = '';
       $('#btnOauthBitly').prop('disabled', false);
     }
-  });
+  }).catch((err) => console.error(err)); // TODO update UI to inform user of error
 }
 
 // MAIN
