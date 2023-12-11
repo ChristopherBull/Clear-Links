@@ -78,6 +78,15 @@ textarea { resize: vertical; }
 #stylePreview .JsIconNoText{
 	margin-right:-6px;
 }
+#ClIconPadlockLocked {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
+}
+#ClIconEmail {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
+}
+#ClIconJS {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
+}
 #themeSelect{
 	margin-left:5px;
 }
