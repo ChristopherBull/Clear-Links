@@ -3,22 +3,37 @@
         "browser": true,
         "es2021": true
     },
-    "extends": "standard",
+    "extends": [
+        "eslint:recommended",
+        "plugin:import/recommended",
+        // "plugin:promise/recommended", // TODO renable and fix issues later
+        // "plugin:jsdoc/recommended",// TODO renable and fix issues later
+        "plugin:css/recommended"
+    ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
-        "@stylistic/js"
+        "@stylistic",
+        "import",
+        // "promise", // TODO renable and fix issues later
+        // "jsdoc", // TODO renable and fix issues later
+        "html",
+        "css"
       ],
     "rules": {
-        "@stylistic/js/semi": ["error", "always"],
-        // TODO old style rules that conflict/override stylistic plugin. Figure out how ot migrate properly.
-        // This is a migration guide somewhere.
-        "semi": 0,
-        "keyword-spacing": 0, // ?? e.g., stop it complaingin about 'catch(err)' without a space before '('
-        "space-before-function-paren": 0, // Same as above. My not need to explicitly disable rule if the imports/plugins configured correctly.
+        "@stylistic/semi": ["error", "always"],
+        "no-var": "error",
 
+        // TODO Update/enable these rules
+        "comma-dangle": 0,
+        "require-jsdoc": 0, // Temp disabled, but I like this rule
+        "quotes": 0, // Temp, as I'm migrating to single quotes
+        "new-cap": 0,
+
+        // TODO Delete these rules
+        "no-inner-declarations": 0, // Part of the ESlint recommended rules (plan to adhere to)
         // TEMP disbale until I migrate to ES Modules
         "no-undef": 0,
         "no-unused-vars": 0
