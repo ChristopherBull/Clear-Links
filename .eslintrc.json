@@ -5,6 +5,7 @@
     },
     "extends": [
         "eslint:recommended",
+        // "plugin:sonarjs/recommended", // TODO renable and fix issues later
         "plugin:import/recommended",
         // "plugin:promise/recommended", // TODO renable and fix issues later
         // "plugin:jsdoc/recommended",// TODO renable and fix issues later
@@ -16,6 +17,7 @@
     },
     "plugins": [
         "@stylistic",
+        // "sonarjs", // TODO renable and fix issues later
         "import",
         // "promise", // TODO renable and fix issues later
         // "jsdoc", // TODO renable and fix issues later
