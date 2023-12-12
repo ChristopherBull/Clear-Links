@@ -1,3 +1,5 @@
+import { defaultSettingsLocal } from './defaultSettings.js';
+
 // Load local settings (e.g. page activation options)
 let currentLocalSettingsValues = defaultSettingsLocal;
 chrome.storage.local.get(defaultSettingsLocal, function(items) {
@@ -176,7 +178,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
   if(currentLocalSettingsValues.OAuthBitLy.enabled) {
     // Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
     const oURL = new URL(url);
-    urlHostAndPathname = oURL.hostname + oURL.pathname;
+    const urlHostAndPathname = oURL.hostname + oURL.pathname;
     // Make API request to expand the short URL
     fetch('https://api-ssl.bitly.com/v4/expand', {
       method: 'POST',
