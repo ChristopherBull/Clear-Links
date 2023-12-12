@@ -80,13 +80,14 @@ function activateOnTab(tabId, docHostname, activationCallback) {
   });
 }
 
-// Checks if given URL (tabHostname) resides within the given array (filterListArray)
+/**
+ * Checks if given URL (tabHostname) resides within the given array (filterListArray)
+ * @param {string} tabHostname - A URL hostname (e.g. www.example.com)
+ * @param {string[]} filterListArray - An array of URL hostnames
+ * @returns {boolean} True if the URL is in the array
+ */
 function isUrlToBeFiltered(tabHostname, filterListArray) {
-  if(filterListArray.indexOf(tabHostname) > -1) {
-    return true;
-  } else {
-    return false;
-  }
+  return filterListArray.indexOf(tabHostname) > -1;
 }
 
 // Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
@@ -117,7 +118,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
       break;
     case 'goo.gl':
       // TODO - Check user options to see if goo.gl links should be expanded (a checkbox in the options menu, or (e.g.) is an API key available?)
-      AuthGooGl(function(bAuthSuccess) {
+      authenticateGoogleAPI(function(bAuthSuccess) {
         if(bAuthSuccess) {
           expandUrlGooGl(url, callbackAfterExpansion);
         } else {
@@ -130,7 +131,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
 
 // Google API - Authenticate
 let oauthTokenGoogl = '';
-function AuthGooGl(postAuthCallback) {
+function authenticateGoogleAPI(postAuthCallback) {
   if(oauthTokenGoogl === '') {
     // TODO - check if should Auth with stored API key, or use chrome.identity.
     chrome.identity.getAuthToken(function(token) { // interactive=false // Async

@@ -152,13 +152,13 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
     }); */
   });
 
-  // Determine if this is an external domain (if only showing external domains), otherwise always true
+  /**
+   * Determine if a given hostname is an external domain (if only showing external domains), otherwise always true
+   * @param {string} hostname - The hostname of the link being hovered over.
+   * @returns {boolean} True if the link is an external domain, or if the user has not set the option to only show external domains.
+   */
   function displayingExternalDomainsOnly(hostname) {
-    if(((settings.displayExternalDomainsOnly && hostname !== location.hostname) || !settings.displayExternalDomainsOnly)) {
-      return true;
-    } else {
-      return false;
-    }
+    return !!((settings.displayExternalDomainsOnly && hostname !== location.hostname) || !settings.displayExternalDomainsOnly);
   }
 
   function formatDissectedURL(href, protocol, username, password, hostname, port, pathname, search, hash) {

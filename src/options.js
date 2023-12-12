@@ -489,20 +489,20 @@ function addToWhitelist(clickEvt) {
     $('#divErrAreaWhitelist').show();
     return;
   }
-  if(tmpUrl != null) { // null == silently skip
-    // Is domain not already in Storage?
-    if(currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
-      // Add to Whitelist Storage
-      currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
-      chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On local settings saved
-        // Add to Whitelist UI
-        const option = document.createElement('option');
-        option.text = tmpUrl.hostname;
-        listDomainsWhitelist.add(option);
-        // Clean UI
-        txtDomainsWhitelist.value = '';
-      });
-    }
+  
+  // Is domain not already in Storage?
+  // If tmpUrl is null, silently skip
+  if(tmpUrl != null && currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
+    // Add to Whitelist Storage
+    currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
+    chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On local settings saved
+      // Add to Whitelist UI
+      const option = document.createElement('option');
+      option.text = tmpUrl.hostname;
+      listDomainsWhitelist.add(option);
+      // Clean UI
+      txtDomainsWhitelist.value = '';
+    });
   }
 }
 
@@ -534,20 +534,20 @@ function addToBlacklist(clickEvt) {
     $('#divErrAreaBlacklist').show();
     return;
   }
-  if(tmpUrl != null) { // null == silently skip
-    // Is domain not already in Storage?
-    if(currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
-      // Add to Blacklist Storage
-      currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
-      chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On local settings saved
-        // Add to Blacklist UI
-        const option = document.createElement('option');
-        option.text = tmpUrl.hostname;
-        listDomainsBlacklist.add(option);
-        // Clean UI
-        txtDomainsBlacklist.value = '';
-      });
-    }
+  
+  // Is domain not already in Storage?
+  // If tmpUrl is null, silently skip
+  if(tmpUrl != null && currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
+    // Add to Blacklist Storage
+    currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
+    chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On local settings saved
+      // Add to Blacklist UI
+      const option = document.createElement('option');
+      option.text = tmpUrl.hostname;
+      listDomainsBlacklist.add(option);
+      // Clean UI
+      txtDomainsBlacklist.value = '';
+    });
   }
 }
 
