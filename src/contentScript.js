@@ -1,3 +1,11 @@
+import { defaultSettings } from './defaultSettings.js';
+
+let useShortUrlCache = false;
+
+export function initialise(cacheShortUrls = true) {
+  useShortUrlCache = cacheShortUrls;
+}
+
 if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
 // Cache settings
   let settings;
@@ -311,7 +319,7 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
         case 'j.mp':
         case 'goo.gl':
           // Request URL Expansion
-          chrome.runtime.sendMessage({ shortURL: sourceElem.href, checkCache: true }, function(response) {
+          chrome.runtime.sendMessage({ shortURL: sourceElem.href, checkCache: useShortUrlCache }, function(response) {
             if(response.ignore || response.result.error) {
               // Disable rotating loading image
               loadingIcon.css('display', 'none');

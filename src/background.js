@@ -53,10 +53,7 @@ function injectExtension(tabID, hostname) {
       // css finished injecting
       chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'jquery-2.2.3.min.js' }, function() {
         // script finished injecting
-        chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'defaultSettings.js' }, function() {
-          // script finished injecting
-          chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'contentScript.js' });
-        });
+        chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'contentScriptLoader.js' });
       });
     });
   });

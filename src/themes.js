@@ -1,4 +1,4 @@
-const themes = {
+export const themes = {
   light: { // 1 (default)
     div: {
       background: '#ffffff',
