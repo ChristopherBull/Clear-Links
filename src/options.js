@@ -1,3 +1,6 @@
+import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
+import { themes } from './themes.js';
+
 // Init the JQuery UI elements
 $('#tabs').tabs();
 $('#accordionOauth').accordion({

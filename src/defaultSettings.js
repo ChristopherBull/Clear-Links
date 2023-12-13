@@ -1,5 +1,5 @@
 // Default settings values
-const defaultSettings = {
+export const defaultSettings = {
   // General Behaviour
   displayExternalDomainsOnly: true,
   displayOnKnownShortUrlDomainsOnly: false,
@@ -37,7 +37,7 @@ const defaultSettings = {
   // oauthBitly:'', // TODO - moved and refactored to local storage
 };
 // Local (not synced) default settings
-const defaultSettingsLocal = {
+export const defaultSettingsLocal = {
   // Page Activation - size of filter list may exceed storage limits in sync, so must be local, not synced.
   activationFilter: 1, // 1=All, 2=Whitelist, 3=Blacklist
   domainWhitelist: [],
