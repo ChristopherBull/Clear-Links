@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Clear Links",
     "version": "2.1.4",
 	"author": "Christopher Bull",
@@ -12,11 +12,12 @@
 	"permissions": [
 		"storage",
 		"identity",
-		"webNavigation",
+		"webNavigation"
+	],
+	"host_permissions": [
 		"http://*/",
         "https://*/"
 	],
-	"content_security_policy": "script-src 'self' blob: filesystem: chrome-extension-resource: https://apis.google.com; object-src 'self'",
 	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgv1hEzO8elR0XP9jiGtSDApjag3UXFSbH/37/kubWHJPqVbNC+WNLiW2OQpInn8eoRUMVGWUVgfJysGsXCr8cf8xRvnGrDJKRgKQB67spzCbEtfj9fqR2FQhcg4mSFPwsy/OygXEWlrzjkENcZbf53oMDGspl6cMa0r8P+rwsxLGjdxEcZ4YQTTYZ3D2BflmcjLtgBOj5vtEPyL3adxuMG6v5+lu5JWqbayJSA2oysk+L19BQuTaMnXcb/j0s50PSQUa7LnkMMggijKTAm67Mj59iggbQVYcL4zu0KLztFrCJ5Xuy60JJgWKNMETukNy448yq5jzpKWfgWvtAlEI8QIDAQAB",
 	"oauth2": {
 		"client_id": "183253452276-9ldchuigo09bhm1frm5ms2ll7109mgr4.apps.googleusercontent.com",
@@ -25,17 +26,22 @@
 		]
 	},
 	"web_accessible_resources": [
+		{
+		  "resources": [
 		"images/*",
 		"contentScript.js",
-		"defaultSettings.js"
+		  ],
+		  "matches": [
+			"*://*/*"
+		  ]
+		}
 	],
 	"background": {
-		"page": "background.html",
-		"persistent": false
+		"service_worker": "background.js",
+		"type": "module"
 	},
 	"options_ui": {
-		"page": "options.html",
-		"chrome_style": true
+		"page": "options.html"
 	},
 	"content_scripts": [
         {
