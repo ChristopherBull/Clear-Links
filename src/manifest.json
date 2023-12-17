@@ -10,6 +10,7 @@
         "128": "icon128.png"
     },
 	"permissions": [
+		"scripting",
 		"storage",
 		"identity",
 		"webNavigation"
@@ -28,11 +29,14 @@
 	"web_accessible_resources": [
 		{
 		  "resources": [
-		"images/*",
-		"contentScript.js",
+			"images/*",
+			"contentScript.css",
+			"contentScript.js",
+			"defaultSettings.js",
+			"jquery-2.2.3.min.js"
 		  ],
 		  "matches": [
-			"*://*/*"
+			"<all_urls>"
 		  ]
 		}
 	],

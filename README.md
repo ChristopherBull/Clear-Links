@@ -11,3 +11,10 @@ This will make a fine addition to your security and privacy digital tool belt.
 ## Build
 
 Use the Makefile with the command `make` to prepare this extension. Files are copied and prepared within the `dist/` directory.
+
+## The Design
+
+The extension has three layers:
+Background -> content-script -> injected-script
+
+The content script acts as a proxy for messages to the backend script. This is required for features that need access to `chrome.*` APIs under the more secure Chrome Manifest V3.

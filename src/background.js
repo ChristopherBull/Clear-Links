@@ -1,6 +1,6 @@
-import { defaultSettingsLocal } from './defaultSettings.js';
+import { defaultSettingsLocal, defaultSettings } from './defaultSettings.js';
 
-// Load local settings (e.g. page activation options)
+// Load local settings (e.g. page activation options and locally stored auth tokens)
 let currentLocalSettingsValues = defaultSettingsLocal;
 chrome.storage.local.get(defaultSettingsLocal, function(items) {
   if (!chrome.runtime.lastError) {
@@ -8,14 +8,17 @@ chrome.storage.local.get(defaultSettingsLocal, function(items) {
     currentLocalSettingsValues = items;
   }
 });
+// Load synced settings (e.g. user preferences)
+let currentSyncSettingsValues = defaultSettings;
+chrome.storage.sync.get(defaultSettings, function(items) {
+  currentSyncSettingsValues = items;
+});
 // Listen for options changes
 chrome.storage.onChanged.addListener(function(changes, namespace) {
   if(namespace === 'local') {
-    for (const key in changes) {
-      if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
-        currentLocalSettingsValues[key] = changes[key].newValue;
-      }
-    }
+    mergeSettingsChanges(currentLocalSettingsValues, changes);
+  } else if(namespace === 'sync') {
+    mergeSettingsChanges(currentSyncSettingsValues, changes);
   }
 });
 
@@ -23,11 +26,14 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   // Page activation (black/whitelist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
-  // Allows users to blacklist/whitelist sites. Also reduces overall CPU/RAM usage, at the cost of a few additional cycles on each pages startup.
+  // Allows users to blacklist/whitelist sites. Also, reduces extension's footprint.
   if(request.activationHostname && sender.tab) {
+    // Respond to the contentScript so it knows to prepare to collaborate with the injected script (contentScripts can access some chrome.* APIs)
+    sendResponse({ inject: true });
+    // Inject the main script into the webpage (it will have DOM access, but no access to chrome.* APIs)
     injectExtension(sender.tab.id, request.activationHostname);
     // URL expansion request
-  }else if(request.shortURL) {
+  } else if(request.shortURL) {
     expandURL(request.shortURL, request.checkCache, function(response) {
       // TODO - Store response.result.longUrl into a cache/map
       sendResponse(response);
@@ -49,14 +55,39 @@ chrome.webNavigation.onTabReplaced.addListener(function(details) {
 
 function injectExtension(tabID, hostname) {
   activateOnTab(tabID, hostname, function() {
-    chrome.tabs.insertCSS(tabID, { allFrames: true, runAt: 'document_end', file: 'contentScript.css' }, function() {
+    const contentScriptSrc = chrome.runtime.getURL('contentScript.js');
+    chrome.scripting.insertCSS({
+      files: [ 'contentScript.css' ],
+      target: { allFrames: true, tabId: tabID }
+    }, function() {
       // css finished injecting
-      chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'jquery-2.2.3.min.js' }, function() {
-        // script finished injecting
-        chrome.tabs.executeScript(tabID, { allFrames: true, runAt: 'document_end', file: 'contentScriptLoader.js' });
+      chrome.scripting.executeScript({
+        files : [ 'jquery-2.2.3.min.js' ],
+        target : { tabId : tabID, allFrames: true },
+        world: chrome.scripting.ExecutionWorld.MAIN
+      }, function() {
+        // js finished injecting
+        // inject function to load the main content script
+        chrome.scripting.executeScript({
+          target: { tabId: tabID, allFrames: true },
+          world: chrome.scripting.ExecutionWorld.MAIN,
+          args: [ contentScriptSrc, currentSyncSettingsValues ],
+          function: injectMainContentScript
+        });
       });
     });
   });
+}
+
+/**
+ * This function is injected into the webpage, and is responsible for loading the main content script.
+ * Chrome extensions do not allow JS modules to be executed, so this function instead dynamically imports the main content script.
+ * @param {string} src - The URL of the content script to be injected into the webpage.
+ */
+async function injectMainContentScript(src, contentScriptSettings) {
+  const mainContentScript = await import(src);
+  // Initialise content script with default settings.
+  mainContentScript.initialise(contentScriptSettings);
 }
 
 function activateOnTab(tabId, docHostname, activationCallback) {
@@ -92,11 +123,19 @@ function isUrlToBeFiltered(tabHostname, filterListArray) {
 // Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
 function tabExists(tabId, callback) {
   chrome.tabs.get(tabId, function(tab) {
-    if(!chrome.runtime.lastError) {
+    if(!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
       // Tab exists
-      callback(new URL(tab.url).hostname);
+      callback(new URL(tab.url).hostname); // TODO - TypeError: Failed to construct 'URL': Invalid URL
     }
   });
+}
+
+function mergeSettingsChanges(currentSettings, changes) {
+  for (const key in changes) {
+    if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
+      currentSettings[key] = changes[key].newValue;
+    }
+  }
 }
 
 // TODO - Long/Short URL cache
@@ -109,6 +148,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
   if(typeof checkCache !== 'undefined' && checkCache === true) {
     // TODO
   }
+  // TODO - Debounce expansion requests (5 seconds?) -- check if expansion fetch/request is already in-flight and awaiting a response with a separate requests cache (with timestamps of requests).
   // Determine short URL service
   switch(new URL(url).hostname) {
     case 'bit.ly':
@@ -121,7 +161,10 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
         if(bAuthSuccess) {
           expandUrlGooGl(url, callbackAfterExpansion);
         } else {
-          callbackAfterExpansion({ ignore: true });
+          callbackAfterExpansion({
+            ignore: true,
+            source: { url: url }
+          });
         }
       });
       break;
@@ -166,7 +209,7 @@ function expandUrlGooGl(url, callbackAfterExpansion) {
       callbackAfterExpansion({ result: { error: { message: 'Goo.gl link ' + response.result.status } } });
     }
   }, function(reason) {
-    console.log('Error (Goo.gl): "' + url + '" - ' + reason.result.error.message);
+    console.error('Error (Goo.gl): "' + url + '" - ' + reason.result.error.message);
     callbackAfterExpansion(reason);
   });
 }
@@ -187,8 +230,12 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
     }).then(function (response) {
       response.json().then(function (jsonResponse) {
         if (response.ok) {
+          // TODO cache the long URL
           // Create the JSON formatted response expected in contentScript: response.result.longUrl
-          callbackAfterExpansion({ result: { longUrl: jsonResponse.long_url } });
+          callbackAfterExpansion({ 
+            result: { longUrl: jsonResponse.long_url },
+            source: { url: url } // for checking if the response is for the moused-over link (protect against delayed responses)
+          });
         } else {
           console.error('Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description);
           // Create the JSON formatted response expected in contentScript: response.result.error.message
@@ -197,6 +244,9 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
       });
     }).catch((err) => console.error(err));
   } else {
-    callbackAfterExpansion({ ignore: true });
+    callbackAfterExpansion({
+      ignore: true,
+      source: { url: url }
+    });
   }
 }
