@@ -1,20 +1,14 @@
 import { defaultSettingsLocal, defaultSettings } from './defaultSettings.js';
 
-// Load local settings (e.g. page activation options and locally stored auth tokens)
+// Local settings (e.g. page activation options and locally stored auth tokens)
 let currentLocalSettingsValues = defaultSettingsLocal;
-chrome.storage.local.get(defaultSettingsLocal, function(items) {
-  if (!chrome.runtime.lastError) {
-    // Cache the local settings
-    currentLocalSettingsValues = items;
-  }
-});
-// Load synced settings (e.g. user preferences)
+// Synced settings (e.g. user preferences)
 let currentSyncSettingsValues = defaultSettings;
-chrome.storage.sync.get(defaultSettings, function(items) {
-  currentSyncSettingsValues = items;
-});
+
+initialise();
+
 // Listen for options changes
-chrome.storage.onChanged.addListener(function(changes, namespace) {
+chrome.storage.onChanged.addListener((changes, namespace) => {
   if(namespace === 'local') {
     mergeSettingsChanges(currentLocalSettingsValues, changes);
   } else if(namespace === 'sync') {
@@ -23,7 +17,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 });
 
 // Message Passing
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Page activation (black/whitelist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
   // Allows users to blacklist/whitelist sites. Also, reduces extension's footprint.
@@ -34,7 +28,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     injectExtension(sender.tab.id, request.activationHostname);
     // URL expansion request
   } else if(request.shortURL) {
-    expandURL(request.shortURL, request.checkCache, function(response) {
+    expandURL(request.shortURL, request.checkCache, (response) => {
       // TODO - Store response.result.longUrl into a cache/map
       sendResponse(response);
     });
@@ -44,8 +38,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 // Some sites may load as pre-rendered and later tab is replaced (e.g. initial google searches from a new tab).
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
-chrome.webNavigation.onTabReplaced.addListener(function(details) {
-  chrome.tabs.get(details.tabId, function(tab) {
+chrome.webNavigation.onTabReplaced.addListener((details) => {
+  chrome.tabs.get(details.tabId, (tab) => {
     if(!chrome.runtime.lastError) {
       // Tab exists
       injectExtension(tab.id, new URL(tab.url).hostname);
@@ -53,30 +47,51 @@ chrome.webNavigation.onTabReplaced.addListener(function(details) {
   });
 });
 
+async function initialise() {
+  // Load local settings
+  currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
+  // Load synced settings
+  currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+}
+
 function injectExtension(tabID, hostname) {
-  activateOnTab(tabID, hostname, function() {
+  activateOnTab(tabID, hostname, async function() {
     const contentScriptSrc = chrome.runtime.getURL('contentScript.js');
+    const contentScriptSharedSrc = chrome.runtime.getURL('contentScriptSharedLib.js');
     chrome.scripting.insertCSS({
       files: [ 'contentScript.css' ],
       target: { allFrames: true, tabId: tabID }
-    }, function() {
-      // css finished injecting
-      chrome.scripting.executeScript({
-        files : [ 'jquery-2.2.3.min.js' ],
-        target : { tabId : tabID, allFrames: true },
-        world: chrome.scripting.ExecutionWorld.MAIN
-      }, function() {
-        // js finished injecting
-        // inject function to load the main content script
-        chrome.scripting.executeScript({
-          target: { tabId: tabID, allFrames: true },
-          world: chrome.scripting.ExecutionWorld.MAIN,
-          args: [ contentScriptSrc, currentSyncSettingsValues ],
-          function: injectMainContentScript
-        });
-      });
+    });
+    // Inject jQuery and wait before injecting the main content script
+    await chrome.scripting.executeScript({
+      files : [ 'jquery-2.2.3.min.js' ],
+      target : { tabId : tabID, allFrames: true },
+      world: chrome.scripting.ExecutionWorld.MAIN
+    });
+    // Add to Content Script (part of the Isolated World)
+    chrome.scripting.executeScript({
+      target: { tabId: tabID, allFrames: true },
+      args: [ contentScriptSharedSrc ],
+      function: setupContentScript
+    });
+    // Inject function to load the main content script (part of the Main World)
+    chrome.scripting.executeScript({
+      target: { tabId: tabID, allFrames: true },
+      world: chrome.scripting.ExecutionWorld.MAIN,
+      args: [ contentScriptSrc, currentSyncSettingsValues ],
+      function: injectMainContentScript
     });
   });
+}
+
+/**
+ * Insert and setup remaining content script code.
+ * @param {string} src - The URL of a script to be added to the content script.
+ */
+async function setupContentScript(src) {
+  const contentScriptShared = await import(src);
+  // Setup message passing and related listeners.
+  contentScriptShared.initAllSharedListeners();
 }
 
 /**
