@@ -32,6 +32,22 @@
 	height:14px;
 }
 
+.ClIconPadlockLocked {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
+}
+.ClIconEmail {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
+}
+.ClIconJS {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
+}
+.ClIconHourglass {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/hourglass.svg');
+}
+.ClIconHourglassBroken {
+	content: url('chrome-extension://__MSG_@@extension_id__/images/BrokenGlass.png');
+}
+
 .ClLoading{
 	animation:ClLoadingAnimation 1s infinite;
 }

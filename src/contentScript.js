@@ -1,17 +1,33 @@
 import { defaultSettings } from './defaultSettings.js';
 
-let useShortUrlCache = false;
+let useShortUrlCache = true;
 
-export function initialise(cacheShortUrls = true) {
-  useShortUrlCache = cacheShortUrls;
+export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true) {
+  settings = contentScriptSettings;
+  useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
+
+  applyAllSettingToTooltip(settings);
+
+  // Setup message passing (between this injected script, content script (proxy), and background script)
+  window.addEventListener('message', (event) => {
+    // We only accept messages from ourselves
+    if (event.source !== window) {
+        return;
+    }
+    // Determine type of event
+    if (event.data.type && (event.data.type === 'TO_PAGE_EXPANDED_SHORT_URL')) {
+        receiveExpandedURL(event.data.message);
+    } else if (event.data.type && (event.data.type === 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED')) {
+        applyAllSettingChangesToTooltip(event.data.message);
+    }
+  }, true);
 }
 
-if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
-// Cache settings
+  // Cache settings
   let settings;
   let winDimensions;
   // Init the tooltip
-  const tooltip = $($.parseHTML("<div id='ClContainer'><img src='" + chrome.extension.getURL('images/green-padlock.png') + "' alt='Secure protocol used in link' class='ClIcon'></img><img src='" + chrome.extension.getURL('images/email-icon.png') + "' alt='This is a Mailto link' class='ClIcon'></img><img src='" + chrome.extension.getURL('images/JS-icon.png') + "' alt='This link uses Javascript' class='ClIcon'></img><img src='" + chrome.extension.getURL('images/hourglass.svg') + "' alt='Requesting Full URL' class='ClIcon ClLoading'></img><img src='" + chrome.extension.getURL('images/BrokenGlass.png') + "' alt='Short URL is not expandable' class='ClIcon'></img><p class='ClURL'></p></div>"));
+  const tooltip = $($.parseHTML("<div id='ClContainer'><img src='' alt='Secure protocol used in link' class='ClIcon ClIconPadlockLocked'></img><img src='' alt='This is a Mailto link' class='ClIcon ClIconEmail'></img><img src='' alt='This link uses Javascript' class='ClIcon ClIconJS'></img><img src='' alt='Requesting Full URL' class='ClIcon ClLoading ClIconHourglass'></img><img src='' alt='Short URL is not expandable' class='ClIcon ClIconHourglassBroken'></img><p class='ClURL'></p></div>"));
   const secureIcon = tooltip.children().first();
   const emailIcon = secureIcon.next();
   const jsIcon = emailIcon.next();
@@ -20,30 +36,6 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
   const urlText = tooltip.children().last();
   // Timers
   let resizeEndTimer; // No native resize end event, so timing our own.
-
-  // Load settings
-  chrome.storage.sync.get(defaultSettings, function(items) {
-    settings = items;
-    for (const key in settings) {
-      if (Object.prototype.hasOwnProperty.call(settings, key)) {
-        applySettingToTooltip(key, settings[key]);
-      }
-    }
-  });
-  // Listen for options changes
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
-    if(namespace === 'local') { // Local storage
-      // TODO - listen for when Options are changed for expanding short URLs
-      // Is this necessary? What does the contentScript need to be notified about?
-    } else { // Synced storage
-      for (const key in changes) {
-        if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
-          settings[key] = changes[key].newValue;
-          applySettingToTooltip(key, settings[key]);
-        }
-      }
-    }
-  });
 
   // Main - Document ready
   $(function() {
@@ -259,6 +251,31 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
     jqDomElem.one('mouseleave', localMouseLeave); // fire only once (avoid events stacking)
   }
 
+  /**
+   * 
+   * @param {object} settings - All settings to be applied to the tooltip.
+   */
+  function applyAllSettingToTooltip(settings) {
+    for (const key in settings) {
+      if (Object.prototype.hasOwnProperty.call(settings, key)) {
+        applySettingToTooltip(key, settings[key]);
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param {object} changes - A subset of settings that have been updated.
+   */
+  function applyAllSettingChangesToTooltip(changes) {
+    for (const key in changes) {
+      if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
+        settings[key] = changes[key].newValue;
+        applySettingToTooltip(key, changes[key]);
+      }
+    }
+  }
+
   function applySettingToTooltip(param, value) {
     switch (param) {
       case 'background':
@@ -314,24 +331,18 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
 
   function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = false) {
     if(sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
+      // Cache the original short URL, so we can check if the user has moved on to another link before we receive the response.
+      const tooltipDataShortUrl = tooltip.data('source-short-url');
+      if(tooltipDataShortUrl !== sourceElem.href) {
+        tooltip.data('source-short-url', sourceElem.href);
+      }
+      // Determine short URL service
       switch (sourceElem.hostname) {
         case 'bit.ly':
         case 'j.mp':
         case 'goo.gl':
           // Request URL Expansion
-          chrome.runtime.sendMessage({ shortURL: sourceElem.href, checkCache: useShortUrlCache }, function(response) {
-            if(response.ignore || response.result.error) {
-              // Disable rotating loading image
-              loadingIcon.css('display', 'none');
-              notExpandableIcon.css('display', 'inline');
-            } else {
-              const tmpUrl = new URL(response.result.longUrl);
-              urlText.html(formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
-              loadingIcon.css('display', 'none');
-              // Re-check tooltip position to ensure it doesn't not exceed window bounds
-              // TODO
-            }
-          });
+          window.postMessage({type : 'FROM_PAGE_SHORT_URL', message : { shortURL: sourceElem.href, checkCache: useShortUrlCache }}, '*');
           return { isShort: true, toExpand: true, quickExpand: quickExpandUrl };
         case 't.co':
           if(window.location.hostname === 'twitter.com') { // only guarantee correct URL if on Twitter.com
@@ -348,7 +359,7 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
                 return expandShortUrl(expandedUrl, expandedUrl.href, true); // Give it the new URL obj, not the source element
               }
             } catch(err) { // Catch errors thrown by 'new URL()' if URL is malformed.
-              console.log(err);
+              console.error(err);
               return { isShort: true, toExpand: false, quickExpand: quickExpandUrl }; // TODO indicate an error
             }
             return { isShort: true, toExpand: true, quickExpand: sourceElem.dataset.expandedUrl };
@@ -358,5 +369,20 @@ if(window.jQuery) { // silence errors occurring from multi-frame JS insertion
       }
     }
     return { isShort: bRecursiveIsShort, toExpand: false, quickExpand: quickExpandUrl };
+  }
+
+function receiveExpandedURL(response) {
+  // Check if the source short URL is the same as the one currently being hovered over (i.e., tooltip still waiting for response)
+  if(tooltip.data('source-short-url') === response.source.url) {
+    if(response.ignore || response.result.error) {
+      // Disable rotating loading image
+      loadingIcon.css('display', 'none');
+      notExpandableIcon.css('display', 'inline');
+    } else {
+      const tmpUrl = new URL(response.result.longUrl);
+      urlText.html(formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
+      loadingIcon.css('display', 'none');
+      // TODO - Re-check tooltip position to ensure it doesn't not exceed window bounds
+    }
   }
 }
