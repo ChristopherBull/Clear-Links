@@ -129,17 +129,17 @@ function initialize() {
   // Event handlers (prior to restoring settings)
   colorBackground.addEventListener('change', function() {
     // tooltipPreview.style.background = colorBackground.value;
-    $('.ClContainer').css('background', colorBackground.value);
+    $('.cl-container').css('background', colorBackground.value);
     themeSelect.value = '0';
   });
   colorBorder.addEventListener('change', function() {
     // tooltipPreview.style.borderColor = colorBorder.value;
-    $('.ClContainer').css('border-color', colorBorder.value);
+    $('.cl-container').css('border-color', colorBorder.value);
     themeSelect.value = '0';
   });
   colorGeneralURLText.addEventListener('change', function() {
     // tooltipPreviewText.style.color = colorGeneralURLText.value;
-    $('.ClURL').css('color', colorGeneralURLText.value);
+    $('.cl-url').css('color', colorGeneralURLText.value);
     themeSelect.value = '0';
   });
   colorDomainText.addEventListener('change', function() {
@@ -599,10 +599,10 @@ function previewPresetTheme() {
   }
   colorBackground.value = themes[sTheme].div.background;
   colorBorder.value = themes[sTheme].div['border-color'];
-  $('.ClContainer').css('background', colorBackground.value)
+  $('.cl-container').css('background', colorBackground.value)
     .css('border-color', colorBorder.value);
   colorGeneralURLText.value = themes[sTheme].p.color;
-  $('.ClURL').css('color', colorGeneralURLText.value);
+  $('.cl-url').css('color', colorGeneralURLText.value);
   colorDomainText.value = themes[sTheme].spanDomain.color;
   $('.ClDomain').css('color', colorDomainText.value);
 }

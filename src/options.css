@@ -1,10 +1,11 @@
-body { padding: 10px; width:50em; }
+body {
+  padding: 10px;
+  width:50em;
+}
 fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #divBtnGroup { margin-top: 1em; }
 #confirm { visibility: hidden; padding-top: 10px; }
-/*#restoreFurtherInfo{visibility:hidden;}
-#delAllFurtherInfo{visibility:hidden;}*/
 #restoreFurtherInfo{display:none;}
 #delAllFurtherInfo{display:none;}
 
@@ -16,136 +17,137 @@ textarea { resize: vertical; }
 .inlineBlock{display:inline-block;}
 
 .desc {
-	white-space: nowrap;
+  white-space: nowrap;
 }
 
 .rightAlign{
-	text-align:right;
+  text-align:right;
 }
 
 #fragment-1 > fieldset{
-	margin-top:1em;
+  margin-top:1em;
 }
 
 .inputMilliseconds{
-	width: 5em;
+  width: 5em;
 }
 
 .linkDemoContainer{
-	width:100%;
-	text-align:right;
+  width:100%;
+  text-align:right;
 }
 
 .leftIndent{
-	margin-left:1em;
+  margin-left:1em;
 }
 
 .enabled{color:black;}
 .disabled{color:lightgrey;}
 
-/*Style tab*/
+/* Style tab */
+
 .colTwo{
-	display:inline-block;
-	vertical-align:top;
-	margin-left:3em;
+  display:inline-block;
+  vertical-align:top;
+  margin-left:3em;
 }
 #stylePreview{
-	border:2px inset #ccc;
-	margin-top:1em;
-	padding:0 1em 1em 1em;
+  border:2px inset #ccc;
+  margin-top:1em;
+  padding:0 1em 1em 1em;
 }
-#stylePreview .ClContainer{
-	display:inline-block;
-	position:relative;
-	margin-top:1em;
-	width:auto;
+#stylePreview .cl-container{
+  display:inline-block;
+  position:relative;
+  margin-top:1em;
+  width:auto;
 }
-#stylePreview .ClContainer{
-	border:1px solid #5F7F99;
-	border-radius:3px;
+#stylePreview .cl-container{
+  border:1px solid #5F7F99;
+  border-radius:3px;
 }
-#stylePreview .ClIcon{
-	display:inline-block;
-	/*Filters: http://www.html5rocks.com/en/tutorials/filters/understanding-css/ */
-	/*filter: sepia(100%);-webkit-filter: sepia(100%);*/
-	/*filter: hue-rotate(240deg) saturate(3.3);-webkit-filter: hue-rotate(240deg) saturate(3.3);/*randomises color, doesn't affect greyscale*/
-	/*filter: invert(100%);-webkit-filter: invert(100%);*/
+#stylePreview .cl-icon{
+  display:inline-block;
+  /*Filters: http://www.html5rocks.com/en/tutorials/filters/understanding-css/ */
+  /*filter: sepia(100%);-webkit-filter: sepia(100%);*/
+  /*filter: hue-rotate(240deg) saturate(3.3);-webkit-filter: hue-rotate(240deg) saturate(3.3);/*randomises color, doesn't affect greyscale*/
+  /*filter: invert(100%);-webkit-filter: invert(100%);*/
 }
-#stylePreview .ClURL{
-	font-family:sans-serif;
-	font-size:small;
+#stylePreview .cl-url{
+  font-family:sans-serif;
+  font-size:small;
 }
 #stylePreview .JsIconNoText{
-	margin-right:-6px;
+  margin-right:-6px;
 }
-#ClIconPadlockLocked {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
+#cl-icon-padlock-locked {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
 }
-#ClIconEmail {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
+#cl-icon-email {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
 }
-#ClIconJS {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
+#cl-icon-js {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
 }
 #themeSelect{
-	margin-left:5px;
+  margin-left:5px;
 }
 
 /*Page Activation*/
 #formActivationType > label > input{
-	margin-bottom:3px;
+  margin-bottom:3px;
 }
 #formWhitelist,#formBlacklist{
-	margin-top:1em;
+  margin-top:1em;
 }
 #txtDomainsWhitelist,#listDomainsWhitelist,#txtDomainsBlacklist,#listDomainsBlacklist{
-	width:400px;
+  width:400px;
 }
 #listDomainsWhitelist,#listDomainsBlacklist{
-	background:white;
+  background:white;
 }
 #btnDomainsWhitelistAdd,#btnDomainsWhitelistRemove,#btnDomainsBlacklistAdd,#btnDomainsBlacklistRemove{
-	width:10.5em;
-	text-align:left;
+  width:10.5em;
+  text-align:left;
 }
 #btnDomainsWhitelistAdd,#txtDomainsWhitelist,#btnClearErrMsgWhitelist,#btnDomainsBlacklistAdd,#txtDomainsBlacklist,#btnClearErrMsgBlacklist{
-	margin-bottom:5px;
+  margin-bottom:5px;
 }
 #btnDomainsWhitelistAdd,#btnDomainsBlacklistAdd{
-	margin-left:1px;
+  margin-left:1px;
 }
 #btnDomainsWhitelistRemove,#btnDomainsBlacklistRemove{
-	vertical-align:top;
+  vertical-align:top;
 }
 
 /*Short URLs*/
 .authTick{
-	float:right;
+  float:right;
 }
 .authTickHidden,#divErrAreaWhitelist,#divErrAreaBlacklist{
-	display:none;
+  display:none;
 }
 #lblOauthBitlyToken{
-	font-style:italic;
+  font-style:italic;
 }
 #btnOauthGoogl{
-	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_normal_web.png');
-	background-repeat:no-repeat;
-	background-color:Transparent;
-	width:191px;
-	height:46px;
-	padding:0;
-	border:0 none transparent;
-	box-shadow: none;
-	cursor:pointer;
+  background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_normal_web.png');
+  background-repeat:no-repeat;
+  background-color:Transparent;
+  width:191px;
+  height:46px;
+  padding:0;
+  border:0 none transparent;
+  box-shadow: none;
+  cursor:pointer;
 }
 #btnOauthGoogl:focus{
-	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_focus_web.png');
+  background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_focus_web.png');
 }
 #btnOauthGoogl:active{
-	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_pressed_web.png');
+  background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_pressed_web.png');
 }
 #btnOauthGoogl:disabled{
-	background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_disabled_web.png');
-	cursor:auto;
+  background-image:url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_disabled_web.png');
+  cursor:auto;
 }

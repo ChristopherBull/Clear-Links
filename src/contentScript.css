@@ -1,53 +1,57 @@
-@keyframes ClLoadingAnimation {
-    100% {
-		animation-timing-function:cubic-bezier(0,.4,1,.6);
-        transform:rotate(360deg);
-    }
+@keyframes cl-loading-animation {
+  100% {
+    animation-timing-function: cubic-bezier(0,.4,1,.6);
+    transform: rotate(360deg);
+  }
 }
 
-#ClContainer,.ClContainer{
-	all:initial;
-	display:none;
-	position:fixed;
-	top:0;
-	left:0;
-	z-index:9999;
-	max-width:30em;
-	padding:4px 5px;
+#cl-container, .cl-container {
+  all: initial;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  max-width: 30em;
+  padding: 4px 5px;
 }
 
-.ClURL{
-	all:initial;
-	float:none;
-	margin:0 2px 0 0;
-	word-wrap:break-word;
+.cl-url {
+  all: initial;
+  float: none;
+  margin: 0 2px 0 0;
+  word-wrap: break-word;
 }
 
-.ClIcon{
-	display:none;
-	float:left;
-	margin-top:2px;
-	margin-right:3px;
-	width:14px;
-	height:14px;
+.cl-icon {
+  display: none;
+  float: left;
+  margin-top: 2px;
+  margin-right: 3px;
+  width: 14px;
+  height: 14px;
 }
 
-.ClIconPadlockLocked {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
-}
-.ClIconEmail {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
-}
-.ClIconJS {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
-}
-.ClIconHourglass {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/hourglass.svg');
-}
-.ClIconHourglassBroken {
-	content: url('chrome-extension://__MSG_@@extension_id__/images/BrokenGlass.png');
+.cl-icon-padlock-locked {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
 }
 
-.ClLoading{
-	animation:ClLoadingAnimation 1s infinite;
+.cl-icon-email {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
+}
+
+.cl-icon-js {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
+}
+
+.cl-icon-hourglass {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/hourglass.svg');
+}
+
+.cl-icon-hourglass-broken {
+  content: url('chrome-extension://__MSG_@@extension_id__/images/BrokenGlass.png');
+}
+
+.cl-loading {
+  animation: cl-loading-animation 1s infinite;
 }

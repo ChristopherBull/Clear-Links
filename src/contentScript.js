@@ -27,7 +27,7 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
 let settings;
 let winDimensions;
 // Init the tooltip
-const tooltip = $($.parseHTML('<div id="ClContainer"><img src="" alt="Secure protocol used in link" class="ClIcon ClIconPadlockLocked"></img><img src="" alt="This is a Mailto link" class="ClIcon ClIconEmail"></img><img src="" alt="This link uses Javascript" class="ClIcon ClIconJS"></img><img src="" alt="Requesting Full URL" class="ClIcon ClLoading ClIconHourglass"></img><img src="" alt="Short URL is not expandable" class="ClIcon ClIconHourglassBroken"></img><p class="ClURL"></p></div>'));
+const tooltip = $($.parseHTML('<div id="cl-container"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>'));
 const secureIcon = tooltip.children().first();
 const emailIcon = secureIcon.next();
 const jsIcon = emailIcon.next();
