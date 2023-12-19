@@ -6,6 +6,7 @@
   "scripts": {
     "build": "make",
     "lint": "eslint src",
+    "lint-css": "stylelint \"src/**/*.css\"",
     "lint-md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
     "spell": "cspell README.md \"/src/*.*\""
   },
@@ -20,6 +21,8 @@
     "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-sonarjs": "^0.23.0",
-    "markdownlint-cli2": "^0.11.0"
+    "markdownlint-cli2": "^0.11.0",
+    "stylelint": "^16.0.2",
+    "stylelint-config-standard": "^35.0.0"
   }
 }

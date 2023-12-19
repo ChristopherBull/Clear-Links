@@ -35,7 +35,7 @@
         "import",
         // "promise", // TODO renable and fix issues later
         // "jsdoc", // TODO renable and fix issues later
-        "css"
+        "css" // CSS within JS
       ],
     "rules": {
         "@stylistic/comma-dangle": ["error", "always-multiline"],

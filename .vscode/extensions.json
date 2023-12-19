@@ -4,6 +4,8 @@
 
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"stylelint.vscode-stylelint",
 		"streetsidesoftware.code-spell-checker",
 		"davidanson.vscode-markdownlint"
 	],

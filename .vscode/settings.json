@@ -2,7 +2,6 @@
     "eslint.validate": [
         "html",
         "javascript",
-        "css",
         "markdown"
     ]
 }
