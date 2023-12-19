@@ -60,26 +60,26 @@ function injectExtension(tabID, hostname) {
     const contentScriptSharedSrc = chrome.runtime.getURL('contentScriptSharedLib.js');
     chrome.scripting.insertCSS({
       files: [ 'contentScript.css' ],
-      target: { allFrames: true, tabId: tabID }
+      target: { allFrames: true, tabId: tabID },
     });
     // Inject jQuery and wait before injecting the main content script
     await chrome.scripting.executeScript({
       files : [ 'jquery-2.2.3.min.js' ],
       target : { tabId : tabID, allFrames: true },
-      world: chrome.scripting.ExecutionWorld.MAIN
+      world: chrome.scripting.ExecutionWorld.MAIN,
     });
     // Add to Content Script (part of the Isolated World)
     chrome.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       args: [ contentScriptSharedSrc ],
-      function: setupContentScript
+      function: setupContentScript,
     });
     // Inject function to load the main content script (part of the Main World)
     chrome.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       world: chrome.scripting.ExecutionWorld.MAIN,
       args: [ contentScriptSrc, currentSyncSettingsValues ],
-      function: injectMainContentScript
+      function: injectMainContentScript,
     });
   });
 }
@@ -178,7 +178,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
         } else {
           callbackAfterExpansion({
             ignore: true,
-            source: { url: url }
+            source: { url: url },
           });
         }
       });
@@ -215,7 +215,7 @@ function authenticateGoogleAPI(postAuthCallback) {
 // Google API - Expand URL
 function expandUrlGooGl(url, callbackAfterExpansion) {
   const request = gapi.client.urlshortener.url.get({
-    shortUrl: url
+    shortUrl: url,
   });
   request.then(function(response) {
     if(response.result.status === 'OK') {
@@ -239,9 +239,9 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + currentLocalSettingsValues.OAuthBitLy.token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ bitlink_id: urlHostAndPathname })
+      body: JSON.stringify({ bitlink_id: urlHostAndPathname }),
     }).then(function (response) {
       response.json().then(function (jsonResponse) {
         if (response.ok) {
@@ -249,7 +249,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
           // Create the JSON formatted response expected in contentScript: response.result.longUrl
           callbackAfterExpansion({ 
             result: { longUrl: jsonResponse.long_url },
-            source: { url: url } // for checking if the response is for the moused-over link (protect against delayed responses)
+            source: { url: url }, // for checking if the response is for the moused-over link (protect against delayed responses)
           });
         } else {
           console.error('Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description);
@@ -261,7 +261,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
   } else {
     callbackAfterExpansion({
       ignore: true,
-      source: { url: url }
+      source: { url: url },
     });
   }
 }

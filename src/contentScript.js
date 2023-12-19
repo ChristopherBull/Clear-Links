@@ -48,7 +48,7 @@ $(function() {
   cacheWinDimensions();
 
   // Attach and detach the tooltip; on() works for current and dynamically (future) created elements
-  $(document.body).on('mouseenter', 'a', function(e) {
+  $(document.body).on('mouseenter', 'a', function() {
     if(!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
@@ -60,7 +60,7 @@ $(function() {
         break;
       case 'mailto:':
         if(settings.displayMailtoLinks) {
-          showTooltip($(this), '<span style="color:' + settings.cssColorMailto + ';">' + this.href.substring(7, this.href.length) + '</span>', false, false, true);
+          showTooltip($(this), buildStringHtmlColouredHostname(settings.cssColorMailto, this.href.substring(7, this.href.length)), false, false, true);
         }
         break;
       case 'https:':
@@ -161,11 +161,15 @@ function displayingExternalDomainsOnly(hostname) {
   return !!((settings.displayExternalDomainsOnly && hostname !== location.hostname) || !settings.displayExternalDomainsOnly);
 }
 
+function buildStringHtmlColouredHostname(colour, hostname) {
+  return '<span style="color:' + colour + ';">' + hostname + '</span>';
+}
+
 function formatDissectedURL(href, protocol, username, password, hostname, port, pathname, search, hash) {
   let urlToDisplay = '';
   if(settings.displayDomainOnly) {
     if(hostname) {
-      urlToDisplay += '<span style="color:' + settings.cssColorDomainText + ';">' + hostname + '</span>';
+      urlToDisplay += buildStringHtmlColouredHostname(settings.cssColorDomainText, hostname);
     }
   } else {
     if(settings.displayUrlScheme && protocol) {
@@ -184,7 +188,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
       urlToDisplay += '@';
     }
     if(settings.displayUrlHostname && hostname) {
-      urlToDisplay += '<span style="color:' + settings.cssColorDomainText + ';">' + hostname + '</span>';
+      urlToDisplay += buildStringHtmlColouredHostname(settings.cssColorDomainText, hostname);
     }
     if(settings.displayUrlPort && port && port !== '') {
       urlToDisplay += ':' + port;
@@ -243,7 +247,7 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 
   // Attach a specific mouseleave event to the target of the mouseenter event (reduces likelihood of multiple orphaned tooltips when a site interferes with this extension)
   const localTooltip = tooltip;
-  function localMouseLeave(e) {
+  function localMouseLeave() {
     // Hide the Tooltip
     $(window).unbind('mousemove', mouseRelativeCursorPosition); // Cancel additional mousemove tracking when not over a link.
     localTooltip.stop().fadeOut(settings.durationFadeOut); // Hide the locally referenced tooltip (in case of some DOM refreshing wizardry).
@@ -299,7 +303,7 @@ function applySettingToTooltip(param, value) {
 function cacheWinDimensions() {
   winDimensions = {
     h: $(window).height(),
-    w: $(window).width()
+    w: $(window).width(),
   };
 }
 
@@ -325,16 +329,18 @@ function mouseRelativeCursorPosition(e) {
   // Set position
   tooltip.css({
     top: top + 'px',
-    left: left + 'px'
+    left: left + 'px',
   });
 }
+
+const dataParamNameSourceShortURL = 'source-short-url';
 
 function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = false) {
   if(sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
     // Cache the original short URL, so we can check if the user has moved on to another link before we receive the response.
-    const tooltipDataShortUrl = tooltip.data('source-short-url');
+    const tooltipDataShortUrl = tooltip.data(dataParamNameSourceShortURL);
     if(tooltipDataShortUrl !== sourceElem.href) {
-      tooltip.data('source-short-url', sourceElem.href);
+      tooltip.data(dataParamNameSourceShortURL, sourceElem.href);
     }
     // Determine short URL service
     switch (sourceElem.hostname) {
@@ -373,7 +379,7 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
 
 function receiveExpandedURL(response) {
   // Check if the source short URL is the same as the one currently being hovered over (i.e., tooltip still waiting for response)
-  if(tooltip.data('source-short-url') === response.source.url) {
+  if(tooltip.data(dataParamNameSourceShortURL) === response.source.url) {
     if(response.ignore || response.result.error) {
       // Disable rotating loading image
       loadingIcon.css('display', 'none');

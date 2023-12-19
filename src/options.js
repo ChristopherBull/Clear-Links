@@ -7,7 +7,7 @@ $('#accordionOauth').accordion({
   active: false,
   collapsible: true,
   heightStyle: 'content',
-  animate: false
+  animate: false,
 });
 
 // Cached DOM elements
@@ -172,7 +172,7 @@ function initialize() {
 
   document.getElementById('btnOauthBitlyForgetToken').addEventListener('click', function() {
     chrome.storage.local.set({
-      OAuthBitLy: { enabled: false, token: '' }
+      OAuthBitLy: { enabled: false, token: '' },
     }, function() { // On saved
       currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' }; // Update local copy of settings
       oauthBitlyUpdateUI();
@@ -180,24 +180,24 @@ function initialize() {
   });
 
   // Real-time validation
-  $(durationDelay).focusout(function(e) {
+  $(durationDelay).focusout(function() {
     if(durationDelay.value < 0) {
       durationDelay.value = currentSyncSettingsValues.durationDelay;
     }
   });
-  $(durationFadeIn).focusout(function(e) {
+  $(durationFadeIn).focusout(function() {
     if(durationFadeIn.value < 0) {
       durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
     }
   });
-  $(durationFadeOut).focusout(function(e) {
+  $(durationFadeOut).focusout(function() {
     if(durationFadeOut.value < 0) {
       durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
     }
   });
 
   // Init previews
-  $('.previewLink').click(function(e) {
+  $('.previewLink').click(function() {
     return false; // Don't allow the preview links to actually navigate anywhere.
   });
 }
@@ -339,11 +339,11 @@ function btnSaveClick() {
     // Animation
     durationDelay: iDurationDelay,
     durationFadeIn: iDurationFadeIn,
-    durationFadeOut: iDurationFadeOut
+    durationFadeOut: iDurationFadeOut,
   }, function() { // On saved
     chrome.storage.local.set({
       // Page Activation
-      activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val())
+      activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val()),
     }, function() { // On (local only) saved
       // Must occur after both sync and local are set (hence chained callback functions).
       spnSaved.show().delay(2500).fadeOut();
@@ -447,7 +447,7 @@ function chkDisplayDomainOnlyChange() {
 
 /* Page activation */
 
-function showActivationTypeOptions(e) {
+function showActivationTypeOptions() {
   switch($('input[name=activationType]:checked', '#formActivationType').val()) {
     case '1': // == All
       $('#formWhitelist').hide();
@@ -482,7 +482,7 @@ function isValidUrl(sUrl) {
   }
 }
 
-function addToWhitelist(clickEvt) {
+function addToWhitelist() {
   let tmpUrl;
   try{
     tmpUrl = isValidUrl(txtDomainsWhitelist.value);
@@ -509,7 +509,7 @@ function addToWhitelist(clickEvt) {
   }
 }
 
-function removeFromWhitelist(clickEvt) {
+function removeFromWhitelist() {
   // Determine which whitelist entries to remove
   const indicesToRemove = [];
   for(let count = listDomainsWhitelist.options.length - 1; count >= 0; count--) {
@@ -527,7 +527,7 @@ function removeFromWhitelist(clickEvt) {
   });
 }
 
-function addToBlacklist(clickEvt) {
+function addToBlacklist() {
   let tmpUrl;
   try{
     tmpUrl = isValidUrl(txtDomainsBlacklist.value);
@@ -554,7 +554,7 @@ function addToBlacklist(clickEvt) {
   }
 }
 
-function removeFromBlacklist(clickEvt) {
+function removeFromBlacklist() {
   // Determine which blacklist entries to remove
   const indicesToRemove = [];
   for(let count = listDomainsBlacklist.options.length - 1; count >= 0; count--) {
@@ -622,7 +622,7 @@ function oauthGoogl(e, silent) {
     silent = false; // Default
   }
   // Request Google OAuth
-  chrome.identity.getAuthToken({ interactive: !silent }, function(token) { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
+  chrome.identity.getAuthToken({ interactive: !silent }, function() { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
     if (chrome.runtime.lastError) {
       console.log('Google OAuth failed (silent: ' + silent + ')');
       if(currentLocalSettingsValues.OAuthGooGl.enabled) {
@@ -702,14 +702,14 @@ function oauthBitlyBasicAuth(userID, userSecret) {
     method: 'POST',
     headers: {
       Authorization: 'Basic ' + btoa(userID + ':' + userSecret),
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   }).then(function (response) {
     if (response.ok) {
       // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
       response.text().then(function (txtResponse) {
         chrome.storage.local.set({
-          OAuthBitLy: { enabled: true, token: txtResponse }
+          OAuthBitLy: { enabled: true, token: txtResponse },
         }, function() { // On saved
           // Update local copy of settings
           currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: txtResponse };

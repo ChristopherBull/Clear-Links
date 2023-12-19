@@ -33,8 +33,7 @@ export const defaultSettings = {
   // Animation
   durationDelay: 100,
   durationFadeIn: 150,
-  durationFadeOut: 200
-  // oauthBitly:'', // TODO - moved and refactored to local storage
+  durationFadeOut: 200,
 };
 // Local (not synced) default settings
 export const defaultSettingsLocal = {
@@ -44,5 +43,5 @@ export const defaultSettingsLocal = {
   domainBlacklist: [],
   // Oauth tokens - requires signing in and authorising accounts, so must be stored locally, not synced.
   OAuthGooGl: { enabled: false },
-  OAuthBitLy: { enabled: false, token: '' }
+  OAuthBitLy: { enabled: false, token: '' },
 };
