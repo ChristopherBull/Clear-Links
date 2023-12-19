@@ -27,6 +27,7 @@
     "rules": {
         "@stylistic/indent": ["error", 2],
         "@stylistic/semi": ["error", "always"],
+        "@stylistic/quotes": ["error", "single"],
         "no-var": "error",
 
         // TODO Update/enable these rules

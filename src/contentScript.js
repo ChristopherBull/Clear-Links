@@ -27,7 +27,7 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
 let settings;
 let winDimensions;
 // Init the tooltip
-const tooltip = $($.parseHTML("<div id='ClContainer'><img src='' alt='Secure protocol used in link' class='ClIcon ClIconPadlockLocked'></img><img src='' alt='This is a Mailto link' class='ClIcon ClIconEmail'></img><img src='' alt='This link uses Javascript' class='ClIcon ClIconJS'></img><img src='' alt='Requesting Full URL' class='ClIcon ClLoading ClIconHourglass'></img><img src='' alt='Short URL is not expandable' class='ClIcon ClIconHourglassBroken'></img><p class='ClURL'></p></div>"));
+const tooltip = $($.parseHTML('<div id="ClContainer"><img src="" alt="Secure protocol used in link" class="ClIcon ClIconPadlockLocked"></img><img src="" alt="This is a Mailto link" class="ClIcon ClIconEmail"></img><img src="" alt="This link uses Javascript" class="ClIcon ClIconJS"></img><img src="" alt="Requesting Full URL" class="ClIcon ClLoading ClIconHourglass"></img><img src="" alt="Short URL is not expandable" class="ClIcon ClIconHourglassBroken"></img><p class="ClURL"></p></div>'));
 const secureIcon = tooltip.children().first();
 const emailIcon = secureIcon.next();
 const jsIcon = emailIcon.next();
@@ -60,7 +60,7 @@ $(function() {
         break;
       case 'mailto:':
         if(settings.displayMailtoLinks) {
-          showTooltip($(this), "<span style='color:" + settings.cssColorMailto + ";'>" + this.href.substring(7, this.href.length) + '</span>', false, false, true);
+          showTooltip($(this), '<span style="color:' + settings.cssColorMailto + ';">' + this.href.substring(7, this.href.length) + '</span>', false, false, true);
         }
         break;
       case 'https:':
@@ -165,7 +165,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
   let urlToDisplay = '';
   if(settings.displayDomainOnly) {
     if(hostname) {
-      urlToDisplay += "<span style='color:" + settings.cssColorDomainText + ";'>" + hostname + '</span>';
+      urlToDisplay += '<span style="color:' + settings.cssColorDomainText + ';">' + hostname + '</span>';
     }
   } else {
     if(settings.displayUrlScheme && protocol) {
@@ -184,7 +184,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
       urlToDisplay += '@';
     }
     if(settings.displayUrlHostname && hostname) {
-      urlToDisplay += "<span style='color:" + settings.cssColorDomainText + ";'>" + hostname + '</span>';
+      urlToDisplay += '<span style="color:' + settings.cssColorDomainText + ';">' + hostname + '</span>';
     }
     if(settings.displayUrlPort && port && port !== '') {
       urlToDisplay += ':' + port;
