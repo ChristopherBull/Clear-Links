@@ -1,215 +1,333 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Link Domain Transparency &mdash; Options</title>
-	<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
-	<link href="options.css" rel="stylesheet" type="text/css">
-	<link href="contentScript.css" rel="stylesheet" type="text/css">
-</head>
-<body>
-	<div id="tabs">
-		<ul>
-			<li><a href="#fragment-1"><span>General</span></a></li>
-			<li><a href="#fragment-2"><span>Domain Activation</span></a></li>
-			<!--<li><a href="#fragment-3"><span>Position</span></a></li>-->
-			<li><a href="#fragment-4"><span>Style</span></a></li>
-			<li><a href="#fragment-5"><span>Animation</span></a></li>
-			<li><a href="#fragment-6"><span>Short URLs</span></a></li>
-		</ul>
+<html lang="en">
+    <head>
+        <title>Link Domain Transparency &mdash; Options</title>
+        <link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
+        <link href="options.css" rel="stylesheet" type="text/css">
+        <link href="contentScript.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="tabs">
+            <ul>
+                <li>
+                    <a href="#fragment-1">
+                        <span>General</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fragment-2">
+                        <span>Domain Activation</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fragment-4">
+                        <span>Style</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fragment-5">
+                        <span>Animation</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#fragment-6">
+                        <span>Short URLs</span>
+                    </a>
+                </li>
+            </ul>
 		
-		<div id="fragment-1">
-			<label><input type="checkbox" id="chkDisplayExternalDomainsOnly"/> Show Clear Links' tooltip for links to external domains only</label><br/>
-			<fieldset>
-				<legend><input type="checkbox" id="chkDisplayDomainOnly"/> Show Domain only</legend>
-				<label><input type="checkbox" id="chkDisplayUrlScheme"/> Show Scheme (Protocol)</label><br/>
-				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth"/> Hide authentication information</label><br/>
-				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlUsername"/> Show Username</label><br/>
-				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlPassword"/> Show Username + Password</label><br/>
-				<label><input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask"/> Show Username + Masked Password</label><br/>
-				<label><input type="checkbox" id="chkDisplayUrlHostname"/> Show Hostname/Domain</label><br/>
-				<label><input type="checkbox" id="chkDisplayUrlPort"/> Show Port</label><br/>
-				<label><input type="checkbox" id="chkDisplayUrlPath"/> Show Path</label><br/>
-				<label><input type="checkbox" id="chkDisplayUrlQuery"/> Show Query</label><br/>
-				<label><input type="checkbox" id="chkDisplayUrlFragment"/> Show Fragment (Hash)</label>
-			</fieldset>
-			<fieldset>
-				<legend>Other link types to display:</legend>
-				<label><input type="checkbox" id="chkDisplayJavascriptLinks"/> Javascript</label><br/>
-				<label><input type="checkbox" id="chkDisplayMailtoLinks"/> Mailto</label><br/>
-				<label><input type="checkbox" id="chkDisplayShortUrlsOnly"/> Known short URLs only (currently: goo.gl)</label>
-			</fieldset>
-		</div>
+            <div id="fragment-1">
+                <label>
+                    <input type="checkbox" id="chkDisplayExternalDomainsOnly"> Show Clear Links' tooltip for links to external domains only
+                </label>
+                <br>
+                <fieldset>
+                    <legend>
+                        <input type="checkbox" id="chkDisplayDomainOnly"> Show Domain only
+                    </legend>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlScheme"> Show Scheme (Protocol)
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth"> Hide authentication information
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" name="urlAuth" id="rdoDisplayUrlUsername"> Show Username
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" name="urlAuth" id="rdoDisplayUrlPassword"> Show Username + Password
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask"> Show Username + Masked Password
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlHostname"> Show Hostname/Domain
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlPort"> Show Port
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlPath"> Show Path
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlQuery"> Show Query
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayUrlFragment"> Show Fragment (Hash)
+                    </label>
+                </fieldset>
+                <fieldset>
+                    <legend>Other link types to display:</legend>
+                    <label>
+                        <input type="checkbox" id="chkDisplayJavascriptLinks"> Javascript
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayMailtoLinks"> Mailto
+                    </label>
+                    <br>
+                    <label>
+                        <input type="checkbox" id="chkDisplayShortUrlsOnly"> Known short URLs only (currently: goo.gl)
+                    </label>
+                </fieldset>
+            </div>
 		
-		<div id="fragment-2">
-			<form id="formActivationType">
-				<label><input type="radio" id="activationType1" name="activationType" value="1" />All websites</label><br />
-				<label><input type="radio" id="activationType2" name="activationType" value="2" />Whitelist - Only activate on sites you specify</label><br />
-				<label><input type="radio" id="activationType3" name="activationType" value="3" />Blacklist - Activate on all sites, except ones you specify</label>
-			</form>
-			<form id="formWhitelist" action="#">
-				<hr/>
-				<h2>Whitelist</h2>
-				<input type="text" id="txtDomainsWhitelist"></input>
-				<input type="button" id="btnDomainsWhitelistAdd" value="+ Add Domain"></input>
-				<br/>
-				<div id="divErrAreaWhitelist"><span id="txtErrMsgDomainWhitelist"></span>&nbsp;<input type="button" id="btnClearErrMsgWhitelist" value="OK"></input></div>
-				<select id="listDomainsWhitelist" size="10" multiple></select>
-				<input type="button" id="btnDomainsWhitelistRemove" value="- Remove Selected"></input>
-			</form>
-			<form id="formBlacklist" action="#">
-				<hr/>
-				<h2>Blacklist</h2>
-				<input type="text" id="txtDomainsBlacklist"></input>
-				<input type="button" id="btnDomainsBlacklistAdd" value="+ Add Domain"></input>
-				<br/>
-				<div id="divErrAreaBlacklist"><span id="txtErrMsgDomainBlacklist"></span>&nbsp;<input type="button" id="btnClearErrMsgBlacklist" value="OK"></input></div>
-				<select id="listDomainsBlacklist" size="10" multiple></select>
-				<input type="button" id="btnDomainsBlacklistRemove" value="- Remove Selected"></input>
-			</form>
-		</div>
+            <div id="fragment-2">
+                <form id="formActivationType">
+                    <label>
+                        <input type="radio" id="activationType1" name="activationType" value="1">All websites
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" id="activationType2" name="activationType" value="2">Whitelist - Only activate on sites you specify
+                    </label>
+                    <br>
+                    <label>
+                        <input type="radio" id="activationType3" name="activationType" value="3">Blacklist - Activate on all sites, except ones you specify
+                    </label>
+                </form>
+                <form id="formWhitelist" action="#">
+                    <hr>
+                    <h2>Whitelist</h2>
+                    <input type="text" id="txtDomainsWhitelist"></input>
+                    <input type="button" id="btnDomainsWhitelistAdd" value="+ Add Domain"></input>
+                    <br>
+                    <div id="divErrAreaWhitelist">
+                        <span id="txtErrMsgDomainWhitelist"></span>
+                        &nbsp;<input type="button" id="btnClearErrMsgWhitelist" value="OK"></input>
+                    </div>
+                    <select id="listDomainsWhitelist" size="10" multiple></select>
+                    <input type="button" id="btnDomainsWhitelistRemove" value="- Remove Selected"></input>
+                </form>
+                <form id="formBlacklist" action="#">
+                    <hr>
+                    <h2>Blacklist</h2>
+                    <input type="text" id="txtDomainsBlacklist"></input>
+                    <input type="button" id="btnDomainsBlacklistAdd" value="+ Add Domain"></input>
+                    <br>
+                    <div id="divErrAreaBlacklist">
+                        <span id="txtErrMsgDomainBlacklist"></span>
+                        &nbsp;<input type="button" id="btnClearErrMsgBlacklist" value="OK"></input>
+                    </div>
+                    <select id="listDomainsBlacklist" size="10" multiple></select>
+                    <input type="button" id="btnDomainsBlacklistRemove" value="- Remove Selected"></input>
+                </form>
+            </div>
 		
-		<!--<div id="fragment-3">
-			<p>Positional options.</p>
-		</div>-->
+            <div id="fragment-4">
+                <!-- Colour pickers -->
+                <div class="divTable inlineBlock">
+                    <div class="divTableBody">
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">Background:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input id="colorBackground" type="color" name="backgroundColor">
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">Border Color:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input id="colorBorder" type="color" name="cssColorBorder">
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">URL Text Colour:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input id="colorGeneralURLText" type="color" name="colorGeneralURLText">
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">URL's Domain Text Colour:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input id="colorDomainText" type="color" name="domainTextColor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="divTable colTwo">
+                    <div class="divTableBody">
+                        <div class="divTableRow">
+                            <div class="divTableCell">
+                                <span>Themes:</span>
+                                <select id="themeSelect">
+                                    <option value="1" selected>Light</option>
+                                    <option value="2">Dark</option>
+                                    <option value="3">Original</option>
+                                    <option value="0">Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell">
+                                <div id="stylePreview">
+                                    <div class="ClContainer">
+                                        <p class="ClURL">
+                                            <span class="ClDomain">www.preview.com</span>/index.html
+                                        </p>
+                                    </div>
+                                    <br>
+                                    <div class="ClContainer">
+                                        <img src="" alt="Secure protocol used in link" id="ClIconPadlockLocked" class="ClIcon"></img>
+                                        <p class="ClURL">
+                                            <span class="ClDomain">www.secure-preview.com</span>/index.html
+                                        </p>
+                                    </div>
+                                    <br>
+                                    <div class="ClContainer">
+                                        <img src="" alt="This is a Mailto link" id="ClIconEmail" class="ClIcon"></img>
+                                        <p class="ClURL">
+                                            <span class="ClDomain">bob@example.com</span>
+                                        </p>
+                                    </div>
+                                    <br>
+                                    <div class="ClContainer">
+                                        <img src="" alt="This link uses Javascript" id="ClIconJS" class="ClIcon JsIconNoText"></img>
+                                        <p class="ClURL">&nbsp;</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		
-		<div id="fragment-4">
-			<!-- Colour pickers -->
-			<div class="divTable inlineBlock">
-				<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell desc">Background:&nbsp;</div>
-						<div class="divTableCell"><input id="colorBackground" type="color" name="backgroundColor"/></div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell desc">Border Color:&nbsp;</div>
-						<div class="divTableCell"><input id="colorBorder" type="color" name="cssColorBorder"/></div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell desc">URL Text Colour:&nbsp;</div>
-						<div class="divTableCell"><input id="colorGeneralURLText" type="color" name="colorGeneralURLText"/></div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell desc">URL's Domain Text Colour:&nbsp;</div>
-						<div class="divTableCell"><input id="colorDomainText" type="color" name="domainTextColor"/></div>
-					</div>
-				</div>
-			</div>
-			<div class="divTable colTwo">
-				<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell">
-							<span>Themes:</span>
-							<select id="themeSelect">
-								<option value="1" selected>Light</option>
-								<option value="2">Dark</option>
-								<option value="3">Original</option>
-								<option value="0">Custom</option>
-							</select>
-						</div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell">
-							<div id="stylePreview">
-								<div class='ClContainer'><p class='ClURL'><span class="ClDomain">www.preview.com</span>/index.html</p></div><br/>
-								<div class='ClContainer'><img src='' alt='Secure protocol used in link' id="ClIconPadlockLocked" class='ClIcon'></img><p class='ClURL'><span class="ClDomain">www.secure-preview.com</span>/index.html</p></div><br/>
-								<div class='ClContainer'><img src='' alt='This is a Mailto link' id="ClIconEmail" class='ClIcon'></img><p class='ClURL'><span class="ClDomain">bob@example.com</span></p></div><br/>
-								<div class='ClContainer'><img src='' alt='This link uses Javascript' id="ClIconJS" class='ClIcon JsIconNoText'></img><p class='ClURL'>&nbsp;</p></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+            <div id="fragment-5">
+                <div class="divTable">
+                    <div class="divTableBody">
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">Delay before displaying:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input type="number" id="durationDelay" name="durationDelay" class="inputMilliseconds">&nbsp;ms
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">Fade in duration:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMilliseconds">&nbsp;ms
+                            </div>
+                        </div>
+                        <div class="divTableRow">
+                            <div class="divTableCell desc">Fade out duration:&nbsp;</div>
+                            <div class="divTableCell">
+                                <input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMilliseconds">&nbsp;ms
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		
-		<div id="fragment-5">
-			<div class="divTable">
-				<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell desc">Delay before displaying:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationDelay" name="durationDelay" class="inputMilliseconds" />&nbsp;ms</div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell desc">Fade in duration:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMilliseconds" />&nbsp;ms</div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell desc">Fade out duration:&nbsp;</div>
-						<div class="divTableCell"><input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMilliseconds" />&nbsp;ms</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div id="fragment-6">
-			<p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
-			<div id="accordionOauth">
-				<h3>
-					Bit.ly
-					<img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
-				</h3>
-				<div>
-					<div id="divOauthBitlyLoggedOut" class="divTable">
-						<div class="divTableBody">
-							<div class="divTableRow">
-								<div class="divTableCell desc">Username:&nbsp;</div>
-								<div class="divTableCell"><input type="text" id="txtBitlyUser"/></div>
-							</div>
-							<div class="divTableRow">
-								<div class="divTableCell desc">Password:&nbsp;</div>
-								<div class="divTableCell"><input type="password" id="pwdBitlyPass"/></div>
-							</div>
-							<div class="divTableRow">
-								<div class="divTableCell desc">&nbsp;</div>
-								<div class="divTableCell rightAlign"><input type="button" id="btnOauthBitly" value="Login"/></div>
-							</div>
-						</div>
-					</div>
-					<div id="divOauthBitlyLoggedIn">
-						<p>OAuth access token: <span id="lblOauthBitlyToken"></span></p>
-						<span>Forget Bit.ly OAuth token: </span><input type="button" id="btnOauthBitlyForgetToken" value="Logout"/>
-					</div>
-					<!--<p>To generate your own 'Generic Access Token' <a href="https://bitly.com/a/oauth_apps">click here</a> and paste it in the field above.</p>
-					<input type="text" id="txtOauthBitly" size="45" />-->
-				</div>
-				<h3>
-					Goo.gl
-					<img src="images/check-mark.png" alt="Google account authorised" id="authTickGooGl" class="authTickHidden"></img>
-				</h3>
-				<div>
-					<input type="button" id="btnOauthGoogl" />
-					<!--<p>TODO - Ability to get an auth token (manual input fields, or using official Google+ login button)</p>-->
-					<p>Example link which points to <em>www.google.com</em>: <a href="http://goo.gl/fbsS">goo.gl/fbsS</a></p>
-					<input type="button" id="btnOauthGooglRevoke" value="Revoke Google OAuth" />
-				</div>
-			</div>
-		</div>
-	</div>
+            <div id="fragment-6">
+                <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
+                <div id="accordionOauth">
+                    <h3>
+                        Bit.ly
+                        <img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
+                    </h3>
+                    <div>
+                        <div id="divOauthBitlyLoggedOut" class="divTable">
+                            <div class="divTableBody">
+                                <div class="divTableRow">
+                                    <div class="divTableCell desc">Username:&nbsp;</div>
+                                    <div class="divTableCell">
+                                        <input type="text" id="txtBitlyUser">
+                                    </div>
+                                </div>
+                                <div class="divTableRow">
+                                    <div class="divTableCell desc">Password:&nbsp;</div>
+                                    <div class="divTableCell">
+                                        <input type="password" id="pwdBitlyPass">
+                                    </div>
+                                </div>
+                                <div class="divTableRow">
+                                    <div class="divTableCell desc">&nbsp;</div>
+                                    <div class="divTableCell rightAlign">
+                                        <input type="button" id="btnOauthBitly" value="Login">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divOauthBitlyLoggedIn">
+                            <p>
+                                OAuth access token: <span id="lblOauthBitlyToken"></span>
+                            </p>
+                            <span>Forget Bit.ly OAuth token: </span>
+                            <input type="button" id="btnOauthBitlyForgetToken" value="Logout">
+                        </div>
+                    </div>
+                    <h3>
+                        Goo.gl
+                        <img src="images/check-mark.png" alt="Google account authorised" id="authTickGooGl" class="authTickHidden"></img>
+                    </h3>
+                    <div>
+                        <input type="button" id="btnOauthGoogl">
+                        <p>
+                            Example link which points to <em>www.google.com</em>
+                            : <a href="http://goo.gl/fbsS">goo.gl/fbsS</a>
+                        </p>
+                        <input type="button" id="btnOauthGooglRevoke" value="Revoke Google OAuth">
+                    </div>
+                </div>
+            </div>
+        </div>
 	
-	<p class="linkDemoContainer">Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a><!--<br/>
-	Sample Javascript link: <a href="javascript:void(0);" class="previewLink">Demo</a><br/>
-	Sample mailto link: <a href="mailto:no-reply@example.com" class="previewLink">Demo</a>--></p>
+        <p class="linkDemoContainer">
+            Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a>
+        </p>
 	
-	<div id="divBtnGroup">
-		<button id="save">Save All</button>
-		<button id="restore">Restore Defaults</button>
-		<button id="delAll">Delete All Saved Info</button>
-		<span id="saved">Saved.</span>
-		<div id="confirm">
-			Are you sure?
-			<button id="btnConfirmY">Yes</button>
-			<button id="btnConfirmN">No</button>
-			<br/>
-			<span id="delAllFurtherInfo"><em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.</span>
-			<span id="restoreFurtherInfo"><em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").</span>
-		</div>
-	</div>
+        <div id="divBtnGroup">
+            <button id="save">Save All</button>
+            <button id="restore">Restore Defaults</button>
+            <button id="delAll">Delete All Saved Info</button>
+            <span id="saved">Saved.</span>
+            <div id="confirm">
+                Are you sure?
+                <button id="btnConfirmY">Yes</button>
+                <button id="btnConfirmN">No</button>
+                <br>
+                <span id="delAllFurtherInfo">
+                    <em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.
+                </span>
+                <span id="restoreFurtherInfo">
+                    <em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").
+                </span>
+            </div>
+        </div>
 	
-	<script type="text/javascript" src="jquery-2.2.3.min.js"></script>
-	<script type="text/javascript" src="jquery-ui.min.js"></script>
-	<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
-	<script type="module" src="defaultSettings.js"></script>
-	<script type="module" src="themes.js"></script>
-	<script type="module" src="options.js"></script>
-	<script type="module" src="contentScriptLoaderForOptionsPage.js"></script>
-</body>
+        <script type="text/javascript" src="jquery-2.2.3.min.js"></script>
+        <script type="text/javascript" src="jquery-ui.min.js"></script>
+        <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+        <script type="module" src="defaultSettings.js"></script>
+        <script type="module" src="themes.js"></script>
+        <script type="module" src="options.js"></script>
+        <script type="module" src="contentScriptLoaderForOptionsPage.js"></script>
+    </body>
 </html>

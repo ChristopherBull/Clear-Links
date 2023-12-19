@@ -10,11 +10,12 @@
     "spell": "cspell README.md \"/src/*.*\""
   },
   "devDependencies": {
+    "@html-eslint/eslint-plugin": "^0.22.0",
+    "@html-eslint/parser": "^0.22.0",
     "@stylistic/eslint-plugin": "^1.5.0",
     "cspell": "^8.1.2",
     "eslint": "^8.55.0",
     "eslint-plugin-css": "^0.8.1",
-    "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-promise": "^6.1.1",

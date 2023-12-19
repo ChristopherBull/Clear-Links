@@ -16,17 +16,25 @@
         "gapi": "readonly", // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
         "chrome": "readonly" // Chrome Extension API
     },
+    "overrides": [
+        {
+            // HTML-only liniting of HTML files
+            "files": ["*.html"],
+            "parser": "@html-eslint/parser",
+            "extends": ["plugin:@html-eslint/recommended"]
+        }
+    ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
     "plugins": [
+        "@html-eslint",
         "@stylistic",
         "sonarjs",
         "import",
         // "promise", // TODO renable and fix issues later
         // "jsdoc", // TODO renable and fix issues later
-        "html",
         "css"
       ],
     "rules": {
