@@ -106,25 +106,25 @@ function initialize() {
   /* tooltipPreview = document.getElementById("tooltipPreview");
     tooltipPreviewText = document.getElementById("tooltipPreviewText");
   tooltipPreviewTextDomain = document.getElementById("tooltipPreviewTextDomain"); */
-  themeSelect = document.getElementById('themeSelect');
+  themeSelect = document.getElementById('theme-select');
   // Short URL DOM elements
   txtBitlyUser = document.getElementById('txtBitlyUser');
-  pwdBitlyPass = document.getElementById('pwdBitlyPass');
-  btnOauthBitly = document.getElementById('btnOauthBitly');
-  btnOauthGoogl = document.getElementById('btnOauthGoogl');
-  btnOauthGooglRevoke = document.getElementById('btnOauthGooglRevoke');
+  pwdBitlyPass = document.getElementById('pwd-bitly-pass');
+  btnOauthBitly = document.getElementById('btn-oauth-bitly');
+  btnOauthGoogl = document.getElementById('btn-oauth-googl');
+  btnOauthGooglRevoke = document.getElementById('btn-oauth-googl-revoke');
   // DOM elements - Domain activation
-  $('#formActivationType input').on('change', showActivationTypeOptions);
-  btnDomainsWhitelistAdd = document.getElementById('btnDomainsWhitelistAdd');
-  btnDomainsWhitelistRemove = document.getElementById('btnDomainsWhitelistRemove');
-  txtDomainsWhitelist = document.getElementById('txtDomainsWhitelist');
-  listDomainsWhitelist = document.getElementById('listDomainsWhitelist');
-  $('#btnClearErrMsgWhitelist').click(hideWhitelistErrMsg);
-  btnDomainsBlacklistAdd = document.getElementById('btnDomainsBlacklistAdd');
-  btnDomainsBlacklistRemove = document.getElementById('btnDomainsBlacklistRemove');
-  txtDomainsBlacklist = document.getElementById('txtDomainsBlacklist');
-  listDomainsBlacklist = document.getElementById('listDomainsBlacklist');
-  $('#btnClearErrMsgBlacklist').click(hideBlacklistErrMsg);
+  $('#form-activation-type input').on('change', showActivationTypeOptions);
+  btnDomainsWhitelistAdd = document.getElementById('btn-domains-whitelist-add');
+  btnDomainsWhitelistRemove = document.getElementById('btn-domains-whitelist-remove');
+  txtDomainsWhitelist = document.getElementById('txt-domains-whitelist');
+  listDomainsWhitelist = document.getElementById('list-domains-whitelist');
+  $('#btn-clear-err-msg-whitelist').click(hideWhitelistErrMsg);
+  btnDomainsBlacklistAdd = document.getElementById('btn-domains-blacklist-add');
+  btnDomainsBlacklistRemove = document.getElementById('btn-domains-blacklist-remove');
+  txtDomainsBlacklist = document.getElementById('txt-domains-blacklist');
+  listDomainsBlacklist = document.getElementById('list-domains-blacklist');
+  $('#btn-clear-err-msg-blacklist').click(hideBlacklistErrMsg);
 
   // Event handlers (prior to restoring settings)
   colorBackground.addEventListener('change', function() {
@@ -170,7 +170,7 @@ function initialize() {
   btnOauthGoogl.addEventListener('click', oauthGoogl);
   btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
 
-  document.getElementById('btnOauthBitlyForgetToken').addEventListener('click', function() {
+  document.getElementById('btn-oauth-bitly-forget-token').addEventListener('click', function() {
     chrome.storage.local.set({
       OAuthBitLy: { enabled: false, token: '' },
     }, function() { // On saved
@@ -280,7 +280,7 @@ function restoreSettings() {
         listDomainsBlacklist.add(option);
       }
       // Short URLs -- OAuth tokens
-      document.getElementById('lblOauthBitlyToken').textContent = items.OAuthBitLy.token;
+      document.getElementById('lbl-oauth-bitly-token').textContent = items.OAuthBitLy.token;
     }
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
     oauthGooglSilent();
@@ -343,7 +343,7 @@ function btnSaveClick() {
   }, function() { // On saved
     chrome.storage.local.set({
       // Page Activation
-      activationFilter: parseInt($('input[name=activationType]:checked', '#formActivationType').val()),
+      activationFilter: parseInt($('input[name=activationType]:checked', '#form-activation-type').val()),
     }, function() { // On (local only) saved
       // Must occur after both sync and local are set (hence chained callback functions).
       spnSaved.show().delay(2500).fadeOut();
@@ -368,8 +368,8 @@ function btnRestoreClick() {
     divConfirm.style.visibility = 'hidden';
   };
   divConfirm.style.visibility = 'visible';
-  $('#restoreFurtherInfo').show();
-  $('#delAllFurtherInfo').hide();
+  $('#restore-further-info').show();
+  $('#del-all-further-info').hide();
 }
 
 function btnDelAllSavedDataClick() {
@@ -395,8 +395,8 @@ function btnDelAllSavedDataClick() {
     divConfirm.style.visibility = 'hidden';
   };
   divConfirm.style.visibility = 'visible';
-  $('#delAllFurtherInfo').show();
-  $('#restoreFurtherInfo').hide();
+  $('#del-all-further-info').show();
+  $('#restore-further-info').hide();
 }
 
 function chkDisplayDomainOnlyChange() {
@@ -448,18 +448,18 @@ function chkDisplayDomainOnlyChange() {
 /* Page activation */
 
 function showActivationTypeOptions() {
-  switch($('input[name=activationType]:checked', '#formActivationType').val()) {
+  switch($('input[name=activationType]:checked', '#form-activation-type').val()) {
     case '1': // == All
-      $('#formWhitelist').hide();
-      $('#formBlacklist').hide();
+      $('#form-whitelist').hide();
+      $('#form-blacklist').hide();
       break;
     case '2': // == Whitelist
-      $('#formWhitelist').show();
-      $('#formBlacklist').hide();
+      $('#form-whitelist').show();
+      $('#form-blacklist').hide();
       break;
     case '3': // == Blacklist
-      $('#formWhitelist').hide();
-      $('#formBlacklist').show();
+      $('#form-whitelist').hide();
+      $('#form-blacklist').show();
       break;
   }
 }
@@ -489,7 +489,7 @@ function addToWhitelist() {
     hideWhitelistErrMsg();
   }catch(err) {
     $('#txtErrMsgDomainWhitelist').text(err.message);
-    $('#divErrAreaWhitelist').show();
+    $('#div-err-area-whitelist').show();
     return;
   }
   
@@ -534,7 +534,7 @@ function addToBlacklist() {
     hideBlacklistErrMsg();
   } catch(err) {
     $('#txtErrMsgDomainBlacklist').text(err.message);
-    $('#divErrAreaBlacklist').show();
+    $('#div-err-area-blacklist').show();
     return;
   }
   
@@ -573,11 +573,11 @@ function removeFromBlacklist() {
 }
 
 function hideWhitelistErrMsg() {
-  $('#divErrAreaWhitelist').hide();
+  $('#div-err-area-whitelist').hide();
 }
 
 function hideBlacklistErrMsg() {
-  $('#divErrAreaBlacklist').hide();
+  $('#div-err-area-blacklist').hide();
 }
 
 /* Styles */
@@ -639,7 +639,7 @@ function oauthGoogl(e, silent) {
       // Update UI - Show Auth token to user
       btnOauthGoogl.disabled = true;
       $(btnOauthGooglRevoke).show();
-      $('#authTickGooGl').attr('class', 'authTick');
+      $('#auth-tick-googl').attr('class', 'auth-tick');
       // DEBUG ONLY - Test Auth by expanding an example URL
       /* chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
         if(response.ignore || response.result.error){
@@ -671,22 +671,22 @@ function oauthGooglRevoke() {
       // Update UI.
       btnOauthGoogl.disabled = false;
       $(btnOauthGooglRevoke).hide();
-      $('#authTickGooGl').attr('class', 'authTickHidden');
+      $('#auth-tick-googl').attr('class', 'auth-tick-hidden');
     }
   });
 }
 
 function oauthBitlyUpdateUI() {
   if(currentLocalSettingsValues.OAuthBitLy.enabled) {
-    $('#btnOauthBitly').prop('disabled', true);
-    $('#btnOauthBitlyForgetToken').show();
-    $('#authTickBitLy').attr('class', 'authTick');
+    $('#btn-oauth-bitly').prop('disabled', true);
+    $('#btn-oauth-bitly-forget-token').show();
+    $('#auth-tick-bitly').attr('class', 'auth-tick');
     $('#divOauthBitlyLoggedIn').show();
     $('#divOauthBitlyLoggedOut').hide();
   } else {
-    $('#btnOauthBitly').prop('disabled', false);
-    $('#btnOauthBitlyForgetToken').hide();
-    $('#authTickBitLy').attr('class', 'authTickHidden');
+    $('#btn-oauth-bitly').prop('disabled', false);
+    $('#btn-oauth-bitly-forget-token').hide();
+    $('#auth-tick-bitly').attr('class', 'auth-tick-hidden');
     $('#divOauthBitlyLoggedIn').hide();
     $('#divOauthBitlyLoggedOut').show();
   }
@@ -694,7 +694,7 @@ function oauthBitlyUpdateUI() {
 
 function oauthBitlyBasicAuth(userID, userSecret) {
   // Update UI (logging in)
-  $('#btnOauthBitly').prop('disabled', true);
+  $('#btn-oauth-bitly').prop('disabled', true);
   // HTTP Basic Authentication Flow (with hashed username and password)
   // Note 1: Unable to use "Resource Owner Credentials Grants" as "client_secret" is not secret in a public Chrome extension
   // Note 2: Unable to use "OAuth Web Flow", as it requires a "redirect_uri"; unable to get BitLy's implementation to work with Chrome Extensions' Options' pages. Also requires "client_secret" (see Note 2 for details)
@@ -714,12 +714,12 @@ function oauthBitlyBasicAuth(userID, userSecret) {
           // Update local copy of settings
           currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: txtResponse };
           // Update UI (after saved)
-          document.getElementById('lblOauthBitlyToken').textContent = txtResponse;
+          document.getElementById('lbl-oauth-bitly-token').textContent = txtResponse;
           oauthBitlyUpdateUI();
         });
         // Update UI (immediately)
-        document.getElementById('pwdBitlyPass').value = '';
-        $('#btnOauthBitly').prop('disabled', false);
+        document.getElementById('pwd-bitly-pass').value = '';
+        $('#btn-oauth-bitly').prop('disabled', false);
       });
     } else {
       response.json().then(function (jsonResponse) {
@@ -727,8 +727,8 @@ function oauthBitlyBasicAuth(userID, userSecret) {
         // TODO show error to user
       });
       // Update UI
-      document.getElementById('pwdBitlyPass').value = '';
-      $('#btnOauthBitly').prop('disabled', false);
+      document.getElementById('pwd-bitly-pass').value = '';
+      $('#btn-oauth-bitly').prop('disabled', false);
     }
   }).catch((err) => console.error(err)); // TODO update UI to inform user of error
 }

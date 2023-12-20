@@ -102,7 +102,7 @@
             </div>
 		
             <div id="fragment-2">
-                <form id="formActivationType">
+                <form id="form-activation-type">
                     <label>
                         <input type="radio" id="activationType1" name="activationType" value="1">All websites
                     </label>
@@ -115,70 +115,70 @@
                         <input type="radio" id="activationType3" name="activationType" value="3">Blacklist - Activate on all sites, except ones you specify
                     </label>
                 </form>
-                <form id="formWhitelist" action="#">
+                <form id="form-whitelist" action="#">
                     <hr>
                     <h2>Whitelist</h2>
-                    <input type="text" id="txtDomainsWhitelist"></input>
-                    <input type="button" id="btnDomainsWhitelistAdd" value="+ Add Domain"></input>
+                    <input type="text" id="txt-domains-whitelist"></input>
+                    <input type="button" id="btn-domains-whitelist-add" value="+ Add Domain"></input>
                     <br>
-                    <div id="divErrAreaWhitelist">
+                    <div id="div-err-area-whitelist">
                         <span id="txtErrMsgDomainWhitelist"></span>
-                        &nbsp;<input type="button" id="btnClearErrMsgWhitelist" value="OK"></input>
+                        &nbsp;<input type="button" id="btn-clear-err-msg-whitelist" value="OK"></input>
                     </div>
-                    <select id="listDomainsWhitelist" size="10" multiple></select>
-                    <input type="button" id="btnDomainsWhitelistRemove" value="- Remove Selected"></input>
+                    <select id="list-domains-whitelist" size="10" multiple></select>
+                    <input type="button" id="btn-domains-whitelist-remove" value="- Remove Selected"></input>
                 </form>
-                <form id="formBlacklist" action="#">
+                <form id="form-blacklist" action="#">
                     <hr>
                     <h2>Blacklist</h2>
-                    <input type="text" id="txtDomainsBlacklist"></input>
-                    <input type="button" id="btnDomainsBlacklistAdd" value="+ Add Domain"></input>
+                    <input type="text" id="txt-domains-blacklist"></input>
+                    <input type="button" id="btn-domains-blacklist-add" value="+ Add Domain"></input>
                     <br>
-                    <div id="divErrAreaBlacklist">
+                    <div id="div-err-area-blacklist">
                         <span id="txtErrMsgDomainBlacklist"></span>
-                        &nbsp;<input type="button" id="btnClearErrMsgBlacklist" value="OK"></input>
+                        &nbsp;<input type="button" id="btn-clear-err-msg-blacklist" value="OK"></input>
                     </div>
-                    <select id="listDomainsBlacklist" size="10" multiple></select>
-                    <input type="button" id="btnDomainsBlacklistRemove" value="- Remove Selected"></input>
+                    <select id="list-domains-blacklist" size="10" multiple></select>
+                    <input type="button" id="btn-domains-blacklist-remove" value="- Remove Selected"></input>
                 </form>
             </div>
 		
             <div id="fragment-4">
                 <!-- Colour pickers -->
-                <div class="divTable inlineBlock">
-                    <div class="divTableBody">
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">Background:&nbsp;</div>
-                            <div class="divTableCell">
+                <div class="div-table inline-block">
+                    <div class="div-table-body">
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">Background:&nbsp;</div>
+                            <div class="div-table-cell">
                                 <input id="colorBackground" type="color" name="backgroundColor">
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">Border Color:&nbsp;</div>
-                            <div class="divTableCell">
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">Border Color:&nbsp;</div>
+                            <div class="div-table-cell">
                                 <input id="colorBorder" type="color" name="cssColorBorder">
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">URL Text Colour:&nbsp;</div>
-                            <div class="divTableCell">
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">URL Text Colour:&nbsp;</div>
+                            <div class="div-table-cell">
                                 <input id="colorGeneralURLText" type="color" name="colorGeneralURLText">
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">URL's Domain Text Colour:&nbsp;</div>
-                            <div class="divTableCell">
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">URL's Domain Text Colour:&nbsp;</div>
+                            <div class="div-table-cell">
                                 <input id="colorDomainText" type="color" name="domainTextColor">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="divTable colTwo">
-                    <div class="divTableBody">
-                        <div class="divTableRow">
-                            <div class="divTableCell">
+                <div class="div-table col-two">
+                    <div class="div-table-body">
+                        <div class="div-table-row">
+                            <div class="div-table-cell">
                                 <span>Themes:</span>
-                                <select id="themeSelect">
+                                <select id="theme-select">
                                     <option value="1" selected>Light</option>
                                     <option value="2">Dark</option>
                                     <option value="3">Original</option>
@@ -186,9 +186,9 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell">
-                                <div id="stylePreview">
+                        <div class="div-table-row">
+                            <div class="div-table-cell">
+                                <div id="style-preview">
                                     <div class="cl-container">
                                         <p class="cl-url">
                                             <span class="ClDomain">www.preview.com</span>/index.html
@@ -210,7 +210,7 @@
                                     </div>
                                     <br>
                                     <div class="cl-container">
-                                        <img src="" alt="This link uses Javascript" id="cl-icon-js" class="cl-icon JsIconNoText"></img>
+                                        <img src="" alt="This link uses Javascript" id="cl-icon-js" class="cl-icon js-icon-no-text"></img>
                                         <p class="cl-url">&nbsp;</p>
                                     </div>
                                 </div>
@@ -221,24 +221,24 @@
             </div>
 		
             <div id="fragment-5">
-                <div class="divTable">
-                    <div class="divTableBody">
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">Delay before displaying:&nbsp;</div>
-                            <div class="divTableCell">
-                                <input type="number" id="durationDelay" name="durationDelay" class="inputMilliseconds">&nbsp;ms
+                <div class="div-table">
+                    <div class="div-table-body">
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">Delay before displaying:&nbsp;</div>
+                            <div class="div-table-cell">
+                                <input type="number" id="durationDelay" name="durationDelay" class="input-milliseconds">&nbsp;ms
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">Fade in duration:&nbsp;</div>
-                            <div class="divTableCell">
-                                <input type="number" id="durationFadeIn" name="durationFadeIn" class="inputMilliseconds">&nbsp;ms
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">Fade in duration:&nbsp;</div>
+                            <div class="div-table-cell">
+                                <input type="number" id="durationFadeIn" name="durationFadeIn" class="input-milliseconds">&nbsp;ms
                             </div>
                         </div>
-                        <div class="divTableRow">
-                            <div class="divTableCell desc">Fade out duration:&nbsp;</div>
-                            <div class="divTableCell">
-                                <input type="number" id="durationFadeOut" name="durationFadeOut" class="inputMilliseconds">&nbsp;ms
+                        <div class="div-table-row">
+                            <div class="div-table-cell desc">Fade out duration:&nbsp;</div>
+                            <div class="div-table-cell">
+                                <input type="number" id="durationFadeOut" name="durationFadeOut" class="input-milliseconds">&nbsp;ms
                             </div>
                         </div>
                     </div>
@@ -250,60 +250,60 @@
                 <div id="accordionOauth">
                     <h3>
                         Bit.ly
-                        <img src="images/check-mark.png" alt="Bit.ly account authorised" id="authTickBitLy" class="authTickHidden"></img>
+                        <img src="images/check-mark.png" alt="Bit.ly account authorised" id="auth-tick-bitly" class="auth-tick-hidden"></img>
                     </h3>
                     <div>
-                        <div id="divOauthBitlyLoggedOut" class="divTable">
-                            <div class="divTableBody">
-                                <div class="divTableRow">
-                                    <div class="divTableCell desc">Username:&nbsp;</div>
-                                    <div class="divTableCell">
+                        <div id="divOauthBitlyLoggedOut" class="div-table">
+                            <div class="div-table-body">
+                                <div class="div-table-row">
+                                    <div class="div-table-cell desc">Username:&nbsp;</div>
+                                    <div class="div-table-cell">
                                         <input type="text" id="txtBitlyUser">
                                     </div>
                                 </div>
-                                <div class="divTableRow">
-                                    <div class="divTableCell desc">Password:&nbsp;</div>
-                                    <div class="divTableCell">
-                                        <input type="password" id="pwdBitlyPass">
+                                <div class="div-table-row">
+                                    <div class="div-table-cell desc">Password:&nbsp;</div>
+                                    <div class="div-table-cell">
+                                        <input type="password" id="pwd-bitly-pass">
                                     </div>
                                 </div>
-                                <div class="divTableRow">
-                                    <div class="divTableCell desc">&nbsp;</div>
-                                    <div class="divTableCell rightAlign">
-                                        <input type="button" id="btnOauthBitly" value="Login">
+                                <div class="div-table-row">
+                                    <div class="div-table-cell desc">&nbsp;</div>
+                                    <div class="div-table-cell right-align">
+                                        <input type="button" id="btn-oauth-bitly" value="Login">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div id="divOauthBitlyLoggedIn">
                             <p>
-                                OAuth access token: <span id="lblOauthBitlyToken"></span>
+                                OAuth access token: <span id="lbl-oauth-bitly-token"></span>
                             </p>
                             <span>Forget Bit.ly OAuth token: </span>
-                            <input type="button" id="btnOauthBitlyForgetToken" value="Logout">
+                            <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
                         </div>
                     </div>
                     <h3>
                         Goo.gl
-                        <img src="images/check-mark.png" alt="Google account authorised" id="authTickGooGl" class="authTickHidden"></img>
+                        <img src="images/check-mark.png" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
                     </h3>
                     <div>
-                        <input type="button" id="btnOauthGoogl">
+                        <input type="button" id="btn-oauth-googl">
                         <p>
                             Example link which points to <em>www.google.com</em>
                             : <a href="http://goo.gl/fbsS">goo.gl/fbsS</a>
                         </p>
-                        <input type="button" id="btnOauthGooglRevoke" value="Revoke Google OAuth">
+                        <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
                     </div>
                 </div>
             </div>
         </div>
 	
-        <p class="linkDemoContainer">
+        <p class="link-demo-container">
             Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a>
         </p>
 	
-        <div id="divBtnGroup">
+        <div id="div-btn-group">
             <button id="save">Save All</button>
             <button id="restore">Restore Defaults</button>
             <button id="delAll">Delete All Saved Info</button>
@@ -313,10 +313,10 @@
                 <button id="btnConfirmY">Yes</button>
                 <button id="btnConfirmN">No</button>
                 <br>
-                <span id="delAllFurtherInfo">
+                <span id="del-all-further-info">
                     <em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.
                 </span>
-                <span id="restoreFurtherInfo">
+                <span id="restore-further-info">
                     <em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").
                 </span>
             </div>

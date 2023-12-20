@@ -5,8 +5,10 @@
 	],
     "rules": {
         "codeguide/block-closing-brace-empty-line-before": "never",
+        "codeguide/block-closing-brace-space-before": "always-single-line",
         "codeguide/block-closing-brace-newline-before": "always-multi-line",
         "codeguide/block-opening-brace-newline-after": "always-multi-line",
+        "codeguide/block-opening-brace-space-after": "always-single-line",
 		"codeguide/block-opening-brace-space-before": "always",
         "codeguide/color-hex-case": "lower",
         "codeguide/declaration-block-trailing-semicolon": "always",
