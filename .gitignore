@@ -5,3 +5,7 @@ dist/
 
 # NodeJS
 node_modules/
+
+# Test coverage reports
+.nyc_output
+coverage
