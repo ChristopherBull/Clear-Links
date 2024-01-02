@@ -27,7 +27,8 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
 let settings;
 let winDimensions;
 // Init the tooltip
-const tooltip = $($.parseHTML('<div id="cl-container"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>'));
+const tooltipContainerID = 'cl-container';
+const tooltip = $($.parseHTML('<div id="' + tooltipContainerID + '"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>'));
 const secureIcon = tooltip.children().first();
 const emailIcon = secureIcon.next();
 const jsIcon = emailIcon.next();
@@ -233,8 +234,8 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   const titleAttr = jqDomElem.attr('title');
   // TODO - not necessary if using absolute corner positioning in options
   $(window).mousemove({ hasTooltipAttr: titleAttr !== undefined && titleAttr !== '' }, mouseRelativeCursorPosition);
-  // Show the tooltip
-  if (!$.contains(document, tooltip[0])) { // Fast check
+  // Show the tooltip - check if already attached to document, then attach if not.
+  if (document.getElementById(tooltipContainerID) === null) {
     // Initial attach/Re-attach element - lazily attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
     $(document.body).append(tooltip); // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
   }
