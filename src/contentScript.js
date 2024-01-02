@@ -161,37 +161,6 @@ ready(function() {
         break;
     }
   });
-
-  // Attach and detach the tooltip on() <form> <buttons>
-  /* $(document.body).on('mouseenter', 'button', function(e) {
-      showTooltip("btn");
-    })
-    .on('mouseleave', 'button', function(e) {
-      hideTooltip();
-    }); */
-
-  /* // Attach and detach the tooltip on() <form> <buttons>
-    //$(document.body).on('mouseenter', 'input[type="submit"]', function(e) {
-    //$(document.body).on('mouseenter', ':submit', function(e) {
-    $(document.body).on('mouseenter', 'input', function(e) {
-      console.log("Submit button/input");
-      showTooltip("input submit btn");
-    })
-    .on('mouseleave', 'input', function(e) {
-      hideTooltip();
-    }); */
-
-  /* //$('iframe').load(function() {
-    $('#iframeResult').load(function() {
-      console.log('iframe loaded');
-      $('iframe').contents().find('body').on('mouseenter', 'input', function(e) {
-        console.log("In iframe: Submit input field");
-        showTooltip("input btn");
-      })
-      .on('mouseleave', 'input', function(e) {
-        hideTooltip();
-      });
-    }); */
 });
 
 /**
@@ -243,10 +212,6 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
     }
     if(settings.displayUrlFragment && hash) {
       urlToDisplay += hash;
-      // Bookmark only links ('#')
-      /* if(href == window.location.href + '#'){
-          showTooltip(domElem, '#', false, false, false);
-        } */
     }
   }
   return urlToDisplay;
