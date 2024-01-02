@@ -261,7 +261,7 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
    */
 function applyAllSettingToTooltip(settings) {
   for (const key in settings) {
-    if (Object.prototype.hasOwnProperty.call(settings, key)) {
+    if (Object.hasOwn(settings, key)) {
       applySettingToTooltip(key, settings[key]);
     }
   }
@@ -273,7 +273,7 @@ function applyAllSettingToTooltip(settings) {
    */
 function applyAllSettingChangesToTooltip(changes) {
   for (const key in changes) {
-    if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
+    if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
       settings[key] = changes[key].newValue;
       applySettingToTooltip(key, changes[key]);
     }

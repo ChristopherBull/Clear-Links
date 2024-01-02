@@ -26,6 +26,8 @@
         "package.json"
     ],
     "words": [
+        // Technical terms
+        "IIFE",
         // Libraries / APIs
         "gapi",
         "urlshortener",
