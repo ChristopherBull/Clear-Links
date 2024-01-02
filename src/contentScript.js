@@ -47,8 +47,36 @@ function ready(fn) {
   if (document.readyState !== 'loading') {
     fn();
   } else {
-    document.addEventListener('DOMContentLoaded', fn);
+    document.addEventListener('DOMContentLoaded', fn, { once: true });
   }
+}
+
+/*
+ * Add an event listener to an element. Allows event delegation of a `selector`
+ * element to a parent element, which enables event listening for
+ * future/dynamic elements, and is more performant than adding an event
+ * listener to each element.
+ * @param {string} el - The element to attach the event listener to.
+ * @param {string} eventName - The name of the event to listen for.
+ * @param {string} selector - The element selector to filter the event target by.
+ * @param {function} eventHandler - The function to be executed when the event is fired.
+ * @returns {function} The wrapped event handler.
+ * @see https://youmightnotneedjquery.com/#on
+ * @see https://gomakethings.com/why-event-delegation-is-a-better-way-to-listen-for-events-in-vanilla-js/
+ */
+function addDelegatedEventListener(el, eventName, selector, eventHandler) {
+  const wrappedHandler = (e) => {
+    if (!e.target) return;
+    const el = e.target.closest(selector);
+    if (el) {
+      eventHandler.call(el, e);
+    }
+  };
+  // Add the wrapped event handler to the element
+  // Note: useCapture is set to true otherwise the
+  // event will not be appropriately delegated.
+  el.addEventListener(eventName, wrappedHandler, true);
+  return wrappedHandler;
 }
 
 // Main - Document ready
@@ -61,8 +89,8 @@ ready(function() {
   // Store initial window dimensions
   cacheWinDimensions();
 
-  // Attach and detach the tooltip; on() works for current and dynamically (future) created elements
-  $(document.body).on('mouseenter', 'a', function() {
+  // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
+  addDelegatedEventListener(document.body, 'mouseenter', 'a', function() {
     if(!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
