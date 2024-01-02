@@ -37,10 +37,24 @@ const urlText = tooltip.children().last();
 // Timers
 let resizeEndTimer; // No native resize end event, so timing our own.
 
+/*
+ * Document ready function.
+ * `DOMContentLoaded` may fire before script/module has a chance to run, so check before adding a listener.
+ * @see https://youmightnotneedjquery.com/#ready
+ * @param {function} fn - The function to be executed when the document is ready.
+ */
+function ready(fn) {
+  if (document.readyState !== 'loading') {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
 // Main - Document ready
-$(function() {
+ready(function() {
   // Listen for window size changes
-  $(window).on('resize', function() {
+  addEventListener('resize', () => {
     clearTimeout(resizeEndTimer);
     resizeEndTimer = setTimeout(cacheWinDimensions, 250);
   });
@@ -302,8 +316,8 @@ function applySettingToTooltip(param, value) {
 
 function cacheWinDimensions() {
   winDimensions = {
-    h: $(window).height(),
-    w: $(window).width(),
+    h: window.innerHeight,
+    w: window.innerWidth,
   };
 }
 
