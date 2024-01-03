@@ -240,6 +240,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
 
 function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   const elem = jqDomElem[0]; // TODO temp vanilla const whilst de-jQuerying.
+  const tooltipElem = tooltip[0]; // TODO temp vanilla const whilst de-jQuerying.
   // When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
   if(urlToDisplay === undefined || urlToDisplay.trim() === '') {
     return;
@@ -259,9 +260,12 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   });
   // Show the tooltip - check if already attached to document, then attach if not.
   if (document.getElementById(tooltipContainerID) === null) {
-    // Initial attach/Re-attach element - lazily attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
-    $(document.body).append(tooltip); // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
+    // Initial attach/Re-attach element - lazily attach element upon mouse-over of link.
+    // Some sites detach this element dynamically (i.e. after page load), so check on each mouseover.
+    // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
+    document.body.appendChild(tooltipElem); 
   }
+  // Update tooltip content
   urlText.html(urlToDisplay);
   secureIcon.css('display', (isSecureIcon ? 'inline-block' : 'none'));
   emailIcon.css('display', (isMailto ? 'inline' : 'none'));
