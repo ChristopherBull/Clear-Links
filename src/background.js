@@ -9,9 +9,9 @@ initialise();
 
 // Listen for options changes
 chrome.storage.onChanged.addListener((changes, namespace) => {
-  if(namespace === 'local') {
+  if (namespace === 'local') {
     mergeSettingsChanges(currentLocalSettingsValues, changes);
-  } else if(namespace === 'sync') {
+  } else if (namespace === 'sync') {
     mergeSettingsChanges(currentSyncSettingsValues, changes);
   }
 });
@@ -21,13 +21,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Page activation (black/whitelist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
   // Allows users to blacklist/whitelist sites. Also, reduces extension's footprint.
-  if(request.activationHostname && sender.tab) {
+  if (request.activationHostname && sender.tab) {
     // Respond to the contentScript so it knows to prepare to collaborate with the injected script (contentScripts can access some chrome.* APIs)
     sendResponse({ inject: true });
     // Inject the main script into the webpage (it will have DOM access, but no access to chrome.* APIs)
     injectExtension(sender.tab.id, request.activationHostname);
     // URL expansion request
-  } else if(request.shortURL) {
+  } else if (request.shortURL) {
     expandURL(request.shortURL, request.checkCache, (response) => {
       // TODO - Store response.result.longUrl into a cache/map
       sendResponse(response);
@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
 chrome.webNavigation.onTabReplaced.addListener((details) => {
   chrome.tabs.get(details.tabId, (tab) => {
-    if(!chrome.runtime.lastError) {
+    if (!chrome.runtime.lastError) {
       // Tab exists
       injectExtension(tab.id, new URL(tab.url).hostname);
     }
@@ -101,17 +101,17 @@ async function injectMainContentScript(src, contentScriptSettings) {
 
 function activateOnTab(tabId, docHostname, activationCallback) {
   tabExists(tabId, function(tabHostname) { // i.e. don't activate on Options page
-    switch(currentLocalSettingsValues.activationFilter) {
+    switch (currentLocalSettingsValues.activationFilter) {
       case 1: // Allow All
         activationCallback();
         break;
       case 2: // Whitelisted sites only
-        if(isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainWhitelist)) {
+        if (isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainWhitelist)) {
           activationCallback();
         }
         break;
       case 3: // Blacklisted sites only
-        if(!isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainBlacklist)) {
+        if (!isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainBlacklist)) {
           activationCallback();
         }
         break;
@@ -132,7 +132,7 @@ function isUrlToBeFiltered(tabHostname, filterListArray) {
 // Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
 function tabExists(tabId, callback) {
   chrome.tabs.get(tabId, function(tab) {
-    if(!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
+    if (!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
       // Tab exists
       callback(new URL(tab.url).hostname); // TODO - TypeError: Failed to construct 'URL': Invalid URL
     }
@@ -154,12 +154,12 @@ function mergeSettingsChanges(currentSettings, changes) {
 // Short URL Expansion
 function expandURL(url, checkCache, callbackAfterExpansion) {
   // Check hash cache first before making an API request
-  if(typeof checkCache !== 'undefined' && checkCache === true) {
+  if (typeof checkCache !== 'undefined' && checkCache === true) {
     // TODO
   }
   // TODO - Debounce expansion requests (5 seconds?) -- check if expansion fetch/request is already in-flight and awaiting a response with a separate requests cache (with timestamps of requests).
   // Determine short URL service
-  switch(new URL(url).hostname) {
+  switch (new URL(url).hostname) {
     case 'bit.ly':
     case 'j.mp':
       expandUrlBitLy(url, callbackAfterExpansion);
@@ -167,7 +167,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
     case 'goo.gl':
       // TODO - Check user options to see if goo.gl links should be expanded (a checkbox in the options menu, or (e.g.) is an API key available?)
       authenticateGoogleAPI(function(bAuthSuccess) {
-        if(bAuthSuccess) {
+        if (bAuthSuccess) {
           expandUrlGooGl(url, callbackAfterExpansion);
         } else {
           callbackAfterExpansion({
@@ -183,10 +183,10 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
 // Google API - Authenticate
 let oauthTokenGoogl = '';
 function authenticateGoogleAPI(postAuthCallback) {
-  if(oauthTokenGoogl === '') {
+  if (oauthTokenGoogl === '') {
     // TODO - check if should Auth with stored API key, or use chrome.identity.
     chrome.identity.getAuthToken(function(token) { // interactive=false // Async
-      if(chrome.runtime.lastError) {
+      if (chrome.runtime.lastError) {
         postAuthCallback(false); // Auth failed
       } else {
         // Authenticate (no need to 'gapi.auth.setToken(token)' if within 'chrome.identity.getAuthToken'
@@ -212,7 +212,7 @@ function expandUrlGooGl(url, callbackAfterExpansion) {
     shortUrl: url,
   });
   request.then(function(response) {
-    if(response.result.status === 'OK') {
+    if (response.result.status === 'OK') {
       callbackAfterExpansion(response);
     } else { // Deal with malicious/removed links (which are known to Google)
       callbackAfterExpansion({ result: { error: { message: 'Goo.gl link ' + response.result.status } } });
@@ -224,7 +224,7 @@ function expandUrlGooGl(url, callbackAfterExpansion) {
 }
 
 function expandUrlBitLy(url, callbackAfterExpansion) {
-  if(currentLocalSettingsValues.OAuthBitLy.enabled) {
+  if (currentLocalSettingsValues.OAuthBitLy.enabled) {
     // Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
     const oURL = new URL(url);
     const urlHostAndPathname = oURL.hostname + oURL.pathname;

@@ -38,7 +38,7 @@ export function setupMessagePassing() {
  */
 export function listenForSettingsChanges() {
   chrome.storage.onChanged.addListener((changes, namespace) => {
-    if(namespace === 'sync') {
+    if (namespace === 'sync') {
       // Send changes to injected script
       window.postMessage({type : 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message : changes}, '*');
     }

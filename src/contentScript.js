@@ -112,17 +112,17 @@ ready(function() {
 
   // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
   addDelegatedEventListener(document.body, 'mouseenter', 'a', function() {
-    if(!this.href) {
+    if (!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
-    switch(this.protocol) {
+    switch (this.protocol) {
       case 'javascript:':
-        if(settings.displayJavascriptLinks) {
+        if (settings.displayJavascriptLinks) {
           showTooltip(this, '&#x200B;', false, true, false);
         }
         break;
       case 'mailto:':
-        if(settings.displayMailtoLinks) {
+        if (settings.displayMailtoLinks) {
           showTooltip(this, buildStringHtmlColouredHostname(settings.cssColorMailto, this.href.substring(7, this.href.length)), false, false, true);
         }
         break;
@@ -136,42 +136,42 @@ ready(function() {
         // 3=any page
 
         // Determine if this is an external domain (if only showing external domains), otherwise always true
-        if(displayingExternalDomainsOnly(this.hostname)) {
+        if (displayingExternalDomainsOnly(this.hostname)) {
           let urlToDisplay = '';
           // TODO (?) - move to more appropriate position (does this need to be before, during , or after URL dissection? If a short URL is detected, do we cancel URL dissection below until we receive the full long URL from any APIs?
           const isShortAndExpandable = expandShortUrl(this);
-          if(isShortAndExpandable.isShort) {
-            if(typeof isShortAndExpandable.quickExpand !== 'undefined' && isShortAndExpandable.quickExpand !== '') {
+          if (isShortAndExpandable.isShort) {
+            if (typeof isShortAndExpandable.quickExpand !== 'undefined' && isShortAndExpandable.quickExpand !== '') {
               loadingIcon.style.display = 'none';
               notExpandableIcon.style.display = 'none';
               let tmpUrl;
-              try{
+              try {
                 tmpUrl = new URL(isShortAndExpandable.quickExpand);
-              } catch(err) {
+              } catch (err) {
                 break;
               }
               urlToDisplay = formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
-            }else if(isShortAndExpandable.toExpand) {
+            } else if (isShortAndExpandable.toExpand) {
               loadingIcon.style.display = 'inline';
               notExpandableIcon.style.display = 'none';
             } else {
               loadingIcon.style.display = 'none';
               notExpandableIcon.style.display = 'inline';
             }
-          }else if(!settings.displayOnKnownShortUrlDomainsOnly) {
+          } else if (!settings.displayOnKnownShortUrlDomainsOnly) {
             loadingIcon.style.display = 'none';
             notExpandableIcon.style.display = 'none';
           } else {
             break;
           }
 
-          if(!urlToDisplay) {
+          if (!urlToDisplay) {
             urlToDisplay = formatDissectedURL(this.href, this.protocol, this.username, this.password, this.hostname, this.port, this.pathname, this.search, this.hash);
           }
 
           // TODO - check if link uses JS (in addition to the href attr), and if the user has set the option to show it
           let isSecureIcon = false;
-          if(this.protocol && this.protocol === 'https:') {
+          if (this.protocol && this.protocol === 'https:') {
             isSecureIcon = true;
           } else {
             isSecureIcon = false;
@@ -199,19 +199,19 @@ function buildStringHtmlColouredHostname(colour, hostname) {
 
 function formatDissectedURL(href, protocol, username, password, hostname, port, pathname, search, hash) {
   let urlToDisplay = '';
-  if(settings.displayDomainOnly) {
-    if(hostname) {
+  if (settings.displayDomainOnly) {
+    if (hostname) {
       urlToDisplay += buildStringHtmlColouredHostname(settings.cssColorDomainText, hostname);
     }
   } else {
-    if(settings.displayUrlScheme && protocol) {
+    if (settings.displayUrlScheme && protocol) {
       urlToDisplay += protocol +
           (href.startsWith(protocol + '//') ? '//' : '');
     }
-    if(settings.displayUrlAuth >= 1 && username) {
+    if (settings.displayUrlAuth >= 1 && username) {
       urlToDisplay += username;
-      if(settings.displayUrlAuth >= 2 && password) {
-        if(settings.displayUrlAuth >= 3) {
+      if (settings.displayUrlAuth >= 2 && password) {
+        if (settings.displayUrlAuth >= 3) {
           urlToDisplay += ':' + password.replace(/./g, '*');
         } else {
           urlToDisplay += ':' + password;
@@ -219,19 +219,19 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
       }
       urlToDisplay += '@';
     }
-    if(settings.displayUrlHostname && hostname) {
+    if (settings.displayUrlHostname && hostname) {
       urlToDisplay += buildStringHtmlColouredHostname(settings.cssColorDomainText, hostname);
     }
-    if(settings.displayUrlPort && port && port !== '') {
+    if (settings.displayUrlPort && port && port !== '') {
       urlToDisplay += ':' + port;
     }
-    if(settings.displayUrlPath && pathname) {
+    if (settings.displayUrlPath && pathname) {
       urlToDisplay += pathname;
     }
-    if(settings.displayUrlQuery && search) {
+    if (settings.displayUrlQuery && search) {
       urlToDisplay += search;
     }
-    if(settings.displayUrlFragment && hash) {
+    if (settings.displayUrlFragment && hash) {
       urlToDisplay += hash;
     }
   }
@@ -240,7 +240,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
 
 function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
-  if(urlToDisplay === undefined || urlToDisplay.trim() === '') {
+  if (urlToDisplay === undefined || urlToDisplay.trim() === '') {
     return;
   }
 
@@ -261,9 +261,9 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   urlText.innerHTML = urlToDisplay;
   secureIcon.style.display = isSecureIcon ? 'inline-block' : 'none';
   emailIcon.style.display = isMailto ? 'inline' : 'none';
-  if(isJS) {
+  if (isJS) {
     jsIcon.style.display = 'inline';
-    if(urlToDisplay === '&#x200B;') {
+    if (urlToDisplay === '&#x200B;') {
       jsIcon.style.marginRight = '-2px';
     } else {
       jsIcon.style.marginRight = '3px';
@@ -347,9 +347,9 @@ function cacheWinDimensions() {
 function mouseRelativeCursorPosition(e, params) {
   // Determine if tooltip breaches the window
   let top;
-  if((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {
+  if ((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {
     // Elements with existing default tooltips will cover ours, so adjust position.
-    if(params.hasTooltipAttr) {
+    if (params.hasTooltipAttr) {
       top = (e.clientY - (tooltip.offsetHeight / 2)); // Avoid "real" tooltips obscuring my tooltip
     } else {
       top = (e.clientY + 20);
@@ -358,9 +358,9 @@ function mouseRelativeCursorPosition(e, params) {
     top = (e.clientY - tooltip.offsetHeight - 20);
   }
   let left;
-  if((e.clientX + tooltip.offsetWidth + 50) <= winDimensions.w) {
+  if ((e.clientX + tooltip.offsetWidth + 50) <= winDimensions.w) {
     left = (e.clientX + 20);
-  } else{
+  } else {
     left = (e.clientX - tooltip.offsetWidth - 20);
   }
   // Set position
@@ -371,10 +371,10 @@ function mouseRelativeCursorPosition(e, params) {
 const dataParamNameSourceShortURL = 'sourceShortUrl';
 
 function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = false) {
-  if(sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
+  if (sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
     // Cache the original short URL, so we can check if the user has moved on to another link before we receive the response.
     const tooltipDataShortUrl = tooltip.dataset[dataParamNameSourceShortURL];
-    if(tooltipDataShortUrl !== sourceElem.href) {
+    if (tooltipDataShortUrl !== sourceElem.href) {
       tooltip.dataset[dataParamNameSourceShortURL] = sourceElem.href;
     }
     // Determine short URL service
@@ -386,20 +386,20 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
         window.postMessage({type : 'FROM_PAGE_SHORT_URL', message : { shortURL: sourceElem.href, checkCache: useShortUrlCache }}, '*');
         return { isShort: true, toExpand: true, quickExpand: quickExpandUrl };
       case 't.co':
-        if(window.location.hostname === 'twitter.com') { // only guarantee correct URL if on Twitter.com
-          try{
+        if (window.location.hostname === 'twitter.com') { // only guarantee correct URL if on Twitter.com
+          try {
             // Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefinite recursive loops).
             let expandedUrl;
-            if(sourceElem.dataset && sourceElem.dataset.expandedUrl) {
+            if (sourceElem.dataset && sourceElem.dataset.expandedUrl) {
               expandedUrl = new URL(sourceElem.dataset.expandedUrl);
             } else { // Some t.co links do not have a expandedUrl attr, but may have URL in 'title' attr.
               expandedUrl = new URL(sourceElem.title);
             }
             // Avoid recursive t.co expansions.
-            if(expandedUrl.hostname !== 't.co') {
+            if (expandedUrl.hostname !== 't.co') {
               return expandShortUrl(expandedUrl, expandedUrl.href, true); // Give it the new URL obj, not the source element
             }
-          } catch(err) { // Catch errors thrown by 'new URL()' if URL is malformed.
+          } catch (err) { // Catch errors thrown by 'new URL()' if URL is malformed.
             console.error(err);
             return { isShort: true, toExpand: false, quickExpand: quickExpandUrl }; // TODO indicate an error
           }
@@ -414,8 +414,8 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
 
 function receiveExpandedURL(response) {
   // Check if the source short URL is the same as the one currently being hovered over (i.e., tooltip still waiting for response)
-  if(tooltip.dataset[dataParamNameSourceShortURL] === response.source.url) {
-    if(response.ignore || response.result.error) {
+  if (tooltip.dataset[dataParamNameSourceShortURL] === response.source.url) {
+    if (response.ignore || response.result.error) {
       // Disable rotating loading image
       loadingIcon.style.display = 'none';
       notExpandableIcon.style.display = 'inline';

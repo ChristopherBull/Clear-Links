@@ -47,6 +47,7 @@
     "rules": {
         "@stylistic/comma-dangle": ["error", "always-multiline"],
         "@stylistic/indent": ["error", 2],
+        "@stylistic/keyword-spacing": ["warn", { "before": true, "after": true }],
         "@stylistic/semi": ["error", "always"],
         "@stylistic/quotes": ["error", "single"],
         "no-var": "error",

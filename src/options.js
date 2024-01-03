@@ -181,17 +181,17 @@ function initialize() {
 
   // Real-time validation
   $(durationDelay).focusout(function() {
-    if(durationDelay.value < 0) {
+    if (durationDelay.value < 0) {
       durationDelay.value = currentSyncSettingsValues.durationDelay;
     }
   });
   $(durationFadeIn).focusout(function() {
-    if(durationFadeIn.value < 0) {
+    if (durationFadeIn.value < 0) {
       durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
     }
   });
   $(durationFadeOut).focusout(function() {
-    if(durationFadeOut.value < 0) {
+    if (durationFadeOut.value < 0) {
       durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
     }
   });
@@ -212,7 +212,7 @@ function restoreSettings() {
       chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
       chkDisplayDomainOnly.checked = items.displayDomainOnly;
       chkDisplayUrlScheme.checked = items.displayUrlScheme;
-      switch(items.displayUrlAuth) {
+      switch (items.displayUrlAuth) {
         case 0:
           rdoDisplayUrlNoAuth.checked = true;
           break;
@@ -260,20 +260,20 @@ function restoreSettings() {
       $('#activationType' + items.activationFilter).prop('checked', true).change();
       // Page Activation - Load whitelist
       let i;
-      for(i = listDomainsWhitelist.options.length - 1; i >= 0; i--) { // Empty list UI
+      for (i = listDomainsWhitelist.options.length - 1; i >= 0; i--) { // Empty list UI
         listDomainsWhitelist.remove(i);
       }
-      for(i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++) { // Re-fill list UI
+      for (i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++) { // Re-fill list UI
         // Add to Whitelist UI
         const option = document.createElement('option');
         option.text = currentLocalSettingsValues.domainWhitelist[i];
         listDomainsWhitelist.add(option);
       }
       // Page Activation - Load blacklist
-      for(i = listDomainsBlacklist.options.length - 1; i >= 0; i--) { // Empty list UI
+      for (i = listDomainsBlacklist.options.length - 1; i >= 0; i--) { // Empty list UI
         listDomainsBlacklist.remove(i);
       }
-      for(i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++) { // Re-fill list UI
+      for (i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++) { // Re-fill list UI
         // Add to Blacklist UI
         const option = document.createElement('option');
         option.text = currentLocalSettingsValues.domainBlacklist[i];
@@ -293,17 +293,17 @@ function restoreSettings() {
 function btnSaveClick() {
   // Get option values that require validation.
   let iDurationDelay = parseInt(durationDelay.value);
-  if(isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
+  if (isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
     iDurationDelay = defaultSettings.delay;
     durationDelay.value = iDurationDelay;
   }
   let iDurationFadeIn = parseInt(durationFadeIn.value);
-  if(isNaN(iDurationFadeIn) || !Number.isInteger(iDurationFadeIn) || iDurationFadeIn < 0) {
+  if (isNaN(iDurationFadeIn) || !Number.isInteger(iDurationFadeIn) || iDurationFadeIn < 0) {
     iDurationFadeIn = defaultSettings.durationFadeIn;
     durationFadeIn.value = iDurationFadeIn;
   }
   let iDurationFadeOut = parseInt(durationFadeOut.value);
-  if(isNaN(iDurationFadeOut) || !Number.isInteger(iDurationFadeOut) || iDurationFadeOut < 0) {
+  if (isNaN(iDurationFadeOut) || !Number.isInteger(iDurationFadeOut) || iDurationFadeOut < 0) {
     iDurationFadeOut = defaultSettings.durationFadeOut;
     durationFadeOut.value = iDurationFadeOut;
   }
@@ -400,7 +400,7 @@ function btnDelAllSavedDataClick() {
 }
 
 function chkDisplayDomainOnlyChange() {
-  if(chkDisplayDomainOnly.checked) {
+  if (chkDisplayDomainOnly.checked) {
     chkDisplayUrlScheme.disabled = true;
     rdoDisplayUrlNoAuth.disabled = true;
     rdoDisplayUrlUsername.disabled = true;
@@ -448,7 +448,7 @@ function chkDisplayDomainOnlyChange() {
 /* Page activation */
 
 function showActivationTypeOptions() {
-  switch($('input[name=activationType]:checked', '#form-activation-type').val()) {
+  switch ($('input[name=activationType]:checked', '#form-activation-type').val()) {
     case '1': // == All
       $('#form-whitelist').hide();
       $('#form-blacklist').hide();
@@ -465,17 +465,17 @@ function showActivationTypeOptions() {
 }
 
 function isValidUrl(sUrl) {
-  if(!sUrl) {
+  if (!sUrl) {
     return null;
   } else {
     // include URL protocol if not specified (otherwise URL constructor will throw exception)
-    if(!sUrl.includes('://')) {
+    if (!sUrl.includes('://')) {
       sUrl = 'http://' + sUrl;
     }
     // Create URL object
     try {
       return new URL(sUrl);
-    } catch(err) {
+    } catch (err) {
       console.log(err.message);
       throw err;
     }
@@ -484,10 +484,10 @@ function isValidUrl(sUrl) {
 
 function addToWhitelist() {
   let tmpUrl;
-  try{
+  try {
     tmpUrl = isValidUrl(txtDomainsWhitelist.value);
     hideWhitelistErrMsg();
-  }catch(err) {
+  } catch (err) {
     $('#txtErrMsgDomainWhitelist').text(err.message);
     $('#div-err-area-whitelist').show();
     return;
@@ -495,7 +495,7 @@ function addToWhitelist() {
   
   // Is domain not already in Storage?
   // If tmpUrl is null, silently skip
-  if(tmpUrl != null && currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
+  if (tmpUrl != null && currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
     // Add to Whitelist Storage
     currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
     chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On local settings saved
@@ -512,8 +512,8 @@ function addToWhitelist() {
 function removeFromWhitelist() {
   // Determine which whitelist entries to remove
   const indicesToRemove = [];
-  for(let count = listDomainsWhitelist.options.length - 1; count >= 0; count--) {
-    if(listDomainsWhitelist.options[count].selected === true) {
+  for (let count = listDomainsWhitelist.options.length - 1; count >= 0; count--) {
+    if (listDomainsWhitelist.options[count].selected === true) {
       indicesToRemove.push(count); // Cache index for UI updating after successful storage update
       currentLocalSettingsValues.domainWhitelist.splice(count, 1); // Remove entry from model
     }
@@ -521,7 +521,7 @@ function removeFromWhitelist() {
   // Update the local storage
   chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On (local only) saved
     // Update the UI
-    for(let i = 0; i < indicesToRemove.length; i++) {
+    for (let i = 0; i < indicesToRemove.length; i++) {
       listDomainsWhitelist.remove(indicesToRemove[i]);
     }
   });
@@ -529,10 +529,10 @@ function removeFromWhitelist() {
 
 function addToBlacklist() {
   let tmpUrl;
-  try{
+  try {
     tmpUrl = isValidUrl(txtDomainsBlacklist.value);
     hideBlacklistErrMsg();
-  } catch(err) {
+  } catch (err) {
     $('#txtErrMsgDomainBlacklist').text(err.message);
     $('#div-err-area-blacklist').show();
     return;
@@ -540,7 +540,7 @@ function addToBlacklist() {
   
   // Is domain not already in Storage?
   // If tmpUrl is null, silently skip
-  if(tmpUrl != null && currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
+  if (tmpUrl != null && currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
     // Add to Blacklist Storage
     currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
     chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On local settings saved
@@ -557,8 +557,8 @@ function addToBlacklist() {
 function removeFromBlacklist() {
   // Determine which blacklist entries to remove
   const indicesToRemove = [];
-  for(let count = listDomainsBlacklist.options.length - 1; count >= 0; count--) {
-    if(listDomainsBlacklist.options[count].selected === true) {
+  for (let count = listDomainsBlacklist.options.length - 1; count >= 0; count--) {
+    if (listDomainsBlacklist.options[count].selected === true) {
       indicesToRemove.push(count); // Cache index for UI updating after successful storage update
       currentLocalSettingsValues.domainBlacklist.splice(count, 1); // Remove entry from model
     }
@@ -566,7 +566,7 @@ function removeFromBlacklist() {
   // Update the local storage
   chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On (local only) saved
     // Update the UI
-    for(let i = 0; i < indicesToRemove.length; i++) {
+    for (let i = 0; i < indicesToRemove.length; i++) {
       listDomainsBlacklist.remove(indicesToRemove[i]);
     }
   });
@@ -584,7 +584,7 @@ function hideBlacklistErrMsg() {
 
 function previewPresetTheme() {
   let sTheme;
-  switch(themeSelect.value) {
+  switch (themeSelect.value) {
     case '0': // Custom
       return;
     case '1': // Light/Default
@@ -625,7 +625,7 @@ function oauthGoogl(e, silent) {
   chrome.identity.getAuthToken({ interactive: !silent }, function() { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
     if (chrome.runtime.lastError) {
       console.log('Google OAuth failed (silent: ' + silent + ')');
-      if(currentLocalSettingsValues.OAuthGooGl.enabled) {
+      if (currentLocalSettingsValues.OAuthGooGl.enabled) {
         chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
       }
       // TODO
@@ -633,7 +633,7 @@ function oauthGoogl(e, silent) {
       btnOauthGoogl.disabled = false;
       $(btnOauthGooglRevoke).hide();
     } else {
-      if(!currentLocalSettingsValues.OAuthGooGl.enabled) {
+      if (!currentLocalSettingsValues.OAuthGooGl.enabled) {
         chrome.storage.local.set({ OAuthGooGl: { enabled: true } });
       }
       // Update UI - Show Auth token to user
@@ -655,7 +655,7 @@ function oauthGoogl(e, silent) {
 // Revoke the Clear Links' OAuth token for the user's Google account
 function oauthGooglRevoke() {
   chrome.identity.getAuthToken({ interactive: false }, function(currentToken) {
-    if(chrome.runtime.lastError) {
+    if (chrome.runtime.lastError) {
       // TODO
     } else {
       // Remove the local cached token
@@ -677,7 +677,7 @@ function oauthGooglRevoke() {
 }
 
 function oauthBitlyUpdateUI() {
-  if(currentLocalSettingsValues.OAuthBitLy.enabled) {
+  if (currentLocalSettingsValues.OAuthBitLy.enabled) {
     $('#btn-oauth-bitly').prop('disabled', true);
     $('#btn-oauth-bitly-forget-token').show();
     $('#auth-tick-bitly').attr('class', 'auth-tick');
