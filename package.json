@@ -18,23 +18,23 @@
   "devDependencies": {
     "@html-eslint/eslint-plugin": "^0.22.0",
     "@html-eslint/parser": "^0.22.0",
-    "@stylistic/eslint-plugin": "^1.5.0",
+    "@stylistic/eslint-plugin": "^1.5.3",
     "@stylistic/stylelint-plugin": "^2.0.0",
-    "chai": "^4.3.10",
+    "chai": "^5.0.0",
     "cross-env": "^7.0.3",
-    "cspell": "^8.1.2",
-    "eslint": "^8.55.0",
+    "cspell": "^8.3.2",
+    "eslint": "^8.56.0",
     "eslint-plugin-chai-expect": "^3.0.0",
     "eslint-plugin-css": "^0.8.1",
-    "eslint-plugin-import": "^2.29.0",
-    "eslint-plugin-jsdoc": "^46.9.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsdoc": "^48.0.2",
     "eslint-plugin-mocha": "^10.2.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-sonarjs": "^0.23.0",
     "markdownlint-cli2": "^0.11.0",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",
-    "stylelint": "^16.0.2",
-    "stylelint-config-standard": "^35.0.0"
+    "stylelint": "^16.1.0",
+    "stylelint-config-standard": "^36.0.0"
   }
 }
