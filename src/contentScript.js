@@ -276,15 +276,14 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     jsIcon.css('display', 'none');
   }
 
-  // Attach a specific mouseleave event to the target of the mouseenter event (reduces likelihood of multiple orphaned tooltips when a site interferes with this extension)
-  const localTooltip = tooltip;
-  function localMouseLeave() {
-    // Hide the Tooltip
-    window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition); // Cancel additional mousemove tracking when not over a link.
-    localTooltip.stop().fadeOut(settings.durationFadeOut); // Hide the locally referenced tooltip (in case of some DOM refreshing wizardry).
-  }
+  // Hide the Tooltip when mouse leaves link.
   // Add a one-time mouseleave event to the link, to cancel additional mousemove tracking when not over a link.
-  elem.addEventListener('mouseleave', localMouseLeave, { once: true });
+  elem.addEventListener('mouseleave', () => {
+    // Cancel additional mousemove tracking when not over a link.
+    window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition);
+    // Hide the Tooltip.
+    tooltip.stop().fadeOut(settings.durationFadeOut);
+  }, { once: true });
 }
 
 /**
