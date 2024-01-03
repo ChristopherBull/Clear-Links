@@ -80,6 +80,26 @@ function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   return wrappedHandler;
 }
 
+/*
+ * Add a delegated event listener to an element and pass additional parameters
+ * to the event handler. This is done by wrapping the provided eventHandler.
+ * Enables clean removal of event listener in the future by returning the
+ * wrapped event handler.
+ * @param {string} el - The element to attach the event listener to.
+ * @param {string} eventName - The name of the event to listen for.
+ * @param {string} selector - The element selector to filter the event target by.
+ * @param {function} eventHandler - The function to be executed when the event is fired.
+ * @param {object} params - The parameters to be passed to the event handler.
+ * @returns {function} The wrapped event handler. Useful for tracking removal of event listeners.
+ */
+function addDelegatedEventListenerWithParams(el, eventName, selector, eventHandler, params) {
+  const wrappedHandler = (e) => {
+    eventHandler(e, params);
+  };
+  addDelegatedEventListener(el, eventName, selector, wrappedHandler);
+  return wrappedHandler;
+}
+
 // Main - Document ready
 ready(function() {
   // Listen for window size changes
@@ -219,6 +239,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
 }
 
 function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
+  const elem = jqDomElem[0]; // TODO temp vanilla const whilst de-jQuerying.
   // When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
   if(urlToDisplay === undefined || urlToDisplay.trim() === '') {
     return;
@@ -230,10 +251,12 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     .fadeIn(settings.durationFadeIn)
     .css('width', 'auto'); // Run at start of animation, not after the fade animation.
 
-  // Attach mouse move event
-  const titleAttr = jqDomElem.attr('title');
+  // Attach mouse move event to track cursor position (for tooltip positioning)
+  const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
   // TODO - not necessary if using absolute corner positioning in options
-  $(window).mousemove({ hasTooltipAttr: titleAttr !== undefined && titleAttr !== '' }, mouseRelativeCursorPosition);
+  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', 'a', mouseRelativeCursorPosition, {
+    hasTooltipAttr: hasTooltipAttr,
+  });
   // Show the tooltip - check if already attached to document, then attach if not.
   if (document.getElementById(tooltipContainerID) === null) {
     // Initial attach/Re-attach element - lazily attach element. Some sites detach this element dynamically (i.e. after page load), so fast check on each mouseover.
@@ -257,10 +280,11 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   const localTooltip = tooltip;
   function localMouseLeave() {
     // Hide the Tooltip
-    $(window).unbind('mousemove', mouseRelativeCursorPosition); // Cancel additional mousemove tracking when not over a link.
+    window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition); // Cancel additional mousemove tracking when not over a link.
     localTooltip.stop().fadeOut(settings.durationFadeOut); // Hide the locally referenced tooltip (in case of some DOM refreshing wizardry).
   }
-  jqDomElem.one('mouseleave', localMouseLeave); // fire only once (avoid events stacking)
+  // Add a one-time mouseleave event to the link, to cancel additional mousemove tracking when not over a link.
+  elem.addEventListener('mouseleave', localMouseLeave, { once: true });
 }
 
 /**
@@ -315,12 +339,12 @@ function cacheWinDimensions() {
   };
 }
 
-function mouseRelativeCursorPosition(e) {
+function mouseRelativeCursorPosition(e, params) {
   // Determine if tooltip breaches the window
   let top;
   if((e.clientY + tooltip.height() + 50) <= winDimensions.h) {
     // Elements with existing default tooltips will cover ours, so adjust position.
-    if(e.data.hasTooltipAttr) {
+    if(params.hasTooltipAttr) {
       top = (e.clientY - (tooltip.height() / 2)); // Avoid "real" tooltips obscuring my tooltip
     } else {
       top = (e.clientY + 20);
