@@ -62,12 +62,6 @@ function injectExtension(tabID, hostname) {
       files: [ 'contentScript.css' ],
       target: { allFrames: true, tabId: tabID },
     });
-    // Inject jQuery and wait before injecting the main content script
-    await chrome.scripting.executeScript({
-      files : [ 'jquery-2.2.3.min.js' ],
-      target : { tabId : tabID, allFrames: true },
-      world: chrome.scripting.ExecutionWorld.MAIN,
-    });
     // Add to Content Script (part of the Isolated World)
     chrome.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },

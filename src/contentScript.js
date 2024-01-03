@@ -28,13 +28,13 @@ let settings;
 let winDimensions;
 // Init the tooltip
 const tooltipContainerID = 'cl-container';
-const tooltip = $($.parseHTML('<div id="' + tooltipContainerID + '"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>'));
-const secureIcon = tooltip.children().first();
-const emailIcon = secureIcon.next();
-const jsIcon = emailIcon.next();
-const loadingIcon = jsIcon.next();
-const notExpandableIcon = loadingIcon.next();
-const urlText = tooltip.children().last();
+const tooltip = new DOMParser().parseFromString('<div id="' + tooltipContainerID + '"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>', 'text/html').body.firstElementChild;
+const secureIcon = tooltip.firstChild;
+const emailIcon = tooltip.childNodes[1];
+const jsIcon = tooltip.childNodes[2];
+const loadingIcon = tooltip.childNodes[3];
+const notExpandableIcon = tooltip.childNodes[4];
+const urlText = tooltip.childNodes[5];
 // Timers
 let resizeEndTimer; // No native resize end event, so timing our own.
 
@@ -118,12 +118,12 @@ ready(function() {
     switch(this.protocol) {
       case 'javascript:':
         if(settings.displayJavascriptLinks) {
-          showTooltip($(this), '&#x200B;', false, true, false);
+          showTooltip(this, '&#x200B;', false, true, false);
         }
         break;
       case 'mailto:':
         if(settings.displayMailtoLinks) {
-          showTooltip($(this), buildStringHtmlColouredHostname(settings.cssColorMailto, this.href.substring(7, this.href.length)), false, false, true);
+          showTooltip(this, buildStringHtmlColouredHostname(settings.cssColorMailto, this.href.substring(7, this.href.length)), false, false, true);
         }
         break;
       case 'https:':
@@ -142,8 +142,8 @@ ready(function() {
           const isShortAndExpandable = expandShortUrl(this);
           if(isShortAndExpandable.isShort) {
             if(typeof isShortAndExpandable.quickExpand !== 'undefined' && isShortAndExpandable.quickExpand !== '') {
-              loadingIcon.css('display', 'none');
-              notExpandableIcon.css('display', 'none');
+              loadingIcon.style.display = 'none';
+              notExpandableIcon.style.display = 'none';
               let tmpUrl;
               try{
                 tmpUrl = new URL(isShortAndExpandable.quickExpand);
@@ -152,15 +152,15 @@ ready(function() {
               }
               urlToDisplay = formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
             }else if(isShortAndExpandable.toExpand) {
-              loadingIcon.css('display', 'inline');
-              notExpandableIcon.css('display', 'none');
+              loadingIcon.style.display = 'inline';
+              notExpandableIcon.style.display = 'none';
             } else {
-              loadingIcon.css('display', 'none');
-              notExpandableIcon.css('display', 'inline');
+              loadingIcon.style.display = 'none';
+              notExpandableIcon.style.display = 'inline';
             }
           }else if(!settings.displayOnKnownShortUrlDomainsOnly) {
-            loadingIcon.css('display', 'none');
-            notExpandableIcon.css('display', 'none');
+            loadingIcon.style.display = 'none';
+            notExpandableIcon.style.display = 'none';
           } else {
             break;
           }
@@ -177,7 +177,7 @@ ready(function() {
             isSecureIcon = false;
           }
 
-          showTooltip($(this), urlToDisplay, isSecureIcon, false, false);
+          showTooltip(this, urlToDisplay, isSecureIcon, false, false);
         }
         break;
     }
@@ -238,19 +238,11 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
   return urlToDisplay;
 }
 
-function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
-  const elem = jqDomElem[0]; // TODO temp vanilla const whilst de-jQuerying.
-  const tooltipElem = tooltip[0]; // TODO temp vanilla const whilst de-jQuerying.
+function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
   if(urlToDisplay === undefined || urlToDisplay.trim() === '') {
     return;
   }
-
-  tooltip.finish(); // Stop all animations on other elements
-  tooltip
-    .delay(settings.durationDelay)
-    .fadeIn(settings.durationFadeIn)
-    .css('width', 'auto'); // Run at start of animation, not after the fade animation.
 
   // Attach mouse move event to track cursor position (for tooltip positioning)
   const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
@@ -263,22 +255,27 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     // Initial attach/Re-attach element - lazily attach element upon mouse-over of link.
     // Some sites detach this element dynamically (i.e. after page load), so check on each mouseover.
     // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
-    document.body.appendChild(tooltipElem); 
+    document.body.appendChild(tooltip); 
   }
   // Update tooltip content
-  urlText.html(urlToDisplay);
-  secureIcon.css('display', (isSecureIcon ? 'inline-block' : 'none'));
-  emailIcon.css('display', (isMailto ? 'inline' : 'none'));
+  urlText.innerHTML = urlToDisplay;
+  secureIcon.style.display = isSecureIcon ? 'inline-block' : 'none';
+  emailIcon.style.display = isMailto ? 'inline' : 'none';
   if(isJS) {
-    jsIcon.css('display', 'inline');
+    jsIcon.style.display = 'inline';
     if(urlToDisplay === '&#x200B;') {
-      jsIcon.css('margin-right', '-2px');
+      jsIcon.style.marginRight = '-2px';
     } else {
-      jsIcon.css('margin-right', '3px');
+      jsIcon.style.marginRight = '3px';
     }
   } else {
-    jsIcon.css('display', 'none');
+    jsIcon.style.display = 'none';
   }
+
+  // Show the Tooltip
+  tooltip.clientHeight; // Forces the browser to "reflow"
+  tooltip.style.transitionDuration = settings.durationFadeIn + 'ms';
+  tooltip.style.opacity = 1; // Transition to new opacity value
 
   // Hide the Tooltip when mouse leaves link.
   // Add a one-time mouseleave event to the link, to cancel additional mousemove tracking when not over a link.
@@ -286,7 +283,9 @@ function showTooltip(jqDomElem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     // Cancel additional mousemove tracking when not over a link.
     window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition);
     // Hide the Tooltip.
-    tooltip.stop().fadeOut(settings.durationFadeOut);
+    tooltip.clientHeight; // Forces the browser to "reflow" (redraw)
+    tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
+    tooltip.style.opacity = 0; // Transition to new opacity value
   }, { once: true });
 }
 
@@ -320,17 +319,20 @@ function applySettingToTooltip(param, value) {
     case 'background':
     case 'border':
     case 'border-radius':
-      tooltip.css(param, value);
+      tooltip.style[param] = value;
+      break;
+    case 'durationDelay':
+      tooltip.style['transition-delay'] = value + 'ms';
       break;
     case 'font-family':
     case 'font-size':
-      urlText.css(param, value);
+      urlText.style[param] = value;
       break;
     case 'cssColorBorder':
-      tooltip.css('border-color', value);
+      tooltip.style.borderColor = value;
       break;
     case 'cssColorGeneralURLText':
-      urlText.css('color', value);
+      urlText.style.color = value;
       break;
   }
 }
@@ -345,37 +347,35 @@ function cacheWinDimensions() {
 function mouseRelativeCursorPosition(e, params) {
   // Determine if tooltip breaches the window
   let top;
-  if((e.clientY + tooltip.height() + 50) <= winDimensions.h) {
+  if((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {
     // Elements with existing default tooltips will cover ours, so adjust position.
     if(params.hasTooltipAttr) {
-      top = (e.clientY - (tooltip.height() / 2)); // Avoid "real" tooltips obscuring my tooltip
+      top = (e.clientY - (tooltip.offsetHeight / 2)); // Avoid "real" tooltips obscuring my tooltip
     } else {
       top = (e.clientY + 20);
     }
   } else {
-    top = (e.clientY - tooltip.height() - 20);
+    top = (e.clientY - tooltip.offsetHeight - 20);
   }
   let left;
-  if((e.clientX + tooltip.width() + 50) <= winDimensions.w) {
+  if((e.clientX + tooltip.offsetWidth + 50) <= winDimensions.w) {
     left = (e.clientX + 20);
   } else{
-    left = (e.clientX - tooltip.width() - 20);
+    left = (e.clientX - tooltip.offsetWidth - 20);
   }
   // Set position
-  tooltip.css({
-    top: top + 'px',
-    left: left + 'px',
-  });
+  tooltip.style.top = top + 'px';
+  tooltip.style.left = left + 'px';
 }
 
-const dataParamNameSourceShortURL = 'source-short-url';
+const dataParamNameSourceShortURL = 'sourceShortUrl';
 
 function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = false) {
   if(sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
     // Cache the original short URL, so we can check if the user has moved on to another link before we receive the response.
-    const tooltipDataShortUrl = tooltip.data(dataParamNameSourceShortURL);
+    const tooltipDataShortUrl = tooltip.dataset[dataParamNameSourceShortURL];
     if(tooltipDataShortUrl !== sourceElem.href) {
-      tooltip.data(dataParamNameSourceShortURL, sourceElem.href);
+      tooltip.dataset[dataParamNameSourceShortURL] = sourceElem.href;
     }
     // Determine short URL service
     switch (sourceElem.hostname) {
@@ -414,15 +414,15 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
 
 function receiveExpandedURL(response) {
   // Check if the source short URL is the same as the one currently being hovered over (i.e., tooltip still waiting for response)
-  if(tooltip.data(dataParamNameSourceShortURL) === response.source.url) {
+  if(tooltip.dataset[dataParamNameSourceShortURL] === response.source.url) {
     if(response.ignore || response.result.error) {
       // Disable rotating loading image
-      loadingIcon.css('display', 'none');
-      notExpandableIcon.css('display', 'inline');
+      loadingIcon.style.display = 'none';
+      notExpandableIcon.style.display = 'inline';
     } else {
       const tmpUrl = new URL(response.result.longUrl);
-      urlText.html(formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash));
-      loadingIcon.css('display', 'none');
+      urlText.innerHTML = formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
+      loadingIcon.style.display = 'none';
       // TODO - Re-check tooltip position to ensure it doesn't not exceed window bounds
     }
   }
