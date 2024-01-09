@@ -281,6 +281,11 @@ async function initialize() {
   ContentScript.initialise(settings, false, 'a.preview-link');
   // Setup message passing and related listeners.
   initAllSharedListeners();
+
+  // Load additional page content
+  const manifestData = chrome.runtime.getManifest();
+  document.getElementById('about-page-extension-version').textContent = manifestData.version;
+  document.getElementById('about-page-extension-description').textContent = manifestData.description;
 }
 
 function restoreSettings() {
