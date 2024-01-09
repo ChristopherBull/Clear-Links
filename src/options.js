@@ -203,7 +203,7 @@ async function initialize() {
   // // Add event listeners to UI elements.
   // btnSave.addEventListener('click', btnSaveClick);
   document.getElementById('restore').addEventListener('click', restoreSyncedSettings);
-  // $('#delAll').click(btnDelAllSavedDataClick);
+  document.getElementById('btn-del-all').addEventListener('click', btnDelAllSavedDataClick);
   // chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
   // // Page Activation
   // btnDomainsWhitelistAdd.addEventListener('click', addToWhitelist);
@@ -246,13 +246,18 @@ async function initialize() {
   // });
 
   // All checkboxes - Save settings on change/click
-  document.querySelectorAll('input[type=checkbox]').forEach((el) => {
+  document.querySelectorAll('input[type=checkbox].save-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
+      try {
       await chrome.storage.sync.set({
         [el.dataset.storageKey]: el.checked,
       });
       // UI to show saved.
       showPopup('success', 'Saved');
+      } catch (err) {
+        console.error(err);
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
     });
   });
 
@@ -389,6 +394,11 @@ function showPopup(type, message) {
       alertElem.querySelector('.alert-icon-error').style.display = 'inherit';
       alertElem.classList.add('alert-error');
       break;
+    // Specific style/icons for more precise alert types
+    case 'saved':
+      alertElem.querySelector('.alert-icon-saved').style.display = 'inherit';
+      alertElem.classList.add('alert-success');
+      break;
   }
   // Set the message
   alertElem.querySelector('.message').textContent = message;
@@ -473,7 +483,7 @@ async function restoreSyncedSettings() {
   // Confirm with user before restoring default settings
   Confirm.open({
     title: 'Restore Default Settings',
-    message: 'Are you sure you want to restore default settings?\n\nThis will delete all your saved settings and cannot be undone.',
+    message: 'Are you sure you want to restore default settings?<br><br><em>Warning:</em> This will delete all your saved settings and cannot be undone.',
     onOk: async () => {
     // Clear synced settings
     await chrome.storage.sync.clear();
@@ -481,36 +491,33 @@ async function restoreSyncedSettings() {
     await chrome.storage.sync.set(defaultSettings);
         // Update Options menu UI
         restoreSettings();
-      showPopup('success', 'Default settings restored');
+      showPopup('saved', 'Default settings restored');
     },
   });
 }
 
+/*
+ * Deletes all saved data.
+ */
 function btnDelAllSavedDataClick() {
-  btnConfirmY.onclick = function() {
+  // Confirm with user before deleting all saved data
+  Confirm.open({
+    title: 'Delete All Extension Data',
+    message: 'Are you sure you want to delete all data in this extension?<br><br><em>Warning:</em> This will delete all your saved settings, local preferences, and authentication credentials. This cannot be undone.',
+    onOk: async () => {
     // Clear synced settings
-    chrome.storage.sync.clear(function() { // On sync cleared
+      await chrome.storage.sync.clear();
       // Re-Save default sync values
-      chrome.storage.sync.set(defaultSettings, function() { // On sync saved
+      await chrome.storage.sync.set(defaultSettings);
         // Clear local settings
-        chrome.storage.local.clear(function() { // On local cleared
+      await chrome.storage.local.clear();
           // Re-Save default local values
-          chrome.storage.local.set(defaultSettingsLocal, function() { // On local saved
+      await chrome.storage.local.set(defaultSettingsLocal);
             // Update Options menu UI
             restoreSettings();
-            divConfirm.style.visibility = 'hidden';
-            spnSaved.show().delay(2500).fadeOut();
-          });
-        });
-      });
-    });
-  };
-  btnConfirmN.onclick = function() {
-    divConfirm.style.visibility = 'hidden';
-  };
-  divConfirm.style.visibility = 'visible';
-  $('#del-all-further-info').show();
-  $('#restore-further-info').hide();
+      showPopup('success', 'All data deleted.');
+    },
+  });
 }
 
 function chkDisplayDomainOnlyChange() {
