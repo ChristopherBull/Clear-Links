@@ -253,7 +253,7 @@ async function initialize() {
         [el.dataset.storageKey]: el.checked,
       });
       // UI to show saved.
-      showPopup('success', 'Saved');
+        showPopup('saved');
       } catch (err) {
         console.error(err);
         showPopup('error', 'Error saving setting: ' + err.message);
@@ -401,7 +401,18 @@ function showPopup(type, message) {
       break;
   }
   // Set the message
+  switch (type) {
+    case 'info':
+    case 'success':
+    case 'warning':
+    case 'error':
   alertElem.querySelector('.message').textContent = message;
+      break;
+    // Specific style/icons for more precise alert types
+    case 'saved':
+      alertElem.querySelector('.message').textContent = message ? message : 'Saved';
+      break;
+  }
   // Show the alert
   alertElem.style.opacity = 1;
   // Hide the alert after 3 seconds (clearing previous timeout if any)
