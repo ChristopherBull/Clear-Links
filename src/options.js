@@ -470,16 +470,20 @@ function btnSaveClick() {
  * Restores default settings.
  */
 async function restoreSyncedSettings() {
-  console.log('restoreSyncedSettings() - clicked');
   // Confirm with user before restoring default settings
-  if (window.confirm('Are you sure you want to restore default settings?\n\nThis will delete all your saved settings and cannot be undone.')) {
+  Confirm.open({
+    title: 'Restore Default Settings',
+    message: 'Are you sure you want to restore default settings?\n\nThis will delete all your saved settings and cannot be undone.',
+    onOk: async () => {
     // Clear synced settings
     await chrome.storage.sync.clear();
       // Re-Save default sync values
     await chrome.storage.sync.set(defaultSettings);
         // Update Options menu UI
         restoreSettings();
-  }
+      showPopup('success', 'Default settings restored');
+    },
+  });
 }
 
 function btnDelAllSavedDataClick() {
