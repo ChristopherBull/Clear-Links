@@ -268,7 +268,7 @@ async function initialize() {
   // chrome.storage.onChanged.addListener
 
   // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
-  document.querySelectorAll('.previewLink').forEach((el) => {
+  document.querySelectorAll('.preview-link').forEach((el) => {
     el.addEventListener('click', (event) => {
       event.preventDefault();
       return false;
@@ -278,7 +278,7 @@ async function initialize() {
   // Initialise content script -- for previewing settings within the Options Page
   const settings = await chrome.storage.sync.get(defaultSettings); // TODO temporary (`restoreSettings()` is not async)
   // Options page should not cache Short URLs to enable user to repeatedly test example short URLs given in the Options page.
-  ContentScript.initialise(settings, false, 'a.previewLink');
+  ContentScript.initialise(settings, false, 'a.preview-link');
   // Setup message passing and related listeners.
   initAllSharedListeners();
 }
@@ -399,12 +399,14 @@ function showPopup(type, message) {
   // Set the message
   alertElem.querySelector('.message').textContent = message;
   // Show the alert
-  alertElem.style.visibility = 'visible';
-  // Hide the alert after 3 seconds
-  // TODO check if the timeout is already set (boolean?)
+  alertElem.style.opacity = 1;
+  // Hide the alert after 3 seconds (clearing previous timeout if any)
+  if (alertElem.timeout) {
+    clearTimeout(alertElem.timeout);
+  }
   alertElem.timeout = setTimeout(() => {
-    alertElem.style.visibility = 'hidden';
-  });
+    alertElem.style.opacity = 0;
+  }, 3000);
 }
 
 // Click Events
