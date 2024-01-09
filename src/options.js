@@ -1,14 +1,62 @@
 import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 import { themes } from './themes.js';
+import { initAllSharedListeners } from './contentScriptSharedLib.js';
+import * as ContentScript from './contentScript.js';
 
-// Init the JQuery UI elements
-$('#tabs').tabs();
-$('#accordionOauth').accordion({
-  active: false,
-  collapsible: true,
-  heightStyle: 'content',
-  animate: false,
+
+/////////////////////
+// Vertical Tab UI //
+/////////////////////
+
+const allLinks = document.querySelectorAll('.tabs a');
+const allTabs = document.querySelectorAll('.tab-content');
+
+const shiftTabs = (linkId) => {
+  allTabs.forEach((tab, i) => {
+      
+    if (tab.id.includes(linkId)) {
+      allTabs.forEach((tabItem) => { 
+        tabItem.style = `transform: translateY(-${i*500}px);`;
+      });
+    }
+  });
+};
+
+allLinks.forEach((elem) => {
+  elem.addEventListener('click', function() {
+    const linkId = elem.id;
+    const hrefLinkClick = elem.href;
+
+    allLinks.forEach((link) => {
+      if (link.href == hrefLinkClick){
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+
+    shiftTabs(linkId);
+  });
 });
+
+// handle proper selection for initial load
+const currentHash = window.location.hash;
+let activeLink = document.querySelector('.tabs a');
+
+if (currentHash) {
+  const visibleHash = document.getElementById(
+    `${currentHash.replace('#', '')}`,
+  );
+  if (visibleHash) {
+    activeLink = visibleHash;
+  }
+}
+activeLink.classList.toggle('active');
+shiftTabs(activeLink.id);
+
+/////////////////////////////////
+// Options page -- Tab content //
+/////////////////////////////////
 
 // Cached DOM elements
 let btnSave;
@@ -71,135 +119,168 @@ let btnOauthGooglRevoke;
 let currentSyncSettingsValues = defaultSettings;
 let currentLocalSettingsValues = defaultSettingsLocal;
 
-function initialize() {
-  // Cache DOM elements
-  btnSave = document.getElementById('save');
-  btnRestore = document.getElementById('restore');
-  divConfirm = document.getElementById('confirm');
-  btnConfirmY = document.getElementById('btnConfirmY');
-  btnConfirmN = document.getElementById('btnConfirmN');
-  spnSaved = $('#saved').hide();
-  // General options
-  chkDisplayExternalDomainsOnly = document.getElementById('chkDisplayExternalDomainsOnly');
-  chkDisplayDomainOnly = document.getElementById('chkDisplayDomainOnly');
-  chkDisplayUrlScheme = document.getElementById('chkDisplayUrlScheme');
-  rdoDisplayUrlNoAuth = document.getElementById('rdoDisplayUrlNoAuth');
-  rdoDisplayUrlUsername = document.getElementById('rdoDisplayUrlUsername');
-  rdoDisplayUrlPassword = document.getElementById('rdoDisplayUrlPassword');
-  rdoDisplayUrlPassMask = document.getElementById('rdoDisplayUrlPassMask');
-  chkDisplayUrlHostname = document.getElementById('chkDisplayUrlHostname');
-  chkDisplayUrlPort = document.getElementById('chkDisplayUrlPort');
-  chkDisplayUrlPath = document.getElementById('chkDisplayUrlPath');
-  chkDisplayUrlQuery = document.getElementById('chkDisplayUrlQuery');
-  chkDisplayUrlFragment = document.getElementById('chkDisplayUrlFragment');
-  chkDisplayJavascriptLinks = document.getElementById('chkDisplayJavascriptLinks');
-  chkDisplayMailtoLinks = document.getElementById('chkDisplayMailtoLinks');
-  chkDisplayShortUrlsOnly = document.getElementById('chkDisplayShortUrlsOnly');
-  // Option fields
-  durationDelay = document.getElementById('durationDelay');
-  durationFadeIn = document.getElementById('durationFadeIn');
-  durationFadeOut = document.getElementById('durationFadeOut');
-  colorBackground = document.getElementById('colorBackground');
-  colorBorder = document.getElementById('colorBorder');
-  colorDomainText = document.getElementById('colorDomainText');
-  colorGeneralURLText = document.getElementById('colorGeneralURLText');
-  /* tooltipPreview = document.getElementById("tooltipPreview");
-    tooltipPreviewText = document.getElementById("tooltipPreviewText");
-  tooltipPreviewTextDomain = document.getElementById("tooltipPreviewTextDomain"); */
-  themeSelect = document.getElementById('theme-select');
-  // Short URL DOM elements
-  txtBitlyUser = document.getElementById('txtBitlyUser');
-  pwdBitlyPass = document.getElementById('pwd-bitly-pass');
-  btnOauthBitly = document.getElementById('btn-oauth-bitly');
-  btnOauthGoogl = document.getElementById('btn-oauth-googl');
-  btnOauthGooglRevoke = document.getElementById('btn-oauth-googl-revoke');
+async function initialize() {
+  // // Cache DOM elements
+  // btnSave = document.getElementById('save');
+  // btnRestore = document.getElementById('restore');
+  // divConfirm = document.getElementById('confirm');
+  // btnConfirmY = document.getElementById('btnConfirmY');
+  // btnConfirmN = document.getElementById('btnConfirmN');
+  // spnSaved = $('#saved').hide();
+  // // General options
+  // chkDisplayExternalDomainsOnly = document.getElementById('chkDisplayExternalDomainsOnly');
+  // chkDisplayDomainOnly = document.getElementById('chkDisplayDomainOnly');
+  // chkDisplayUrlScheme = document.getElementById('chkDisplayUrlScheme');
+  // rdoDisplayUrlNoAuth = document.getElementById('rdoDisplayUrlNoAuth');
+  // rdoDisplayUrlUsername = document.getElementById('rdoDisplayUrlUsername');
+  // rdoDisplayUrlPassword = document.getElementById('rdoDisplayUrlPassword');
+  // rdoDisplayUrlPassMask = document.getElementById('rdoDisplayUrlPassMask');
+  // chkDisplayUrlHostname = document.getElementById('chkDisplayUrlHostname');
+  // chkDisplayUrlPort = document.getElementById('chkDisplayUrlPort');
+  // chkDisplayUrlPath = document.getElementById('chkDisplayUrlPath');
+  // chkDisplayUrlQuery = document.getElementById('chkDisplayUrlQuery');
+  // chkDisplayUrlFragment = document.getElementById('chkDisplayUrlFragment');
+  // chkDisplayJavascriptLinks = document.getElementById('chkDisplayJavascriptLinks');
+  // chkDisplayMailtoLinks = document.getElementById('chkDisplayMailtoLinks');
+  // chkDisplayShortUrlsOnly = document.getElementById('chkDisplayShortUrlsOnly');
+  // // Option fields
+  // durationDelay = document.getElementById('durationDelay');
+  // durationFadeIn = document.getElementById('durationFadeIn');
+  // durationFadeOut = document.getElementById('durationFadeOut');
+  // colorBackground = document.getElementById('colorBackground');
+  // colorBorder = document.getElementById('colorBorder');
+  // colorDomainText = document.getElementById('colorDomainText');
+  // colorGeneralURLText = document.getElementById('colorGeneralURLText');
+  // /* tooltipPreview = document.getElementById("tooltipPreview");
+  //   tooltipPreviewText = document.getElementById("tooltipPreviewText");
+  // tooltipPreviewTextDomain = document.getElementById("tooltipPreviewTextDomain"); */
+  // themeSelect = document.getElementById('theme-select');
+  // // Short URL DOM elements
+  // txtBitlyUser = document.getElementById('txtBitlyUser');
+  // pwdBitlyPass = document.getElementById('pwd-bitly-pass');
+  // btnOauthBitly = document.getElementById('btn-oauth-bitly');
+  // btnOauthGoogl = document.getElementById('btn-oauth-googl');
+  // btnOauthGooglRevoke = document.getElementById('btn-oauth-googl-revoke');
   // DOM elements - Domain activation
-  $('#form-activation-type input').on('change', showActivationTypeOptions);
-  btnDomainsWhitelistAdd = document.getElementById('btn-domains-whitelist-add');
-  btnDomainsWhitelistRemove = document.getElementById('btn-domains-whitelist-remove');
-  txtDomainsWhitelist = document.getElementById('txt-domains-whitelist');
-  listDomainsWhitelist = document.getElementById('list-domains-whitelist');
-  $('#btn-clear-err-msg-whitelist').click(hideWhitelistErrMsg);
-  btnDomainsBlacklistAdd = document.getElementById('btn-domains-blacklist-add');
-  btnDomainsBlacklistRemove = document.getElementById('btn-domains-blacklist-remove');
-  txtDomainsBlacklist = document.getElementById('txt-domains-blacklist');
-  listDomainsBlacklist = document.getElementById('list-domains-blacklist');
-  $('#btn-clear-err-msg-blacklist').click(hideBlacklistErrMsg);
+  document.querySelectorAll('#form-activation-type input').forEach((el) => {
+    el.addEventListener('change', () => { showActivationTypeOptions(el.value); });
+  });
+  // btnDomainsWhitelistAdd = document.getElementById('btn-domains-whitelist-add');
+  // btnDomainsWhitelistRemove = document.getElementById('btn-domains-whitelist-remove');
+  // txtDomainsWhitelist = document.getElementById('txt-domains-whitelist');
+  // listDomainsWhitelist = document.getElementById('list-domains-whitelist');
+  // $('#btn-clear-err-msg-whitelist').click(hideWhitelistErrMsg);
+  // btnDomainsBlacklistAdd = document.getElementById('btn-domains-blacklist-add');
+  // btnDomainsBlacklistRemove = document.getElementById('btn-domains-blacklist-remove');
+  // txtDomainsBlacklist = document.getElementById('txt-domains-blacklist');
+  // listDomainsBlacklist = document.getElementById('list-domains-blacklist');
+  // $('#btn-clear-err-msg-blacklist').click(hideBlacklistErrMsg);
 
-  // Event handlers (prior to restoring settings)
-  colorBackground.addEventListener('change', function() {
-    // tooltipPreview.style.background = colorBackground.value;
-    $('.cl-container').css('background', colorBackground.value);
-    themeSelect.value = '0';
-  });
-  colorBorder.addEventListener('change', function() {
-    // tooltipPreview.style.borderColor = colorBorder.value;
-    $('.cl-container').css('border-color', colorBorder.value);
-    themeSelect.value = '0';
-  });
-  colorGeneralURLText.addEventListener('change', function() {
-    // tooltipPreviewText.style.color = colorGeneralURLText.value;
-    $('.cl-url').css('color', colorGeneralURLText.value);
-    themeSelect.value = '0';
-  });
-  colorDomainText.addEventListener('change', function() {
-    // tooltipPreviewTextDomain.style.color = colorDomainText.value;
-    $('.ClDomain').css('color', colorDomainText.value);
-    themeSelect.value = '0';
-  });
+  // // Event handlers (prior to restoring settings)
+  // colorBackground.addEventListener('change', function() {
+  //   // tooltipPreview.style.background = colorBackground.value;
+  //   $('.cl-container').css('background', colorBackground.value);
+  //   themeSelect.value = '0';
+  // });
+  // colorBorder.addEventListener('change', function() {
+  //   // tooltipPreview.style.borderColor = colorBorder.value;
+  //   $('.cl-container').css('border-color', colorBorder.value);
+  //   themeSelect.value = '0';
+  // });
+  // colorGeneralURLText.addEventListener('change', function() {
+  //   // tooltipPreviewText.style.color = colorGeneralURLText.value;
+  //   $('.cl-url').css('color', colorGeneralURLText.value);
+  //   themeSelect.value = '0';
+  // });
+  // colorDomainText.addEventListener('change', function() {
+  //   // tooltipPreviewTextDomain.style.color = colorDomainText.value;
+  //   $('.ClDomain').css('color', colorDomainText.value);
+  //   themeSelect.value = '0';
+  // });
 
-  // Get all the settings, update the UI
-  restoreSettings();
+  // // Get all the settings, update the UI
+  // restoreSettings();
 
-  // Add event listeners to UI elements.
-  btnSave.addEventListener('click', btnSaveClick);
-  btnRestore.addEventListener('click', btnRestoreClick);
-  $('#delAll').click(btnDelAllSavedDataClick);
-  chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
-  // Page Activation
-  btnDomainsWhitelistAdd.addEventListener('click', addToWhitelist);
-  btnDomainsWhitelistRemove.addEventListener('click', removeFromWhitelist);
-  btnDomainsBlacklistAdd.addEventListener('click', addToBlacklist);
-  btnDomainsBlacklistRemove.addEventListener('click', removeFromBlacklist);
-  // Style
-  themeSelect.addEventListener('change', previewPresetTheme);
-  // Short URLs
-  btnOauthBitly.addEventListener('click', function() {
-    oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
-  });
-  btnOauthGoogl.addEventListener('click', oauthGoogl);
-  btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
+  // // Add event listeners to UI elements.
+  // btnSave.addEventListener('click', btnSaveClick);
+  // btnRestore.addEventListener('click', btnRestoreClick);
+  // $('#delAll').click(btnDelAllSavedDataClick);
+  // chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
+  // // Page Activation
+  // btnDomainsWhitelistAdd.addEventListener('click', addToWhitelist);
+  // btnDomainsWhitelistRemove.addEventListener('click', removeFromWhitelist);
+  // btnDomainsBlacklistAdd.addEventListener('click', addToBlacklist);
+  // btnDomainsBlacklistRemove.addEventListener('click', removeFromBlacklist);
+  // // Style
+  // themeSelect.addEventListener('change', previewPresetTheme);
+  // // Short URLs
+  // btnOauthBitly.addEventListener('click', function() {
+  //   oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
+  // });
+  // btnOauthGoogl.addEventListener('click', oauthGoogl);
+  // btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
 
-  document.getElementById('btn-oauth-bitly-forget-token').addEventListener('click', function() {
-    chrome.storage.local.set({
-      OAuthBitLy: { enabled: false, token: '' },
-    }, function() { // On saved
-      currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' }; // Update local copy of settings
-      oauthBitlyUpdateUI();
+  // document.getElementById('btn-oauth-bitly-forget-token').addEventListener('click', function() {
+  //   chrome.storage.local.set({
+  //     OAuthBitLy: { enabled: false, token: '' },
+  //   }, function() { // On saved
+  //     currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' }; // Update local copy of settings
+  //     oauthBitlyUpdateUI();
+  //   });
+  // });
+
+  // // Real-time validation
+  // $(durationDelay).focusout(function() {
+  //   if (durationDelay.value < 0) {
+  //     durationDelay.value = currentSyncSettingsValues.durationDelay;
+  //   }
+  // });
+  // $(durationFadeIn).focusout(function() {
+  //   if (durationFadeIn.value < 0) {
+  //     durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
+  //   }
+  // });
+  // $(durationFadeOut).focusout(function() {
+  //   if (durationFadeOut.value < 0) {
+  //     durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
+  //   }
+  // });
+
+  // All checkboxes - Save settings on change/click
+  document.querySelectorAll('input[type=checkbox]').forEach((el) => {
+    el.addEventListener('change', async () => {
+      await chrome.storage.sync.set({
+        [el.dataset.storageKey]: el.checked,
+      });
+      // UI to show saved.
+      showPopup('success', 'Saved');
     });
   });
 
-  // Real-time validation
-  $(durationDelay).focusout(function() {
-    if (durationDelay.value < 0) {
-      durationDelay.value = currentSyncSettingsValues.durationDelay;
-    }
-  });
-  $(durationFadeIn).focusout(function() {
-    if (durationFadeIn.value < 0) {
-      durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
-    }
-  });
-  $(durationFadeOut).focusout(function() {
-    if (durationFadeOut.value < 0) {
-      durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
-    }
+  // TODO test; remove
+  // showPopup('info', 'This is an info message');
+  // showPopup('success', 'This is a success message');
+  // showPopup('warning', 'This is a warning message');
+  // showPopup('error', 'This is an error message');
+
+  // TODO Do I need to listen to storage changes (to update the contentScript)? If so, how do I do it?
+  // https://developer.chrome.com/docs/extensions/mv2/reference/storage#synchronous_response_to_storage_updates
+  // chrome.storage.onChanged.addListener
+
+  // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
+  document.querySelectorAll('.previewLink').forEach((el) => {
+    el.addEventListener('click', (event) => {
+      event.preventDefault();
+      return false;
+    });
   });
 
-  // Init previews
-  $('.previewLink').click(function() {
-    return false; // Don't allow the preview links to actually navigate anywhere.
-  });
+  // Initialise content script -- for previewing settings within the Options Page
+  const settings = await chrome.storage.sync.get(defaultSettings); // TODO temporary (`restoreSettings()` is not async)
+  // Options page should not cache Short URLs to enable user to repeatedly test example short URLs given in the Options page.
+  ContentScript.initialise(settings, false, 'a.previewLink');
+  // Setup message passing and related listeners.
+  initAllSharedListeners();
 }
 
 function restoreSettings() {
@@ -285,6 +366,44 @@ function restoreSettings() {
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
     oauthGooglSilent();
     oauthBitlyUpdateUI();
+  });
+}
+
+function showPopup(type, message) {
+  const alertElem = document.getElementById('alert');
+  // Hide all icons
+  alertElem.querySelectorAll('.alert-icon').forEach((el) => {
+    el.style.display = 'none';
+  });
+  // Hide background for all alert types
+  alertElem.classList.remove('alert-info', 'alert-success', 'alert-warning', 'alert-error');
+  // Show specific icon for the given type
+  switch (type) {
+    case 'info':
+      alertElem.querySelector('.alert-icon-info').style.display = 'inherit';
+      alertElem.classList.add('alert-info');
+      break;
+    case 'success':
+      alertElem.querySelector('.alert-icon-success').style.display = 'inherit';
+      alertElem.classList.add('alert-success');
+      break;
+    case 'warning':
+      alertElem.querySelector('.alert-icon-warning').style.display = 'inherit';
+      alertElem.classList.add('alert-warning');
+      break;
+    case 'error':
+      alertElem.querySelector('.alert-icon-error').style.display = 'inherit';
+      alertElem.classList.add('alert-error');
+      break;
+  }
+  // Set the message
+  alertElem.querySelector('.message').textContent = message;
+  // Show the alert
+  alertElem.style.visibility = 'visible';
+  // Hide the alert after 3 seconds
+  // TODO check if the timeout is already set (boolean?)
+  alertElem.timeout = setTimeout(() => {
+    alertElem.style.visibility = 'hidden';
   });
 }
 
@@ -447,19 +566,23 @@ function chkDisplayDomainOnlyChange() {
 
 /* Page activation */
 
-function showActivationTypeOptions() {
-  switch ($('input[name=activationType]:checked', '#form-activation-type').val()) {
-    case '1': // == All
-      $('#form-whitelist').hide();
-      $('#form-blacklist').hide();
+/*
+ * Displays or hides additional options depending on the selected activation type.
+ * @param {string} type - The activation type of the selected radio button. One of: 'All', 'Allowlist', 'Denylist'.
+ */
+function showActivationTypeOptions(type) {
+  switch (type) {
+    case 'All':
+      document.getElementById('form-whitelist').style.display = 'none';
+      document.getElementById('form-blacklist').style.display = 'none';
       break;
-    case '2': // == Whitelist
-      $('#form-whitelist').show();
-      $('#form-blacklist').hide();
+    case 'Allowlist':
+      document.getElementById('form-whitelist').style.display = 'inherit';
+      document.getElementById('form-blacklist').style.display = 'none';
       break;
-    case '3': // == Blacklist
-      $('#form-whitelist').hide();
-      $('#form-blacklist').show();
+    case 'Denylist':
+      document.getElementById('form-whitelist').style.display = 'none';
+      document.getElementById('form-blacklist').style.display = 'inherit';
       break;
   }
 }

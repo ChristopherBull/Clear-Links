@@ -1,7 +1,7 @@
-body {
+/* body {
   padding: 10px;
   width: 50em;
-}
+} */
 fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #div-btn-group { margin-top: 1em; }
@@ -22,15 +22,14 @@ textarea { resize: vertical; }
 .inline-block { display: inline-block; }
 .right-align { text-align: right; }
 
-#fragment-1 > fieldset {
+/* #fragment-1 > fieldset {
   margin-top: 1em;
-}
+} */
 
 .input-milliseconds { width: 5em; }
 
 .link-demo-container {
   width: 100%;
-  text-align: right;
 }
 
 .enabled { color: black; }
@@ -87,6 +86,7 @@ textarea { resize: vertical; }
 #theme-select { margin-left: 5px; }
 
 /* Page Activation */
+
 #form-activation-type > label > input {
   margin-bottom: 3px;
 }
@@ -121,11 +121,15 @@ textarea { resize: vertical; }
 }
 
 /* Short URLs */
+
 .auth-tick {
   float: right;
 }
 
-.auth-tick-hidden, #div-err-area-whitelist, #div-err-area-blacklist {
+.hidden,
+.auth-tick-hidden,
+#div-err-area-whitelist,
+#div-err-area-blacklist {
   display: none;
 }
 
@@ -156,4 +160,157 @@ textarea { resize: vertical; }
 #btn-oauth-googl:disabled {
   background-image: url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_disabled_web.png');
   cursor: auto;
+}
+
+/*
+ * Vertical Tab UI
+ * Credit: https://www.codehim.com/vanilla-javascript/vertical-tabs-using-javascript/
+ */
+
+:root {
+  --white: #fff;
+  --black: #000;
+  --gray: #f3f3f3;
+  --gray-mid: #9d9d9d;
+  --gray-dark: #3e3e3e;
+  --gray-hover: #f7f7f7;
+  --body-background: grey;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 5em;
+  background-color: var(--body-background);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.tabs-container {
+  padding: 16px;
+  width: 100%;
+  max-width: 640px;
+  min-width: 320px;
+  display: flex;
+  margin: 10px;
+  border-radius: 16px;
+  background-color: var(--white);
+  box-shadow: rgba(100 100 111 0.2) 0 7px 29px 0;
+}
+
+header {
+  position: relative;
+}
+
+.tab-content-wrapper {
+  overflow: auto hidden;
+  height: 450px;
+  width: 200em;
+  transition: all 0.45s ease-in-out;
+  padding: 0 16px;
+}
+
+.tab-content h2 {
+  color: var(--gray-dark);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.tab-content {
+  font-size: 0.8rem;
+  min-height: 500px;
+  min-width: 240px;
+  overflow: auto;
+  transition: all 0.45s ease-in-out;
+}
+
+.tab-content fieldset {
+  padding: 1em;
+  margin: 1em 0;
+}
+
+.tabs {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #f0f0f0;
+  list-style-type: none;
+  padding-right: 16px;
+  gap: 8px;
+  width: 80em;
+}
+
+.tabs a {
+  position: relative;
+  display: flex;
+  text-decoration: none;
+  width: 100%;
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--black);
+  text-align: left;
+  border-radius: 8px;
+  justify-content: start;
+  padding: 12px;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.tabs a img {
+  height: 20px;
+  width: 20px;
+}
+
+.tabs .active, .tabs a:hover {
+  font-weight: 700;
+  outline: none;
+  color: white;
+  background-color: var(--gray-dark);
+}
+
+
+.tabs a svg {
+  fill: var(--black);
+}
+
+.tabs .active svg,
+.tabs a:hover svg {
+  fill: var(--gray);
+}
+
+/* Alert popup */
+
+#alert {
+  min-height: 5em;
+  max-width: 75%;
+  border-radius: 2em;
+  padding: 1em 2em;
+  margin: 1em;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  visibility: hidden;
+}
+
+.alert-icon { fill: var(--white); }
+.alert-info { background: #0676ed; }
+.alert-success { background: #12c99b; }
+.alert-warning { background: #f2a600; }
+.alert-error { background: #e41749; }
+
+#alert p {
+  color: var(--white);
+  margin-left: 1em;
+  font-size: 1.5em;
 }

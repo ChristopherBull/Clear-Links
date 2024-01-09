@@ -1,10 +1,14 @@
 import { defaultSettings } from './defaultSettings.js';
 
 let useShortUrlCache = true;
+let linkSelector = 'a';
 
-export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true) {
+export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
   settings = contentScriptSettings;
   useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
+  if (overrideLinkSelector) {
+    linkSelector = overrideLinkSelector;
+  }
 
   applyAllSettingToTooltip(settings);
 
@@ -21,6 +25,10 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
       applyAllSettingChangesToTooltip(event.data.message);
     }
   }, true);
+
+  // Attach mouse enter listeners
+  // NB: Should be done after overrideLinkSelector is set, so we can use the correct selector.
+  attachMouseEnterListeners();
 }
 
 // Cache settings
@@ -109,9 +117,11 @@ ready(function() {
   });
   // Store initial window dimensions
   cacheWinDimensions();
+});
 
+function attachMouseEnterListeners() {
   // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
-  addDelegatedEventListener(document.body, 'mouseenter', 'a', function() {
+  addDelegatedEventListener(document.body, 'mouseenter', linkSelector, function() {
     if (!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
@@ -182,7 +192,7 @@ ready(function() {
         break;
     }
   });
-});
+}
 
 /**
    * Determine if a given hostname is an external domain (if only showing external domains), otherwise always true
@@ -247,7 +257,7 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // Attach mouse move event to track cursor position (for tooltip positioning)
   const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
   // TODO - not necessary if using absolute corner positioning in options
-  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', 'a', mouseRelativeCursorPosition, {
+  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', linkSelector, mouseRelativeCursorPosition, {
     hasTooltipAttr: hasTooltipAttr,
   });
   // Show the tooltip - check if already attached to document, then attach if not.
