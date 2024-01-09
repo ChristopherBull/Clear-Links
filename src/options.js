@@ -60,7 +60,6 @@ shiftTabs(activeLink.id);
 
 // Cached DOM elements
 let btnSave;
-let btnRestore;
 let divConfirm;
 let btnConfirmY;
 let btnConfirmN;
@@ -122,7 +121,6 @@ let currentLocalSettingsValues = defaultSettingsLocal;
 async function initialize() {
   // // Cache DOM elements
   // btnSave = document.getElementById('save');
-  // btnRestore = document.getElementById('restore');
   // divConfirm = document.getElementById('confirm');
   // btnConfirmY = document.getElementById('btnConfirmY');
   // btnConfirmN = document.getElementById('btnConfirmN');
@@ -203,7 +201,7 @@ async function initialize() {
 
   // // Add event listeners to UI elements.
   // btnSave.addEventListener('click', btnSaveClick);
-  // btnRestore.addEventListener('click', btnRestoreClick);
+  document.getElementById('restore').addEventListener('click', restoreSyncedSettings);
   // $('#delAll').click(btnDelAllSavedDataClick);
   // chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
   // // Page Activation
@@ -477,25 +475,20 @@ function btnSaveClick() {
   });
 }
 
-function btnRestoreClick() {
-  btnConfirmY.onclick = function() {
+/*
+ * Restores default settings.
+ */
+async function restoreSyncedSettings() {
+  console.log('restoreSyncedSettings() - clicked');
+  // Confirm with user before restoring default settings
+  if (window.confirm('Are you sure you want to restore default settings?\n\nThis will delete all your saved settings and cannot be undone.')) {
     // Clear synced settings
-    chrome.storage.sync.clear(function() { // On sync cleared
+    await chrome.storage.sync.clear();
       // Re-Save default sync values
-      chrome.storage.sync.set(defaultSettings, function() { // On sync saved
+    await chrome.storage.sync.set(defaultSettings);
         // Update Options menu UI
         restoreSettings();
-        divConfirm.style.visibility = 'hidden';
-        spnSaved.show().delay(2500).fadeOut();
-      });
-    });
-  };
-  btnConfirmN.onclick = function() {
-    divConfirm.style.visibility = 'hidden';
-  };
-  divConfirm.style.visibility = 'visible';
-  $('#restore-further-info').show();
-  $('#del-all-further-info').hide();
+  }
 }
 
 function btnDelAllSavedDataClick() {
