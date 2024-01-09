@@ -1,6 +1,7 @@
 import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 import { themes } from './themes.js';
 import { initAllSharedListeners } from './contentScriptSharedLib.js';
+import { Confirm } from './optionsConfirmDialog.js';
 import * as ContentScript from './contentScript.js';
 
 
@@ -254,16 +255,6 @@ async function initialize() {
       showPopup('success', 'Saved');
     });
   });
-
-  // TODO test; remove
-  // showPopup('info', 'This is an info message');
-  // showPopup('success', 'This is a success message');
-  // showPopup('warning', 'This is a warning message');
-  // showPopup('error', 'This is an error message');
-
-  // TODO Do I need to listen to storage changes (to update the contentScript)? If so, how do I do it?
-  // https://developer.chrome.com/docs/extensions/mv2/reference/storage#synchronous_response_to_storage_updates
-  // chrome.storage.onChanged.addListener
 
   // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
   document.querySelectorAll('.preview-link').forEach((el) => {
