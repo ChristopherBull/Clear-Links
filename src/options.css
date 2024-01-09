@@ -83,32 +83,32 @@ textarea { resize: vertical; }
   margin-bottom: 3px;
 }
 
-#form-whitelist, #form-blacklist {
+#form-allowlist, #form-denylist {
   margin-top: 1em;
 }
 
-#txt-domains-whitelist, #list-domains-whitelist, #txt-domains-blacklist, #list-domains-blacklist {
+#txt-domains-allowlist, #list-domains-allowlist, #txt-domains-denylist, #list-domains-denylist {
   width: 400px;
 }
 
-#list-domains-whitelist, #list-domains-blacklist {
+#list-domains-allowlist, #list-domains-denylist {
   background: white;
 }
 
-#btn-domains-whitelist-add, #btn-domains-whitelist-remove, #btn-domains-blacklist-add, #btn-domains-blacklist-remove {
+#btn-domains-allowlist-add, #btn-domains-allowlist-remove, #btn-domains-denylist-add, #btn-domains-denylist-remove {
   width: 10.5em;
   text-align: left;
 }
 
-#btn-domains-whitelist-add, #txt-domains-whitelist, #btn-clear-err-msg-whitelist, #btn-domains-blacklist-add, #txt-domains-blacklist, #btn-clear-err-msg-blacklist {
+#btn-domains-allowlist-add, #txt-domains-allowlist, #btn-clear-err-msg-allowlist, #btn-domains-denylist-add, #txt-domains-denylist, #btn-clear-err-msg-denylist {
   margin-bottom: 5px;
 }
 
-#btn-domains-whitelist-add, #btn-domains-blacklist-add {
+#btn-domains-allowlist-add, #btn-domains-denylist-add {
   margin-left: 1px;
 }
 
-#btn-domains-whitelist-remove, #btn-domains-blacklist-remove {
+#btn-domains-allowlist-remove, #btn-domains-denylist-remove {
   vertical-align: top;
 }
 
@@ -120,8 +120,8 @@ textarea { resize: vertical; }
 
 .hidden,
 .auth-tick-hidden,
-#div-err-area-whitelist,
-#div-err-area-blacklist {
+#div-err-area-allowlist,
+#div-err-area-denylist {
   display: none;
 }
 

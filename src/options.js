@@ -99,14 +99,14 @@ let tooltipPreviewTextDomain; */
 let themeSelect;
 
 // DOM elements - Domain Activation
-let btnDomainsWhitelistAdd;
-let btnDomainsWhitelistRemove;
-let txtDomainsWhitelist;
-let listDomainsWhitelist;
-let btnDomainsBlacklistAdd;
-let btnDomainsBlacklistRemove;
-let txtDomainsBlacklist;
-let listDomainsBlacklist;
+let btnDomainsAllowlistAdd;
+let btnDomainsAllowlistRemove;
+let txtDomainsAllowlist;
+let listDomainsAllowlist;
+let btnDomainsDenylistAdd;
+let btnDomainsDenylistRemove;
+let txtDomainsDenylist;
+let listDomainsDenylist;
 
 // DOM elements - Short URL
 let txtBitlyUser;
@@ -164,16 +164,16 @@ async function initialize() {
   document.querySelectorAll('#form-activation-type input').forEach((el) => {
     el.addEventListener('change', () => { showActivationTypeOptions(el.value); });
   });
-  // btnDomainsWhitelistAdd = document.getElementById('btn-domains-whitelist-add');
-  // btnDomainsWhitelistRemove = document.getElementById('btn-domains-whitelist-remove');
-  // txtDomainsWhitelist = document.getElementById('txt-domains-whitelist');
-  // listDomainsWhitelist = document.getElementById('list-domains-whitelist');
-  // $('#btn-clear-err-msg-whitelist').click(hideWhitelistErrMsg);
-  // btnDomainsBlacklistAdd = document.getElementById('btn-domains-blacklist-add');
-  // btnDomainsBlacklistRemove = document.getElementById('btn-domains-blacklist-remove');
-  // txtDomainsBlacklist = document.getElementById('txt-domains-blacklist');
-  // listDomainsBlacklist = document.getElementById('list-domains-blacklist');
-  // $('#btn-clear-err-msg-blacklist').click(hideBlacklistErrMsg);
+  // btnDomainsAllowlistAdd = document.getElementById('btn-domains-allowlist-add');
+  // btnDomainsAllowlistRemove = document.getElementById('btn-domains-allowlist-remove');
+  // txtDomainsAllowlist = document.getElementById('txt-domains-allowlist');
+  // listDomainsAllowlist = document.getElementById('list-domains-allowlist');
+  // $('#btn-clear-err-msg-allowlist').click(hideAllowlistErrMsg);
+  // btnDomainsDenylistAdd = document.getElementById('btn-domains-denylist-add');
+  // btnDomainsDenylistRemove = document.getElementById('btn-domains-denylist-remove');
+  // txtDomainsDenylist = document.getElementById('txt-domains-denylist');
+  // listDomainsDenylist = document.getElementById('list-domains-denylist');
+  // $('#btn-clear-err-msg-denylist').click(hideDenylistErrMsg);
 
   // // Event handlers (prior to restoring settings)
   // colorBackground.addEventListener('change', function() {
@@ -206,10 +206,10 @@ async function initialize() {
   document.getElementById('btn-del-all').addEventListener('click', btnDelAllSavedDataClick);
   // chkDisplayDomainOnly.addEventListener('change', chkDisplayDomainOnlyChange);
   // // Page Activation
-  // btnDomainsWhitelistAdd.addEventListener('click', addToWhitelist);
-  // btnDomainsWhitelistRemove.addEventListener('click', removeFromWhitelist);
-  // btnDomainsBlacklistAdd.addEventListener('click', addToBlacklist);
-  // btnDomainsBlacklistRemove.addEventListener('click', removeFromBlacklist);
+  // btnDomainsAllowlistAdd.addEventListener('click', addToAllowlist);
+  // btnDomainsAllowlistRemove.addEventListener('click', removeFromAllowlist);
+  // btnDomainsDenylistAdd.addEventListener('click', addToDenylist);
+  // btnDomainsDenylistRemove.addEventListener('click', removeFromDenylist);
   // // Style
   // themeSelect.addEventListener('change', previewPresetTheme);
   // // Short URLs
@@ -338,26 +338,26 @@ function restoreSettings() {
       currentLocalSettingsValues = items;
       // Page Activation
       $('#activationType' + items.activationFilter).prop('checked', true).change();
-      // Page Activation - Load whitelist
+      // Page Activation - Load allowlist
       let i;
-      for (i = listDomainsWhitelist.options.length - 1; i >= 0; i--) { // Empty list UI
-        listDomainsWhitelist.remove(i);
+      for (i = listDomainsAllowlist.options.length - 1; i >= 0; i--) { // Empty list UI
+        listDomainsAllowlist.remove(i);
       }
       for (i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++) { // Re-fill list UI
-        // Add to Whitelist UI
+        // Add to Allowlist UI
         const option = document.createElement('option');
         option.text = currentLocalSettingsValues.domainWhitelist[i];
-        listDomainsWhitelist.add(option);
+        listDomainsAllowlist.add(option);
       }
-      // Page Activation - Load blacklist
-      for (i = listDomainsBlacklist.options.length - 1; i >= 0; i--) { // Empty list UI
-        listDomainsBlacklist.remove(i);
+      // Page Activation - Load denylist
+      for (i = listDomainsDenylist.options.length - 1; i >= 0; i--) { // Empty list UI
+        listDomainsDenylist.remove(i);
       }
       for (i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++) { // Re-fill list UI
-        // Add to Blacklist UI
+        // Add to Denylist UI
         const option = document.createElement('option');
         option.text = currentLocalSettingsValues.domainBlacklist[i];
-        listDomainsBlacklist.add(option);
+        listDomainsDenylist.add(option);
       }
       // Short URLs -- OAuth tokens
       document.getElementById('lbl-oauth-bitly-token').textContent = items.OAuthBitLy.token;
@@ -575,16 +575,16 @@ function chkDisplayDomainOnlyChange() {
 function showActivationTypeOptions(type) {
   switch (type) {
     case 'All':
-      document.getElementById('form-whitelist').style.display = 'none';
-      document.getElementById('form-blacklist').style.display = 'none';
+      document.getElementById('form-allowlist').style.display = 'none';
+      document.getElementById('form-denylist').style.display = 'none';
       break;
     case 'Allowlist':
-      document.getElementById('form-whitelist').style.display = 'inherit';
-      document.getElementById('form-blacklist').style.display = 'none';
+      document.getElementById('form-allowlist').style.display = 'inherit';
+      document.getElementById('form-denylist').style.display = 'none';
       break;
     case 'Denylist':
-      document.getElementById('form-whitelist').style.display = 'none';
-      document.getElementById('form-blacklist').style.display = 'inherit';
+      document.getElementById('form-allowlist').style.display = 'none';
+      document.getElementById('form-denylist').style.display = 'inherit';
       break;
   }
 }
@@ -607,38 +607,39 @@ function isValidUrl(sUrl) {
   }
 }
 
-function addToWhitelist() {
+function addToAllowlist() {
   let tmpUrl;
   try {
-    tmpUrl = isValidUrl(txtDomainsWhitelist.value);
-    hideWhitelistErrMsg();
+    tmpUrl = isValidUrl(txtDomainsAllowlist.value);
+    hideAllowlistErrMsg();
   } catch (err) {
-    $('#txtErrMsgDomainWhitelist').text(err.message);
-    $('#div-err-area-whitelist').show();
+    $('#txtErrMsgDomainAllowlist').text(err.message);
+    $('#div-err-area-allowlist').show();
     return;
   }
   
   // Is domain not already in Storage?
   // If tmpUrl is null, silently skip
+  // TODO Allow user to choose local or sync storage (or both)
   if (tmpUrl != null && currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
-    // Add to Whitelist Storage
+    // Add to Allowlist Storage
     currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
     chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On local settings saved
-      // Add to Whitelist UI
+      // Add to Allowlist UI
       const option = document.createElement('option');
       option.text = tmpUrl.hostname;
-      listDomainsWhitelist.add(option);
+      listDomainsAllowlist.add(option);
       // Clean UI
-      txtDomainsWhitelist.value = '';
+      txtDomainsAllowlist.value = '';
     });
   }
 }
 
-function removeFromWhitelist() {
-  // Determine which whitelist entries to remove
+function removeFromAllowlist() {
+  // Determine which allowlist entries to remove
   const indicesToRemove = [];
-  for (let count = listDomainsWhitelist.options.length - 1; count >= 0; count--) {
-    if (listDomainsWhitelist.options[count].selected === true) {
+  for (let count = listDomainsAllowlist.options.length - 1; count >= 0; count--) {
+    if (listDomainsAllowlist.options[count].selected === true) {
       indicesToRemove.push(count); // Cache index for UI updating after successful storage update
       currentLocalSettingsValues.domainWhitelist.splice(count, 1); // Remove entry from model
     }
@@ -647,43 +648,43 @@ function removeFromWhitelist() {
   chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist }, function() { // On (local only) saved
     // Update the UI
     for (let i = 0; i < indicesToRemove.length; i++) {
-      listDomainsWhitelist.remove(indicesToRemove[i]);
+      listDomainsAllowlist.remove(indicesToRemove[i]);
     }
   });
 }
 
-function addToBlacklist() {
+function addToDenylist() {
   let tmpUrl;
   try {
-    tmpUrl = isValidUrl(txtDomainsBlacklist.value);
-    hideBlacklistErrMsg();
+    tmpUrl = isValidUrl(txtDomainsDenylist.value);
+    hideDenylistErrMsg();
   } catch (err) {
-    $('#txtErrMsgDomainBlacklist').text(err.message);
-    $('#div-err-area-blacklist').show();
+    $('#txtErrMsgDomainDenylist').text(err.message);
+    $('#div-err-area-denylist').show();
     return;
   }
   
   // Is domain not already in Storage?
   // If tmpUrl is null, silently skip
   if (tmpUrl != null && currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
-    // Add to Blacklist Storage
+    // Add to Denylist Storage
     currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
     chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On local settings saved
-      // Add to Blacklist UI
+      // Add to Denylist UI
       const option = document.createElement('option');
       option.text = tmpUrl.hostname;
-      listDomainsBlacklist.add(option);
+      listDomainsDenylist.add(option);
       // Clean UI
-      txtDomainsBlacklist.value = '';
+      txtDomainsDenylist.value = '';
     });
   }
 }
 
-function removeFromBlacklist() {
-  // Determine which blacklist entries to remove
+function removeFromDenylist() {
+  // Determine which denylist entries to remove
   const indicesToRemove = [];
-  for (let count = listDomainsBlacklist.options.length - 1; count >= 0; count--) {
-    if (listDomainsBlacklist.options[count].selected === true) {
+  for (let count = listDomainsDenylist.options.length - 1; count >= 0; count--) {
+    if (listDomainsDenylist.options[count].selected === true) {
       indicesToRemove.push(count); // Cache index for UI updating after successful storage update
       currentLocalSettingsValues.domainBlacklist.splice(count, 1); // Remove entry from model
     }
@@ -692,17 +693,17 @@ function removeFromBlacklist() {
   chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist }, function() { // On (local only) saved
     // Update the UI
     for (let i = 0; i < indicesToRemove.length; i++) {
-      listDomainsBlacklist.remove(indicesToRemove[i]);
+      listDomainsDenylist.remove(indicesToRemove[i]);
     }
   });
 }
 
-function hideWhitelistErrMsg() {
-  $('#div-err-area-whitelist').hide();
+function hideAllowlistErrMsg() {
+  $('#div-err-area-allowlist').hide();
 }
 
-function hideBlacklistErrMsg() {
-  $('#div-err-area-blacklist').hide();
+function hideDenylistErrMsg() {
+  $('#div-err-area-denylist').hide();
 }
 
 /* Styles */

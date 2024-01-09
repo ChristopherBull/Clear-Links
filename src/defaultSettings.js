@@ -38,7 +38,8 @@ export const defaultSettings = {
 // Local (not synced) default settings
 export const defaultSettingsLocal = {
   // Page Activation - size of filter list may exceed storage limits in sync, so must be local, not synced.
-  activationFilter: 1, // 1=All, 2=Whitelist, 3=Blacklist
+  activationFilter: 1, // 1=All, 2=Allowlist, 3=Denylist
+  // TODO deprecate name and migrate to allowlist (create a check on startup to migrate old settings)
   domainWhitelist: [],
   domainBlacklist: [],
   // Oauth tokens - requires signing in and authorising accounts, so must be stored locally, not synced.

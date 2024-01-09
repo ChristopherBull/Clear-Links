@@ -144,39 +144,38 @@
                         </label>
                         <br>
                         <label>
-                            <input type="radio" id="activationType2" name="activationType" value="Allowlist">Whitelist - Only activate on sites you specify
+                            <input type="radio" id="activationType2" name="activationType" value="Allowlist">Allowlist - Only activate on sites you specify
                         </label>
                         <br>
                         <label>
-                            <input type="radio" id="activationType3" name="activationType" value="Denylist">Blacklist - Activate on all sites, except ones you specify
+                            <input type="radio" id="activationType3" name="activationType" value="Denylist">Denylist - Activate on all sites, except ones you specify
                         </label>
                     </form>
-                    <form id="form-whitelist" action="#">
+                    <form id="form-allowlist" action="#">
                         <hr>
-                        <!-- TODO rename whitelist -->
-                        <h2>Whitelist</h2>
-                        <input type="text" id="txt-domains-whitelist"></input>
-                        <input type="button" id="btn-domains-whitelist-add" value="+ Add Domain"></input>
+                        <h2>Allowlist</h2>
+                        <input type="text" id="txt-domains-allowlist"></input>
+                        <input type="button" id="btn-domains-allowlist-add" value="+ Add Domain"></input>
                         <br>
-                        <div id="div-err-area-whitelist">
-                            <span id="txtErrMsgDomainWhitelist"></span>
-                            &nbsp;<input type="button" id="btn-clear-err-msg-whitelist" value="OK"></input>
+                        <div id="div-err-area-allowlist">
+                            <span id="txtErrMsgDomainAllowlist"></span>
+                            &nbsp;<input type="button" id="btn-clear-err-msg-allowlist" value="OK"></input>
                         </div>
-                        <select id="list-domains-whitelist" size="10" multiple></select>
-                        <input type="button" id="btn-domains-whitelist-remove" value="- Remove Selected"></input>
+                        <select id="list-domains-allowlist" size="10" multiple></select>
+                        <input type="button" id="btn-domains-allowlist-remove" value="- Remove Selected"></input>
                     </form>
-                    <form id="form-blacklist" action="#">
+                    <form id="form-denylist" action="#">
                         <hr>
-                        <h2>Blacklist</h2>
-                        <input type="text" id="txt-domains-blacklist"></input>
-                        <input type="button" id="btn-domains-blacklist-add" value="+ Add Domain"></input>
+                        <h2>Denylist</h2>
+                        <input type="text" id="txt-domains-denylist"></input>
+                        <input type="button" id="btn-domains-denylist-add" value="+ Add Domain"></input>
                         <br>
-                        <div id="div-err-area-blacklist">
-                            <span id="txtErrMsgDomainBlacklist"></span>
-                            &nbsp;<input type="button" id="btn-clear-err-msg-blacklist" value="OK"></input>
+                        <div id="div-err-area-denylist">
+                            <span id="txtErrMsgDomainDenylist"></span>
+                            &nbsp;<input type="button" id="btn-clear-err-msg-denylist" value="OK"></input>
                         </div>
-                        <select id="list-domains-blacklist" size="10" multiple></select>
-                        <input type="button" id="btn-domains-blacklist-remove" value="- Remove Selected"></input>
+                        <select id="list-domains-denylist" size="10" multiple></select>
+                        <input type="button" id="btn-domains-denylist-remove" value="- Remove Selected"></input>
                     </form>
                 </section>
 

@@ -18,9 +18,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
 // Message Passing
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // Page activation (black/whitelist)
+  // Page activation (deny/allowlist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
-  // Allows users to blacklist/whitelist sites. Also, reduces extension's footprint.
+  // Allows users to denylist/allowlist sites. Also, reduces extension's footprint.
   if (request.activationHostname && sender.tab) {
     // Respond to the contentScript so it knows to prepare to collaborate with the injected script (contentScripts can access some chrome.* APIs)
     sendResponse({ inject: true });
@@ -105,12 +105,12 @@ function activateOnTab(tabId, docHostname, activationCallback) {
       case 1: // Allow All
         activationCallback();
         break;
-      case 2: // Whitelisted sites only
+      case 2: // Allowlisted sites only
         if (isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainWhitelist)) {
           activationCallback();
         }
         break;
-      case 3: // Blacklisted sites only
+      case 3: // Denylisted sites only
         if (!isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainBlacklist)) {
           activationCallback();
         }
