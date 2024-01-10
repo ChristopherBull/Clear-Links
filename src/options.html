@@ -156,11 +156,6 @@
                         <h2>Allowlist</h2>
                         <input type="text" id="txt-domains-allowlist"></input>
                         <input type="button" id="btn-domains-allowlist-add" value="+ Add Domain"></input>
-                        <br>
-                        <div id="div-err-area-allowlist">
-                            <span id="txtErrMsgDomainAllowlist"></span>
-                            &nbsp;<input type="button" id="btn-clear-err-msg-allowlist" value="OK"></input>
-                        </div>
                         <select id="list-domains-allowlist" size="10" multiple></select>
                         <input type="button" id="btn-domains-allowlist-remove" value="- Remove Selected"></input>
                     </form>
@@ -169,11 +164,6 @@
                         <h2>Denylist</h2>
                         <input type="text" id="txt-domains-denylist"></input>
                         <input type="button" id="btn-domains-denylist-add" value="+ Add Domain"></input>
-                        <br>
-                        <div id="div-err-area-denylist">
-                            <span id="txtErrMsgDomainDenylist"></span>
-                            &nbsp;<input type="button" id="btn-clear-err-msg-denylist" value="OK"></input>
-                        </div>
                         <select id="list-domains-denylist" size="10" multiple></select>
                         <input type="button" id="btn-domains-denylist-remove" value="- Remove Selected"></input>
                     </form>
@@ -338,7 +328,7 @@
                             <input type="button" id="btn-oauth-googl">
                             <p>
                                 Example link which points to <em>www.google.com</em>
-                                : <a href="http://goo.gl/fbsS">goo.gl/fbsS</a>
+                                : <a href="http://goo.gl/fbsS" class="preview-link">goo.gl/fbsS</a>
                             </p>
                             <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
                         </div>
