@@ -311,10 +311,13 @@ async function restoreSettings() {
     currentLocalSettingsValues = itemsLocal;
       // Page Activation
     document.querySelector('#activationType' + itemsLocal.activationFilter).checked = true;
+    showActivationTypeOptions(itemsLocal.activationFilter);
       // Page Activation - Load allowlist
       let i;
     // Empty allowlist element
-    listDomainsAllowlist.querySelectorAll('options').forEach(option => option.remove());
+    while (listDomainsAllowlist.options.length > 0) {
+      listDomainsAllowlist.remove(0);
+    }
     // Re-fill allowlist element
     for (i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++) {
         const option = document.createElement('option');
@@ -323,7 +326,9 @@ async function restoreSettings() {
       }
       // Page Activation - Load denylist
     // Empty denylist element
-    listDomainsDenylist.querySelectorAll('options').forEach(option => option.remove());
+    while (listDomainsDenylist.options.length > 0) {
+      listDomainsDenylist.remove(0);
+    }
     // Re-fill denylist element
     for (i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++) {
         const option = document.createElement('option');
@@ -475,7 +480,7 @@ async function restoreSyncedSettings() {
       // Re-Save default sync values
     await chrome.storage.sync.set(defaultSettings);
         // Update Options menu UI
-        restoreSettings();
+      await restoreSettings();
       showPopup('saved', 'Default settings restored');
     },
   });
@@ -499,7 +504,7 @@ function btnDelAllSavedDataClick() {
           // Re-Save default local values
       await chrome.storage.local.set(defaultSettingsLocal);
             // Update Options menu UI
-            restoreSettings();
+      await restoreSettings();
       showPopup('success', 'All data deleted.');
     },
   });
@@ -555,19 +560,19 @@ function chkDisplayDomainOnlyChange() {
 
 /*
  * Displays or hides additional options depending on the selected activation type.
- * @param {string} type - The activation type of the selected radio button. One of: 'All', 'Allowlist', 'Denylist'.
+ * @param {string|int} type - The activation type of the selected radio button. One of: 1='All', 2='Allowlist', 3='Denylist'.
  */
 function showActivationTypeOptions(type) {
-  switch (type) {
-    case 'All':
+  switch (parseInt(type)) {
+    case 1:
       document.getElementById('form-allowlist').style.display = 'none';
       document.getElementById('form-denylist').style.display = 'none';
       break;
-    case 'Allowlist':
+    case 2:
       document.getElementById('form-allowlist').style.display = 'inherit';
       document.getElementById('form-denylist').style.display = 'none';
       break;
-    case 'Denylist':
+    case 3:
       document.getElementById('form-allowlist').style.display = 'none';
       document.getElementById('form-denylist').style.display = 'inherit';
       break;
