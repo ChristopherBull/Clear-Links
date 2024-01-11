@@ -48,6 +48,7 @@ textarea { resize: vertical; }
   width: auto;
   border: 1px solid #5f7f99;
   border-radius: 3px;
+  opacity: 1;
 }
 
 #style-preview .cl-icon {
