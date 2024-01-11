@@ -87,8 +87,16 @@ textarea { resize: vertical; }
   margin-top: 1em;
 }
 
-#txt-domains-allowlist, #list-domains-allowlist, #txt-domains-denylist, #list-domains-denylist {
-  width: 400px;
+#txt-domains-allowlist,
+#txt-domains-denylist {
+  box-sizing: border-box;
+}
+
+#list-domains-allowlist,
+#list-domains-denylist,
+#txt-domains-allowlist,
+#txt-domains-denylist {
+  width: 100%;
 }
 
 #list-domains-allowlist, #list-domains-denylist {
