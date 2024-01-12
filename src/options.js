@@ -55,6 +55,23 @@ if (currentHash) {
 activeLink.classList.toggle('active');
 shiftTabs(activeLink.id);
 
+///////////////
+// Utilities //
+///////////////
+
+/*
+ * Debounce function.
+ * @param {function} func - The function to debounce.
+ * @param {number} timeout - The timeout in milliseconds.
+ */
+function debounce(func, timeout = 300){
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+  };
+}
+
 /////////////////////////////////
 // Options page -- Tab content //
 /////////////////////////////////
@@ -245,7 +262,7 @@ async function initialize() {
       }
     });
   });
-  // All radio buttons - Save settings on change/click
+  // All radio buttons (synced) - Save settings on change/click
   document.querySelectorAll('input[type=radio].save-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
       try {
@@ -259,6 +276,41 @@ async function initialize() {
         showPopup('error', 'Error saving setting: ' + err.message);
       }
     });
+  });
+  // All radio buttons (local) - Save settings on change/click
+  document.querySelectorAll('input[type=radio].save-local-on-change').forEach((el) => {
+    el.addEventListener('change', async () => {
+      try {
+        await chrome.storage.local.set({
+          [el.dataset.storageKey]: parseInt(el.value),
+        });
+        // UI to show saved.
+        showPopup('saved');
+      } catch (err) {
+        console.error(err);
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
+    });
+  });
+  // All number fields - Save settings on change (with a debounce)
+  document.querySelectorAll('input[type=number].save-on-change').forEach((el) => {
+    // Set a change listener to update the UI to show unsaved changes (outside of the debounce function).
+    el.addEventListener('change', () => { el.style.backgroundColor = 'rgba(255, 255, 0, 0.25)'; });
+    // Set a debounce listener to save the settings.
+    el.addEventListener('change', debounce(async () => {
+      try {
+        await chrome.storage.sync.set({
+          [el.dataset.storageKey]: parseInt(el.value),
+        });
+        // UI to show saved.
+        el.style.backgroundColor = 'white';
+        showPopup('saved');
+      } catch (err) {
+        console.error(err);
+        el.style.backgroundColor = 'pink';
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
+    }, 1500));
   });
 
   // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
@@ -480,7 +532,7 @@ function btnSaveClick() {
   }, function() { // On saved
     chrome.storage.local.set({
       // Page Activation
-      activationFilter: parseInt($('input[name=activationType]:checked', '#form-activation-type').val()),
+      // activationFilter: parseInt($('input[name=activationType]:checked', '#form-activation-type').val()),
     }, function() { // On (local only) saved
       // Must occur after both sync and local are set (hence chained callback functions).
       showPopup('saved');
