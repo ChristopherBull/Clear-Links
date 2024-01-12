@@ -125,6 +125,7 @@ textarea { resize: vertical; }
 
 .auth-tick {
   float: right;
+  margin-left: .5em;
 }
 
 .hidden,
@@ -187,6 +188,56 @@ textarea { resize: vertical; }
   background-color: var(--btn-danger);
   color: white;
   fill: white;
+}
+
+/*
+ * Accordion UI
+ */
+
+.cl-accordion {
+  user-select: none;
+}
+
+.cl-accordion > details {
+  border-bottom: 1px solid lightgray;
+  line-height: 1.15;
+}
+
+.cl-accordion > details > div {
+  padding: .5em .5em 2em;
+}
+
+.cl-accordion summary {
+  cursor: pointer;
+  display: flex;
+  list-style: none;
+  padding: .5em;
+}
+
+.cl-accordion > details[open] summary {
+  background: #e8e8e8;
+}
+
+.cl-accordion > details summary:hover,
+.cl-accordion > details[open] summary:hover {
+  background-color: whitesmoke;
+}
+
+.cl-accordion summary svg {
+  fill: black;
+  height: 1rem;
+  margin-left: auto;
+  transition: all 0.3s;
+  width: 1rem;
+}
+
+.cl-accordion > details[open] summary svg {
+  transform: rotate(-90deg);
+  transition: 0.25s transform ease;
+}
+
+.cl-accordion :focus {
+  outline: none;
 }
 
 /*

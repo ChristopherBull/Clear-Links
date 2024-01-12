@@ -284,54 +284,67 @@
                     <h2>Short Links</h2>
                     <!-- TODO add hint about what short links (also known as Short URLs): https://en.wikipedia.org/wiki/URL_shortening -->
                     <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
-                    <div id="accordionOauth">
-                        <h3>
-                            Bit.ly
-                            <img src="images/check-mark.png" alt="Bit.ly account authorised" id="auth-tick-bitly" class="auth-tick-hidden"></img>
-                        </h3>
-                        <div>
-                            <div id="divOauthBitlyLoggedOut" class="div-table">
-                                <div class="div-table-body">
-                                    <div class="div-table-row">
-                                        <div class="div-table-cell desc">Username:&nbsp;</div>
-                                        <div class="div-table-cell">
-                                            <input type="text" id="txtBitlyUser">
+                    
+                    <div class="cl-accordion">
+                        <details>
+                            <summary>
+                                Bit.ly
+                                <img src="images/check-mark.png" alt="Bit.ly account authorised" id="auth-tick-bitly" class="auth-tick-hidden"></img>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"></path>
+                                </svg>
+                            </summary>
+                            <div>
+                                <div id="divOauthBitlyLoggedOut" class="div-table">
+                                    <div class="div-table-body">
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">Username:&nbsp;</div>
+                                            <div class="div-table-cell">
+                                                <input type="text" id="txtBitlyUser">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="div-table-row">
-                                        <div class="div-table-cell desc">Password:&nbsp;</div>
-                                        <div class="div-table-cell">
-                                            <input type="password" id="pwd-bitly-pass">
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">Password:&nbsp;</div>
+                                            <div class="div-table-cell">
+                                                <input type="password" id="pwd-bitly-pass">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="div-table-row">
-                                        <div class="div-table-cell desc">&nbsp;</div>
-                                        <div class="div-table-cell right-align">
-                                            <input type="button" id="btn-oauth-bitly" value="Login">
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">&nbsp;</div>
+                                            <div class="div-table-cell right-align">
+                                                <input type="button" id="btn-oauth-bitly" value="Login">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div id="divOauthBitlyLoggedIn">
+                                    <p>
+                                        OAuth access token: <span id="lbl-oauth-bitly-token"></span>
+                                    </p>
+                                    <span>Forget Bit.ly OAuth token: </span>
+                                    <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
+                                </div>
                             </div>
-                            <div id="divOauthBitlyLoggedIn">
+                        </details>
+
+
+                        <details>
+                            <summary>
+                                Goo.gl
+                                <img src="images/check-mark.png" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"></path>
+                                </svg>
+                            </summary>
+                            <div>
+                                <input type="button" id="btn-oauth-googl">
                                 <p>
-                                    OAuth access token: <span id="lbl-oauth-bitly-token"></span>
+                                    Example link which points to <em>www.google.com</em>
+                                    : <a href="http://goo.gl/fbsS" class="preview-link">goo.gl/fbsS</a>
                                 </p>
-                                <span>Forget Bit.ly OAuth token: </span>
-                                <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
+                                <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
                             </div>
-                        </div>
-                        <h3>
-                            Goo.gl
-                            <img src="images/check-mark.png" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
-                        </h3>
-                        <div>
-                            <input type="button" id="btn-oauth-googl">
-                            <p>
-                                Example link which points to <em>www.google.com</em>
-                                : <a href="http://goo.gl/fbsS" class="preview-link">goo.gl/fbsS</a>
-                            </p>
-                            <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
-                        </div>
+                        </details>
                     </div>
                 </section>
 
