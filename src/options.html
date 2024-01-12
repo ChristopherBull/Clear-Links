@@ -155,17 +155,17 @@
                         <hr>
                         <h2>Allowlist</h2>
                         <input type="text" id="txt-domains-allowlist"></input>
-                        <input type="button" id="btn-domains-allowlist-add" value="+ Add Domain"></input>
+                        <input type="button" id="btn-domains-allowlist-add" value="&plus; Add Domain"></input>
                         <select id="list-domains-allowlist" size="10" multiple></select>
-                        <input type="button" id="btn-domains-allowlist-remove" value="- Remove Selected"></input>
+                        <input type="button" id="btn-domains-allowlist-remove" value="&minus; Remove Selected"></input>
                     </form>
                     <form id="form-denylist" action="#">
                         <hr>
                         <h2>Denylist</h2>
                         <input type="text" id="txt-domains-denylist"></input>
-                        <input type="button" id="btn-domains-denylist-add" value="+ Add Domain"></input>
+                        <input type="button" id="btn-domains-denylist-add" value="&plus; Add Domain"></input>
                         <select id="list-domains-denylist" size="10" multiple></select>
-                        <input type="button" id="btn-domains-denylist-remove" value="- Remove Selected"></input>
+                        <input type="button" id="btn-domains-denylist-remove" value="&minus; Remove Selected"></input>
                     </form>
                 </section>
 
@@ -343,10 +343,20 @@
                     </p>
                     <p id="about-page-extension-description"></p>
                     <h3>Reset default settings</h3>
-                    <button id="restore">Restore Defaults</button>
+                    <button id="restore" class="btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="m653-208-88 88-85-85 88-88q-4-11-6-23t-2-24q0-58 41-99t99-41q18 0 35 4.5t32 12.5l-95 95 56 56 95-94q8 15 12.5 31.5T840-340q0 58-41 99t-99 41q-13 0-24.5-2t-22.5-6Zm178-352h-83q-26-88-99-144t-169-56q-117 0-198.5 81.5T200-480q0 72 32.5 132t87.5 98v-110h80v240H160v-80h94q-62-50-98-122.5T120-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-840q129 0 226.5 79.5T831-560Z"></path>
+                        </svg>
+                        Restore Defaults
+                    </button>
                     <p>This will reset synced settings only, and excludes restoring locally stored settings (such as which "Websites" to work with and "Short Links").</p>
                     <h3>Delete all saved information</h3>
-                    <button id="btn-del-all">Delete All</button>
+                    <button id="btn-del-all" class="btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"></path>
+                        </svg>
+                        Delete All
+                    </button>
                     <p>
                         <em>Warning</em>:
                         This deletes all local and sync stored settings and access tokens - you will need to re-login to any Short URL services you use.

@@ -161,6 +161,34 @@ textarea { resize: vertical; }
   cursor: auto;
 }
 
+.btn-danger {
+  cursor: pointer;
+  border: 1px solid var(--btn-danger);
+  border-radius: 8px;
+  font-size: 1em;
+  line-height: 1.5em;
+  padding: 0.5em 0.7em 0.5em 0.5em;
+  text-align: center;
+  transition: 0.2s ease-in-out;
+  vertical-align: middle;
+  background-color: transparent;
+  color: var(--btn-danger);
+  border-color: var(--btn-danger);
+  fill: var(--btn-danger);
+}
+
+.btn-danger > svg {
+  height: 1.75em;
+  width: 1.75em;
+  vertical-align: middle;
+}
+
+.btn-danger:hover {
+  background-color: var(--btn-danger);
+  color: white;
+  fill: white;
+}
+
 /*
  * Vertical Tab UI
  * Credit: https://www.codehim.com/vanilla-javascript/vertical-tabs-using-javascript/
@@ -174,6 +202,7 @@ textarea { resize: vertical; }
   --gray-dark: #3e3e3e;
   --gray-hover: #f7f7f7;
   --body-background: grey;
+  --btn-danger: crimson;
 }
 
 body {
