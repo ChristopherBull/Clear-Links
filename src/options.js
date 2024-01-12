@@ -227,10 +227,10 @@ async function initialize() {
   document.querySelectorAll('input[type=checkbox].save-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
       try {
-      await chrome.storage.sync.set({
-        [el.dataset.storageKey]: el.checked,
-      });
-      // UI to show saved.
+        await chrome.storage.sync.set({
+          [el.dataset.storageKey]: el.checked,
+        });
+        // UI to show saved.
         showPopup('saved');
       } catch (err) {
         console.error(err);
@@ -261,81 +261,81 @@ async function initialize() {
 
 async function restoreSettings() {
   try {
-  // Get all the settings, update the UI
+    // Get all the settings, update the UI
     const items = await chrome.storage.sync.get(defaultSettings);
-      // Cache the settings
-      currentSyncSettingsValues = items;
-      // Update the Options menu UI - General
-      chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
-      chkDisplayDomainOnly.checked = items.displayDomainOnly;
-      chkDisplayUrlScheme.checked = items.displayUrlScheme;
-      switch (items.displayUrlAuth) {
-        case 0:
-          rdoDisplayUrlNoAuth.checked = true;
-          break;
-        case 1:
-          rdoDisplayUrlUsername.checked = true;
-          break;
-        case 2:
-          rdoDisplayUrlPassword.checked = true;
-          break;
-        case 3:
-          rdoDisplayUrlPassMask.checked = true;
-          break;
-      }
-      chkDisplayUrlHostname.checked = items.displayUrlHostname;
-      chkDisplayUrlPort.checked = items.displayUrlPort;
-      chkDisplayUrlPath.checked = items.displayUrlPath;
-      chkDisplayUrlQuery.checked = items.displayUrlQuery;
-      chkDisplayUrlFragment.checked = items.displayUrlFragment;
-      chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
-      chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
-      chkDisplayShortUrlsOnly.checked = items.displayOnKnownShortUrlDomainsOnly;
-      // Update the Options menu UI
-      durationDelay.value = items.durationDelay;
-      durationFadeIn.value = items.durationFadeIn;
-      durationFadeOut.value = items.durationFadeOut;
-      themeSelect.value = items.theme;
-      colorBackground.value = items.background;
-      colorBorder.value = items.cssColorBorder;
-      colorDomainText.value = items.cssColorDomainText;
-      colorGeneralURLText.value = items.cssColorGeneralURLText;
-      // Update Style preview
-      previewPresetTheme();
+    // Cache the settings
+    currentSyncSettingsValues = items;
+    // Update the Options menu UI - General
+    chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
+    chkDisplayDomainOnly.checked = items.displayDomainOnly;
+    chkDisplayUrlScheme.checked = items.displayUrlScheme;
+    switch (items.displayUrlAuth) {
+      case 0:
+        rdoDisplayUrlNoAuth.checked = true;
+        break;
+      case 1:
+        rdoDisplayUrlUsername.checked = true;
+        break;
+      case 2:
+        rdoDisplayUrlPassword.checked = true;
+        break;
+      case 3:
+        rdoDisplayUrlPassMask.checked = true;
+        break;
+    }
+    chkDisplayUrlHostname.checked = items.displayUrlHostname;
+    chkDisplayUrlPort.checked = items.displayUrlPort;
+    chkDisplayUrlPath.checked = items.displayUrlPath;
+    chkDisplayUrlQuery.checked = items.displayUrlQuery;
+    chkDisplayUrlFragment.checked = items.displayUrlFragment;
+    chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
+    chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
+    chkDisplayShortUrlsOnly.checked = items.displayOnKnownShortUrlDomainsOnly;
+    // Update the Options menu UI
+    durationDelay.value = items.durationDelay;
+    durationFadeIn.value = items.durationFadeIn;
+    durationFadeOut.value = items.durationFadeOut;
+    themeSelect.value = items.theme;
+    colorBackground.value = items.background;
+    colorBorder.value = items.cssColorBorder;
+    colorDomainText.value = items.cssColorDomainText;
+    colorGeneralURLText.value = items.cssColorGeneralURLText;
+    // Update Style preview
+    previewPresetTheme();
     // Enable/Disable UI elements depending on selected options.
     chkDisplayDomainOnlyChange();
 
-  // Get non-synced settings
+    // Get non-synced settings
     const itemsLocal = await chrome.storage.local.get(defaultSettingsLocal);
-      // Cache the local settings
+    // Cache the local settings
     currentLocalSettingsValues = itemsLocal;
-      // Page Activation
+    // Page Activation
     document.querySelector('#activationType' + itemsLocal.activationFilter).checked = true;
     showActivationTypeOptions(itemsLocal.activationFilter);
-      // Page Activation - Load allowlist
-      let i;
+    // Page Activation - Load allowlist
+    let i;
     // Empty allowlist element
     while (listDomainsAllowlist.options.length > 0) {
       listDomainsAllowlist.remove(0);
     }
     // Re-fill allowlist element
     for (i = 0; i < currentLocalSettingsValues.domainWhitelist.length; i++) {
-        const option = document.createElement('option');
-        option.text = currentLocalSettingsValues.domainWhitelist[i];
-        listDomainsAllowlist.add(option);
-      }
-      // Page Activation - Load denylist
+      const option = document.createElement('option');
+      option.text = currentLocalSettingsValues.domainWhitelist[i];
+      listDomainsAllowlist.add(option);
+    }
+    // Page Activation - Load denylist
     // Empty denylist element
     while (listDomainsDenylist.options.length > 0) {
       listDomainsDenylist.remove(0);
     }
     // Re-fill denylist element
     for (i = 0; i < currentLocalSettingsValues.domainBlacklist.length; i++) {
-        const option = document.createElement('option');
-        option.text = currentLocalSettingsValues.domainBlacklist[i];
-        listDomainsDenylist.add(option);
-      }
-      // Short URLs -- OAuth tokens
+      const option = document.createElement('option');
+      option.text = currentLocalSettingsValues.domainBlacklist[i];
+      listDomainsDenylist.add(option);
+    }
+    // Short URLs -- OAuth tokens
     document.getElementById('lbl-oauth-bitly-token').textContent = itemsLocal.OAuthBitLy.token;
 
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
@@ -385,7 +385,7 @@ function showPopup(type, message) {
     case 'success':
     case 'warning':
     case 'error':
-  alertElem.querySelector('.message').textContent = message;
+      alertElem.querySelector('.message').textContent = message;
       break;
     // Specific style/icons for more precise alert types
     case 'saved':
@@ -475,11 +475,11 @@ async function restoreSyncedSettings() {
     title: 'Restore Default Settings',
     message: 'Are you sure you want to restore default settings?<br><br><em>Warning:</em> This will delete all your saved settings and cannot be undone.',
     onOk: async () => {
-    // Clear synced settings
-    await chrome.storage.sync.clear();
+      // Clear synced settings
+      await chrome.storage.sync.clear();
       // Re-Save default sync values
-    await chrome.storage.sync.set(defaultSettings);
-        // Update Options menu UI
+      await chrome.storage.sync.set(defaultSettings);
+      // Update Options menu UI
       await restoreSettings();
       showPopup('saved', 'Default settings restored');
     },
@@ -495,15 +495,15 @@ function btnDelAllSavedDataClick() {
     title: 'Delete All Extension Data',
     message: 'Are you sure you want to delete all data in this extension?<br><br><em>Warning:</em> This will delete all your saved settings, local preferences, and authentication credentials. This cannot be undone.',
     onOk: async () => {
-    // Clear synced settings
+      // Clear synced settings
       await chrome.storage.sync.clear();
       // Re-Save default sync values
       await chrome.storage.sync.set(defaultSettings);
-        // Clear local settings
+      // Clear local settings
       await chrome.storage.local.clear();
-          // Re-Save default local values
+      // Re-Save default local values
       await chrome.storage.local.set(defaultSettingsLocal);
-            // Update Options menu UI
+      // Update Options menu UI
       await restoreSettings();
       showPopup('success', 'All data deleted.');
     },
@@ -617,12 +617,12 @@ async function addToAllowlist() {
     // Add to Allowlist Storage
     currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
     await chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
-      // Add to Allowlist UI
-      const option = document.createElement('option');
-      option.text = tmpUrl.hostname;
-      listDomainsAllowlist.add(option);
-      // Clean UI
-      txtDomainsAllowlist.value = '';
+    // Add to Allowlist UI
+    const option = document.createElement('option');
+    option.text = tmpUrl.hostname;
+    listDomainsAllowlist.add(option);
+    // Clean UI
+    txtDomainsAllowlist.value = '';
   } else {
     showPopup('info', 'Domain already in allowlist');
   }
@@ -639,7 +639,7 @@ async function removeFromAllowlist() {
   }
   // Update the local storage
   await chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
-    // Update the UI
+  // Update the UI
   indicesToRemove.forEach((index) => {
     listDomainsAllowlist.remove(index);
   });
@@ -664,12 +664,12 @@ async function addToDenylist() {
     // Add to Denylist Storage
     currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
     await chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
-      // Add to Denylist UI
-      const option = document.createElement('option');
-      option.text = tmpUrl.hostname;
-      listDomainsDenylist.add(option);
-      // Clean UI
-      txtDomainsDenylist.value = '';
+    // Add to Denylist UI
+    const option = document.createElement('option');
+    option.text = tmpUrl.hostname;
+    listDomainsDenylist.add(option);
+    // Clean UI
+    txtDomainsDenylist.value = '';
   } else {
     showPopup('info', 'Domain already in denylist');
   }
@@ -686,7 +686,7 @@ async function removeFromDenylist() {
   }
   // Update the local storage
   await chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
-    // Update the UI
+  // Update the UI
   indicesToRemove.forEach((index) => {
     listDomainsDenylist.remove(index);
   });
