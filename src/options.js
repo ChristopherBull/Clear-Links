@@ -206,18 +206,25 @@ async function initialize() {
   btnOauthGoogl.addEventListener('click', oauthGoogl);
   btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
   btnOauthBitlyForgetToken.addEventListener('click', async () => {
-    try {
-      // Update local settings
-      await chrome.storage.local.set({
-        OAuthBitLy: { enabled: false, token: '' },
-      });
-      // Update cached copy of local settings
-      currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' };
-      oauthBitlyUpdateUI();
-    } catch (err) {
-      console.error(err);
-      showPopup('error', 'Error forgetting OAuth token: ' + err.message);
-    }
+    // Confirm with user before forgetting OAuth token
+    Confirm.open({
+      title: 'Forget Bit.ly OAuth Token?',
+      message: 'Are you sure you want to remove the Bit.ly OAuth token?',
+      onOk: async () => {
+        try {
+          // Remove token from local settings
+          await chrome.storage.local.set({
+            OAuthBitLy: { enabled: false, token: '' },
+          });
+          // Update cached copy of local settings
+          currentLocalSettingsValues.OAuthBitLy = { enabled: false, token: '' };
+          oauthBitlyUpdateUI();
+        } catch (err) {
+          console.error(err);
+          showPopup('error', 'Error forgetting OAuth token: ' + err.message);
+        }
+      },
+    });
   });
   // Event listeners - About page
   document.getElementById('restore').addEventListener('click', restoreSyncedSettings);
