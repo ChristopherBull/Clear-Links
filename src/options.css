@@ -353,12 +353,12 @@ header {
 }
 
 
-.tabs a svg {
+.tabs a .tabs-icon {
   fill: var(--black);
 }
 
-.tabs .active svg,
-.tabs a:hover svg {
+.tabs .active .tabs-icon,
+.tabs a:hover .tabs-icon {
   fill: var(--gray);
 }
 
