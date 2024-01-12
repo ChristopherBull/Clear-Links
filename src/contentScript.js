@@ -126,6 +126,7 @@ function attachMouseEnterListeners() {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
     switch (this.protocol) {
+      // eslint-disable-next-line no-script-url
       case 'javascript:':
         if (settings.displayJavascriptLinks) {
           showTooltip(this, '&#x200B;', false, true, false);
