@@ -51,6 +51,7 @@
         "@stylistic/semi": ["error", "always"],
         "@stylistic/quotes": ["error", "single"],
         "no-var": "error",
+        "prefer-object-spread": "warn",
 
         // TODO Update/enable these rules. Only temporarily disabled.
         "sonarjs/cognitive-complexity": 0,

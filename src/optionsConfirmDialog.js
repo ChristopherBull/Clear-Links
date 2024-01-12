@@ -6,18 +6,17 @@
 
 export const Confirm = {
   open(options) {
-    options = Object.assign(
-      {},
-      {
-        title: '',
-        message: '',
-        okText: 'OK',
-        cancelText: 'Cancel',
-        onOk: function () {},
-        oncancel: function () {},
-      },
-      options,
-    );
+    options = {
+      // Default options
+      title: '',
+      message: '',
+      okText: 'OK',
+      cancelText: 'Cancel',
+      onOk: function () {},
+      oncancel: function () {},
+      // Override the default options with passed options
+      ...options,
+    };
 
     const html = `
         <div class="confirm">
