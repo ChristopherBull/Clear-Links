@@ -74,60 +74,60 @@
                     <br>
                     <fieldset>
                         <legend>
-                            <input type="checkbox" id="chkDisplayDomainOnly"> Show Domain only
+                            <input type="checkbox" id="chkDisplayDomainOnly" class="save-on-change" data-storage-key="displayDomainOnly"> Show Domain only
                         </legend>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlScheme"> Show Scheme (Protocol)
+                            <input type="checkbox" id="chkDisplayUrlScheme" class="save-on-change" data-storage-key="displayUrlScheme"> Show Scheme (Protocol)
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth"> Hide authentication information
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth" class="save-on-change" value="0" data-storage-key="displayUrlAuth"> Hide authentication information
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="urlAuth" id="rdoDisplayUrlUsername"> Show Username
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlUsername" class="save-on-change" value="1" data-storage-key="displayUrlAuth"> Show Username
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassword"> Show Username + Password
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassword" class="save-on-change" value="2" data-storage-key="displayUrlAuth"> Show Username + Password
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask"> Show Username + Masked Password
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask" class="save-on-change" value="3" data-storage-key="displayUrlAuth"> Show Username + Masked Password
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlHostname"> Show Hostname/Domain
+                            <input type="checkbox" id="chkDisplayUrlHostname" class="save-on-change" data-storage-key="displayUrlHostname"> Show Hostname/Domain
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlPort"> Show Port
+                            <input type="checkbox" id="chkDisplayUrlPort" class="save-on-change" data-storage-key="displayUrlPort"> Show Port
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlPath"> Show Path
+                            <input type="checkbox" id="chkDisplayUrlPath" class="save-on-change" data-storage-key="displayUrlPath"> Show Path
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlQuery"> Show Query
+                            <input type="checkbox" id="chkDisplayUrlQuery" class="save-on-change" data-storage-key="displayUrlQuery"> Show Query
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayUrlFragment"> Show Fragment (Hash)
+                            <input type="checkbox" id="chkDisplayUrlFragment" class="save-on-change" data-storage-key="displayUrlFragment"> Show Fragment (Hash)
                         </label>
                     </fieldset>
                     <fieldset>
                         <legend>Other link types to display:</legend>
                         <label>
-                            <input type="checkbox" id="chkDisplayJavascriptLinks"> Javascript
+                            <input type="checkbox" id="chkDisplayJavascriptLinks" class="save-on-change" data-storage-key="displayJavascriptLinks"> Javascript
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayMailtoLinks"> Mailto
+                            <input type="checkbox" id="chkDisplayMailtoLinks" class="save-on-change" data-storage-key="displayMailtoLinks"> Mailto
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayShortUrlsOnly"> Known short URLs only (currently: goo.gl)
+                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (currently: goo.gl)
                         </label>
                     </fieldset>
                     <h3>Demo</h3>

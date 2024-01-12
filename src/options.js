@@ -245,6 +245,21 @@ async function initialize() {
       }
     });
   });
+  // All radio buttons - Save settings on change/click
+  document.querySelectorAll('input[type=radio].save-on-change').forEach((el) => {
+    el.addEventListener('change', async () => {
+      try {
+        await chrome.storage.sync.set({
+          [el.dataset.storageKey]: parseInt(el.value),
+        });
+        // UI to show saved.
+        showPopup('saved');
+      } catch (err) {
+        console.error(err);
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
+    });
+  });
 
   // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
   document.querySelectorAll('.preview-link').forEach((el) => {
@@ -276,7 +291,7 @@ async function restoreSettings() {
     chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
     chkDisplayDomainOnly.checked = items.displayDomainOnly;
     chkDisplayUrlScheme.checked = items.displayUrlScheme;
-    switch (items.displayUrlAuth) {
+    switch (parseInt(items.displayUrlAuth)) {
       case 0:
         rdoDisplayUrlNoAuth.checked = true;
         break;
@@ -433,22 +448,22 @@ function btnSaveClick() {
   // Save values
   chrome.storage.sync.set({
     // General
-    displayExternalDomainsOnly: chkDisplayExternalDomainsOnly.checked,
-    displayDomainOnly: chkDisplayDomainOnly.checked,
-    displayUrlScheme: chkDisplayUrlScheme.checked,
-    displayUrlAuth: (rdoDisplayUrlNoAuth.checked
-      ? 0
-      : rdoDisplayUrlUsername.checked
-        ? 1
-        : rdoDisplayUrlPassword.checked ? 2 : 3),
-    displayUrlHostname: chkDisplayUrlHostname.checked,
-    displayUrlPort: chkDisplayUrlPort.checked,
-    displayUrlPath: chkDisplayUrlPath.checked,
-    displayUrlQuery: chkDisplayUrlQuery.checked,
-    displayUrlFragment: chkDisplayUrlFragment.checked,
-    displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
-    displayMailtoLinks: chkDisplayMailtoLinks.checked,
-    displayOnKnownShortUrlDomainsOnly: chkDisplayShortUrlsOnly.checked,
+    // displayExternalDomainsOnly: chkDisplayExternalDomainsOnly.checked,
+    // displayDomainOnly: chkDisplayDomainOnly.checked,
+    // displayUrlScheme: chkDisplayUrlScheme.checked,
+    // displayUrlAuth: (rdoDisplayUrlNoAuth.checked
+    //   ? 0
+    //   : rdoDisplayUrlUsername.checked
+    //     ? 1
+    //     : rdoDisplayUrlPassword.checked ? 2 : 3),
+    // displayUrlHostname: chkDisplayUrlHostname.checked,
+    // displayUrlPort: chkDisplayUrlPort.checked,
+    // displayUrlPath: chkDisplayUrlPath.checked,
+    // displayUrlQuery: chkDisplayUrlQuery.checked,
+    // displayUrlFragment: chkDisplayUrlFragment.checked,
+    // displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
+    // displayMailtoLinks: chkDisplayMailtoLinks.checked,
+    // displayOnKnownShortUrlDomainsOnly: chkDisplayShortUrlsOnly.checked,
     // Style
     theme: themeSelect.value,
     // div
