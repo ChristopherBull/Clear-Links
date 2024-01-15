@@ -198,24 +198,6 @@ async function initialize() {
   document.getElementById('btn-domains-denylist-remove').addEventListener('click', removeFromDenylist);
   // Event listeners - Style
   themeSelect.addEventListener('change', previewPresetTheme);
-  // Event listeners - Animation
-  // Real-time validation
-  // TODO update these focusout listeners to use change event listeners instead (with a debounce)
-  durationDelay.addEventListener('focusout', () => {
-    if (durationDelay.value < 0) {
-      durationDelay.value = currentSyncSettingsValues.durationDelay;
-    }
-  });
-  durationFadeIn.addEventListener('focusout', () => {
-    if (durationFadeIn.value < 0) {
-      durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
-    }
-  });
-  durationFadeOut.addEventListener('focusout', () => {
-    if (durationFadeOut.value < 0) {
-      durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
-    }
-  });
   // Event listeners - Short URLs
   btnOauthBitly.addEventListener('click', () => {
     oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
@@ -295,13 +277,42 @@ async function initialize() {
   // All number fields - Save settings on change (with a debounce)
   document.querySelectorAll('input[type=number].save-on-change').forEach((el) => {
     // Set a change listener to update the UI to show unsaved changes (outside of the debounce function).
-    el.addEventListener('change', () => { el.style.backgroundColor = 'rgba(255, 255, 0, 0.25)'; });
+    el.addEventListener('change', () => {
+      try {
+        // Validate - Check if value is valid immediately, for user feedback.
+        validateNumberFieldValue(el);
+        // Validation passed - UI to show unsaved.
+        el.style.backgroundColor = 'rgba(255, 255, 0, 0.25)';
+      } catch (err) {
+        console.error(err);
+        el.style.backgroundColor = 'pink';
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
+    });
+
     // Set a debounce listener to save the settings.
     el.addEventListener('change', debounce(async () => {
+      let value;
       try {
+        // Validate - Check if value is valid (after debounce, to ensure saving valid numbers only)
+        value = validateNumberFieldValue(el);
+      } catch (err) {
+        // Silently skip saving invalid values (error reporting occurred on the immediate change event handler)
+        return;
+      }
+      // Check if value changed (not reset to current value)
+      if (value === currentSyncSettingsValues[el.dataset.storageKey]) {
+        // Value unchanged - Do nothing but reset the UI to show saved.
+        // NB A user may have changed value from an invalid input (which changes background from red to yellow) to the currently saved value.
+        el.style.backgroundColor = 'white';
+        return;
+      }
+      try {
+        // Save
         await chrome.storage.sync.set({
-          [el.dataset.storageKey]: parseInt(el.value),
+          [el.dataset.storageKey]: parseInt(value),
         });
+        currentSyncSettingsValues[el.dataset.storageKey] = value;
         // UI to show saved.
         el.style.backgroundColor = 'white';
         showPopup('saved');
@@ -331,6 +342,26 @@ async function initialize() {
   const manifestData = chrome.runtime.getManifest();
   document.getElementById('about-page-extension-version').textContent = manifestData.version;
   document.getElementById('about-page-extension-description').textContent = manifestData.description;
+}
+
+/*
+ * Validates a number field value.
+ * Checks is the number is NaN or negative.
+ * @param {HTMLInputElement} el - The number field element.
+ * @returns {number} The validated number value.
+ * @throws {Error} If the value is invalid.
+ */
+function validateNumberFieldValue(el) {
+  const value = parseInt(el.value);
+  if (isNaN(value)) {
+    // Invalid value; NaN
+    throw new Error('Invalid value - must be a number.');
+  }
+  if (value < 0) {
+    // Invalid value; must be positive
+    throw new Error('Invalid value - must be a positive number.');
+  }
+  return value;
 }
 
 async function restoreSettings() {
@@ -480,22 +511,24 @@ function showPopup(type, message) {
 // Click Events
 
 function btnSaveClick() {
-  // Get option values that require validation.
-  let iDurationDelay = parseInt(durationDelay.value);
-  if (isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
-    iDurationDelay = defaultSettings.delay;
-    durationDelay.value = iDurationDelay;
-  }
-  let iDurationFadeIn = parseInt(durationFadeIn.value);
-  if (isNaN(iDurationFadeIn) || !Number.isInteger(iDurationFadeIn) || iDurationFadeIn < 0) {
-    iDurationFadeIn = defaultSettings.durationFadeIn;
-    durationFadeIn.value = iDurationFadeIn;
-  }
-  let iDurationFadeOut = parseInt(durationFadeOut.value);
-  if (isNaN(iDurationFadeOut) || !Number.isInteger(iDurationFadeOut) || iDurationFadeOut < 0) {
-    iDurationFadeOut = defaultSettings.durationFadeOut;
-    durationFadeOut.value = iDurationFadeOut;
-  }
+  // TODO REMOVE and convert to individual save actions per-element
+
+  // // Get option values that require validation.
+  // let iDurationDelay = parseInt(durationDelay.value);
+  // if (isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
+  //   iDurationDelay = defaultSettings.delay;
+  //   durationDelay.value = iDurationDelay;
+  // }
+  // let iDurationFadeIn = parseInt(durationFadeIn.value);
+  // if (isNaN(iDurationFadeIn) || !Number.isInteger(iDurationFadeIn) || iDurationFadeIn < 0) {
+  //   iDurationFadeIn = defaultSettings.durationFadeIn;
+  //   durationFadeIn.value = iDurationFadeIn;
+  // }
+  // let iDurationFadeOut = parseInt(durationFadeOut.value);
+  // if (isNaN(iDurationFadeOut) || !Number.isInteger(iDurationFadeOut) || iDurationFadeOut < 0) {
+  //   iDurationFadeOut = defaultSettings.durationFadeOut;
+  //   durationFadeOut.value = iDurationFadeOut;
+  // }
 
   // Save values
   chrome.storage.sync.set({
@@ -526,9 +559,9 @@ function btnSaveClick() {
     // spanDomain
     cssColorDomainText: colorDomainText.value, // color
     // Animation
-    durationDelay: iDurationDelay,
-    durationFadeIn: iDurationFadeIn,
-    durationFadeOut: iDurationFadeOut,
+    // durationDelay: iDurationDelay,
+    // durationFadeIn: iDurationFadeIn,
+    // durationFadeOut: iDurationFadeOut,
   }, function() { // On saved
     chrome.storage.local.set({
       // Page Activation
