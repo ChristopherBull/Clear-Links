@@ -179,17 +179,18 @@ async function initialize() {
     colourPickerElem.addEventListener('change', (event) => {
       try {
         const el = event.target;
+        // Set theme to custom
+        themeSelect.value = '0';
         // Save the setting
         chrome.storage.sync.set({
           [el.dataset.storageKey]: el.value,
+          [themeSelect.dataset.storageKey]: themeSelect.value,
         });
         currentSyncSettingsValues[el.dataset.storageKey] = el.value;
         // Update the preview items
         document.querySelectorAll(el.dataset.previewClass).forEach((previewElement) => {
           previewElement.style[el.dataset.styleKey] = el.value;
         });
-        // Set theme to custom (saved upon its own onChange event)
-        themeSelect.value = '0';
         // UI to show saved.
         showPopup('saved');
       } catch (err) {
@@ -343,7 +344,7 @@ async function initialize() {
         [themeSelect.dataset.storageKey]: themeSelect.value,
       });
       currentSyncSettingsValues[themeSelect.dataset.storageKey] = themeSelect.value;
-      previewPresetTheme();
+      applyPresetTheme(true);
       // UI to show saved.
       showPopup('saved');
     } catch (err) {
@@ -434,7 +435,7 @@ async function restoreSettings() {
     colorDomainText.value = items.cssColorDomainText;
     colorGeneralURLText.value = items.cssColorGeneralURLText;
     // Update Style preview
-    previewPresetTheme();
+    applyPresetTheme();
     // Enable/Disable UI elements depending on selected options.
     chkDisplayDomainOnlyChange();
 
@@ -766,7 +767,11 @@ async function removeFromDenylist() {
 
 /* Styles */
 
-function previewPresetTheme() {
+/**
+ * Apply theme presets to the Options page.
+ * @param {Boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
+ */
+function applyPresetTheme(savePresetSettings=false) {
   let sTheme;
   switch (themeSelect.value) {
     case '0': // Custom
@@ -795,6 +800,16 @@ function previewPresetTheme() {
   document.querySelectorAll('.cl-domain').forEach((el) => {
     el.style.color = colorDomainText.value;
   });
+  // Save the preset settings (the contentScript listens for these changes individually and updates the style accordingly)
+  // NB: Cannot simply save the themeSelect.value, as the contentScript does not listen for changes to the themeSelect.value.
+  if (savePresetSettings) {
+    chrome.storage.sync.set({
+      background: colorBackground.value,
+      cssColorBorder: colorBorder.value,
+      cssColorDomainText: colorDomainText.value,
+      cssColorGeneralURLText: colorGeneralURLText.value,
+    });
+  }
 }
 
 /* Short URLs */

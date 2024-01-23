@@ -320,7 +320,7 @@ function applyAllSettingChangesToTooltip(changes) {
   for (const key in changes) {
     if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
       settings[key] = changes[key].newValue;
-      applySettingToTooltip(key, changes[key]);
+      applySettingToTooltip(key, changes[key].newValue);
     }
   }
 }
