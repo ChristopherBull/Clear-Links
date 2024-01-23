@@ -2,332 +2,415 @@
 <html lang="en">
     <head>
         <title>Link Domain Transparency &mdash; Options</title>
-        <link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
         <link href="options.css" rel="stylesheet" type="text/css">
+        <link href="optionsConfirmDialog.css" rel="stylesheet" type="text/css">
         <link href="contentScript.css" rel="stylesheet" type="text/css">
+        <script defer type="module" src="defaultSettings.js"></script>
+        <script defer type="module" src="themes.js"></script>
+        <script defer type="module" src="options.js"></script>
     </head>
     <body>
-        <div id="tabs">
-            <ul>
+
+        <div class="tabs-container">
+            <ul class="tabs">
+                <!-- SVG images obtained from Google Fonts (Material Symbols) under the Apache License, Ver 2.0:  https://www.apache.org/licenses/LICENSE-2.0 -->
                 <li>
-                    <a href="#fragment-1">
-                        <span>General</span>
+                    <a id="tab1" title="Visibility" href="#tab1">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z"></path>
+                        </svg>
+                        Visibility
                     </a>
                 </li>
                 <li>
-                    <a href="#fragment-2">
-                        <span>Domain Activation</span>
+                    <a id="tab2" title="Websites" href="#tab2">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h420v-140H160v140Zm500 0h140v-360H660v360ZM160-460h420v-140H160v140Z"></path>
+                        </svg>
+                        Websites
                     </a>
                 </li>
                 <li>
-                    <a href="#fragment-4">
-                        <span>Style</span>
+                    <a id="tab3" title="Style" href="#tab3">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M440-80q-33 0-56.5-23.5T360-160v-160H240q-33 0-56.5-23.5T160-400v-280q0-66 47-113t113-47h480v440q0 33-23.5 56.5T720-320H600v160q0 33-23.5 56.5T520-80h-80ZM240-560h480v-200h-40v160h-80v-160h-40v80h-80v-80H320q-33 0-56.5 23.5T240-680v120Zm0 160h480v-80H240v80Zm0 0v-80 80Z"></path>
+                        </svg>
+                        Style
                     </a>
                 </li>
                 <li>
-                    <a href="#fragment-5">
-                        <span>Animation</span>
+                    <a id="tab4" title="Animation" href="#tab4">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M360-80q-58 0-109-22t-89-60q-38-38-60-89T80-360q0-81 42-148t110-102q20-39 49.5-68.5T350-728q33-68 101-110t149-42q58 0 109 22t89 60q38 38 60 89t22 109q0 85-42 150T728-350q-20 39-49.5 68.5T610-232q-35 68-102 110T360-80Zm0-80q33 0 63.5-10t56.5-30q-58 0-109-22t-89-60q-38-38-60-89t-22-109q-20 26-30 56.5T160-360q0 42 16 78t43 63q27 27 63 43t78 16Zm120-120q33 0 64.5-10t57.5-30q-59 0-110-22.5T403-403q-38-38-60.5-89T320-602q-20 26-30 57.5T280-480q0 42 15.5 78t43.5 63q27 28 63 43.5t78 15.5Zm120-120q18 0 34.5-3t33.5-9q22-60 6.5-115.5T621-621q-38-38-93.5-53.5T412-668q-6 17-9 33.5t-3 34.5q0 42 15.5 78t43.5 63q27 28 63 43.5t78 15.5Zm160-78q20-26 30-57.5t10-64.5q0-42-15.5-78T741-741q-27-28-63-43.5T600-800q-35 0-65.5 10T478-760q59 0 110 22.5t89 60.5q38 38 60.5 89T760-478Z"></path>
+                        </svg>
+                        Animation
                     </a>
                 </li>
                 <li>
-                    <a href="#fragment-6">
-                        <span>Short URLs</span>
+                    <a id="tab5" title="Short Links" href="#tab5">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z"></path>
+                        </svg>
+                        Short Links
+                    </a>
+                </li>
+                <li>
+                    <a id="tab6" title="About" href="#tab6">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path>
+                        </svg>
+                        About
                     </a>
                 </li>
             </ul>
-		
-            <div id="fragment-1">
-                <label>
-                    <input type="checkbox" id="chkDisplayExternalDomainsOnly"> Show Clear Links' tooltip for links to external domains only
-                </label>
-                <br>
-                <fieldset>
-                    <legend>
-                        <input type="checkbox" id="chkDisplayDomainOnly"> Show Domain only
-                    </legend>
+
+            <div class="tab-content-wrapper">
+
+                <section id="tab1-content" class="tab-content">
+                    <h2>Visibility</h2>
                     <label>
-                        <input type="checkbox" id="chkDisplayUrlScheme"> Show Scheme (Protocol)
+                        <input type="checkbox" id="chkDisplayExternalDomainsOnly" class="save-on-change" data-storage-key="displayExternalDomainsOnly"> Show Clear Links' tooltip for links to external domains only
                     </label>
                     <br>
-                    <label>
-                        <input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth"> Hide authentication information
-                    </label>
-                    <br>
-                    <label>
-                        <input type="radio" name="urlAuth" id="rdoDisplayUrlUsername"> Show Username
-                    </label>
-                    <br>
-                    <label>
-                        <input type="radio" name="urlAuth" id="rdoDisplayUrlPassword"> Show Username + Password
-                    </label>
-                    <br>
-                    <label>
-                        <input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask"> Show Username + Masked Password
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayUrlHostname"> Show Hostname/Domain
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayUrlPort"> Show Port
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayUrlPath"> Show Path
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayUrlQuery"> Show Query
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayUrlFragment"> Show Fragment (Hash)
-                    </label>
-                </fieldset>
-                <fieldset>
-                    <legend>Other link types to display:</legend>
-                    <label>
-                        <input type="checkbox" id="chkDisplayJavascriptLinks"> Javascript
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayMailtoLinks"> Mailto
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="chkDisplayShortUrlsOnly"> Known short URLs only (currently: goo.gl)
-                    </label>
-                </fieldset>
-            </div>
-		
-            <div id="fragment-2">
-                <form id="form-activation-type">
-                    <label>
-                        <input type="radio" id="activationType1" name="activationType" value="1">All websites
-                    </label>
-                    <br>
-                    <label>
-                        <input type="radio" id="activationType2" name="activationType" value="2">Whitelist - Only activate on sites you specify
-                    </label>
-                    <br>
-                    <label>
-                        <input type="radio" id="activationType3" name="activationType" value="3">Blacklist - Activate on all sites, except ones you specify
-                    </label>
-                </form>
-                <form id="form-whitelist" action="#">
-                    <hr>
-                    <h2>Whitelist</h2>
-                    <input type="text" id="txt-domains-whitelist"></input>
-                    <input type="button" id="btn-domains-whitelist-add" value="+ Add Domain"></input>
-                    <br>
-                    <div id="div-err-area-whitelist">
-                        <span id="txtErrMsgDomainWhitelist"></span>
-                        &nbsp;<input type="button" id="btn-clear-err-msg-whitelist" value="OK"></input>
+                    <fieldset>
+                        <legend>
+                            <input type="checkbox" id="chkDisplayDomainOnly" class="save-on-change" data-storage-key="displayDomainOnly"> Show Domain only
+                        </legend>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlScheme" class="save-on-change" data-storage-key="displayUrlScheme"> Show Scheme (Protocol)
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlNoAuth" class="save-on-change" value="0" data-storage-key="displayUrlAuth"> Hide authentication information
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlUsername" class="save-on-change" value="1" data-storage-key="displayUrlAuth"> Show Username
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassword" class="save-on-change" value="2" data-storage-key="displayUrlAuth"> Show Username + Password
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="urlAuth" id="rdoDisplayUrlPassMask" class="save-on-change" value="3" data-storage-key="displayUrlAuth"> Show Username + Masked Password
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlHostname" class="save-on-change" data-storage-key="displayUrlHostname"> Show Hostname/Domain
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlPort" class="save-on-change" data-storage-key="displayUrlPort"> Show Port
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlPath" class="save-on-change" data-storage-key="displayUrlPath"> Show Path
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlQuery" class="save-on-change" data-storage-key="displayUrlQuery"> Show Query
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayUrlFragment" class="save-on-change" data-storage-key="displayUrlFragment"> Show Fragment (Hash)
+                        </label>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Other link types to display:</legend>
+                        <label>
+                            <input type="checkbox" id="chkDisplayJavascriptLinks" class="save-on-change" data-storage-key="displayJavascriptLinks"> Javascript
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayMailtoLinks" class="save-on-change" data-storage-key="displayMailtoLinks"> Mailto
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (currently: goo.gl)
+                        </label>
+                    </fieldset>
+                    <h3>Demo</h3>
+                    <p class="link-demo-container">
+                        Mouseover to view a demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="preview-link">Demo link</a>
+                    </p>
+                </section>
+
+                <section id="tab2-content" class="tab-content">
+                    <h2>Websites</h2>
+                    <form id="form-activation-type">
+                        <label>
+                            <input type="radio" id="activationType1" name="activationType" value="1" class="save-local-on-change" data-storage-key="activationFilter">All websites
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" id="activationType2" name="activationType" value="2" class="save-local-on-change" data-storage-key="activationFilter">Allowlist - Only activate on sites you specify
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" id="activationType3" name="activationType" value="3" class="save-local-on-change" data-storage-key="activationFilter">Denylist - Activate on all sites, except ones you specify
+                        </label>
+                    </form>
+                    <form id="form-allowlist" action="#">
+                        <hr>
+                        <h2>Allowlist</h2>
+                        <input type="text" id="txt-domains-allowlist"></input>
+                        <input type="button" id="btn-domains-allowlist-add" value="&plus; Add Domain"></input>
+                        <select id="list-domains-allowlist" size="10" multiple></select>
+                        <input type="button" id="btn-domains-allowlist-remove" value="&minus; Remove Selected"></input>
+                    </form>
+                    <form id="form-denylist" action="#">
+                        <hr>
+                        <h2>Denylist</h2>
+                        <input type="text" id="txt-domains-denylist"></input>
+                        <input type="button" id="btn-domains-denylist-add" value="&plus; Add Domain"></input>
+                        <select id="list-domains-denylist" size="10" multiple></select>
+                        <input type="button" id="btn-domains-denylist-remove" value="&minus; Remove Selected"></input>
+                    </form>
+                </section>
+
+                <section id="tab3-content" class="tab-content">
+                    <h2>Style</h2>
+                    <div class="div-table inline-block">
+                        <div class="div-table-body">
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">Background:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input id="colorBackground" type="color" name="backgroundColor" data-storage-key="background" data-style-key="background" data-preview-class=".cl-container">
+                                </div>
+                            </div>
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">Border Color:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input id="colorBorder" type="color" name="cssColorBorder" data-storage-key="cssColorBorder" data-style-key="borderColor" data-preview-class=".cl-container">
+                                </div>
+                            </div>
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">URL Text Colour:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input id="colorGeneralURLText" type="color" name="colorGeneralURLText" data-storage-key="cssColorGeneralURLText" data-style-key="color" data-preview-class=".cl-url">
+                                </div>
+                            </div>
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">URL's Domain Text Colour:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input id="colorDomainText" type="color" name="domainTextColor" data-storage-key="cssColorDomainText" data-style-key="color" data-preview-class=".cl-domain">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <select id="list-domains-whitelist" size="10" multiple></select>
-                    <input type="button" id="btn-domains-whitelist-remove" value="- Remove Selected"></input>
-                </form>
-                <form id="form-blacklist" action="#">
-                    <hr>
-                    <h2>Blacklist</h2>
-                    <input type="text" id="txt-domains-blacklist"></input>
-                    <input type="button" id="btn-domains-blacklist-add" value="+ Add Domain"></input>
-                    <br>
-                    <div id="div-err-area-blacklist">
-                        <span id="txtErrMsgDomainBlacklist"></span>
-                        &nbsp;<input type="button" id="btn-clear-err-msg-blacklist" value="OK"></input>
-                    </div>
-                    <select id="list-domains-blacklist" size="10" multiple></select>
-                    <input type="button" id="btn-domains-blacklist-remove" value="- Remove Selected"></input>
-                </form>
-            </div>
-		
-            <div id="fragment-4">
-                <!-- Colour pickers -->
-                <div class="div-table inline-block">
-                    <div class="div-table-body">
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">Background:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input id="colorBackground" type="color" name="backgroundColor">
+                    <div class="div-table col-two">
+                        <div class="div-table-body">
+                            <div class="div-table-row">
+                                <div class="div-table-cell">
+                                    <span>Themes:</span>
+                                    <select id="theme-select" class="save-on-change" data-storage-key="theme">
+                                        <option value="1" selected>Light</option>
+                                        <option value="2">Dark</option>
+                                        <option value="3">Original</option>
+                                        <option value="0">Custom</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">Border Color:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input id="colorBorder" type="color" name="cssColorBorder">
-                            </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">URL Text Colour:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input id="colorGeneralURLText" type="color" name="colorGeneralURLText">
-                            </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">URL's Domain Text Colour:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input id="colorDomainText" type="color" name="domainTextColor">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="div-table col-two">
-                    <div class="div-table-body">
-                        <div class="div-table-row">
-                            <div class="div-table-cell">
-                                <span>Themes:</span>
-                                <select id="theme-select">
-                                    <option value="1" selected>Light</option>
-                                    <option value="2">Dark</option>
-                                    <option value="3">Original</option>
-                                    <option value="0">Custom</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell">
-                                <div id="style-preview">
-                                    <div class="cl-container">
-                                        <p class="cl-url">
-                                            <span class="ClDomain">www.preview.com</span>/index.html
-                                        </p>
-                                    </div>
-                                    <br>
-                                    <div class="cl-container">
-                                        <img src="" alt="Secure protocol used in link" id="cl-icon-padlock-locked" class="cl-icon"></img>
-                                        <p class="cl-url">
-                                            <span class="ClDomain">www.secure-preview.com</span>/index.html
-                                        </p>
-                                    </div>
-                                    <br>
-                                    <div class="cl-container">
-                                        <img src="" alt="This is a Mailto link" id="cl-icon-email" class="cl-icon"></img>
-                                        <p class="cl-url">
-                                            <span class="ClDomain">bob@example.com</span>
-                                        </p>
-                                    </div>
-                                    <br>
-                                    <div class="cl-container">
-                                        <img src="" alt="This link uses Javascript" id="cl-icon-js" class="cl-icon js-icon-no-text"></img>
-                                        <p class="cl-url">&nbsp;</p>
+                            <div class="div-table-row">
+                                <div class="div-table-cell">
+                                    <div id="style-preview">
+                                        <div class="cl-container">
+                                            <p class="cl-url">
+                                                <span class="cl-domain">www.preview.com</span>/index.html
+                                            </p>
+                                        </div>
+                                        <br>
+                                        <div class="cl-container">
+                                            <img src="" alt="Secure protocol used in link" id="cl-icon-padlock-locked" class="cl-icon"></img>
+                                            <p class="cl-url">
+                                                <span class="cl-domain">www.secure-preview.com</span>/index.html
+                                            </p>
+                                        </div>
+                                        <br>
+                                        <div class="cl-container">
+                                            <img src="" alt="This is a Mailto link" id="cl-icon-email" class="cl-icon"></img>
+                                            <p class="cl-url">
+                                                <span class="cl-domain">bob@example.com</span>
+                                            </p>
+                                        </div>
+                                        <br>
+                                        <div class="cl-container">
+                                            <img src="" alt="This link uses Javascript" id="cl-icon-js" class="cl-icon js-icon-no-text"></img>
+                                            <p class="cl-url">&nbsp;</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-		
-            <div id="fragment-5">
-                <div class="div-table">
-                    <div class="div-table-body">
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">Delay before displaying:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input type="number" id="durationDelay" name="durationDelay" class="input-milliseconds">&nbsp;ms
-                            </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">Fade in duration:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input type="number" id="durationFadeIn" name="durationFadeIn" class="input-milliseconds">&nbsp;ms
-                            </div>
-                        </div>
-                        <div class="div-table-row">
-                            <div class="div-table-cell desc">Fade out duration:&nbsp;</div>
-                            <div class="div-table-cell">
-                                <input type="number" id="durationFadeOut" name="durationFadeOut" class="input-milliseconds">&nbsp;ms
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-		
-            <div id="fragment-6">
-                <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
-                <div id="accordionOauth">
-                    <h3>
-                        Bit.ly
-                        <img src="images/check-mark.png" alt="Bit.ly account authorised" id="auth-tick-bitly" class="auth-tick-hidden"></img>
-                    </h3>
-                    <div>
-                        <div id="divOauthBitlyLoggedOut" class="div-table">
-                            <div class="div-table-body">
-                                <div class="div-table-row">
-                                    <div class="div-table-cell desc">Username:&nbsp;</div>
-                                    <div class="div-table-cell">
-                                        <input type="text" id="txtBitlyUser">
-                                    </div>
+                    <h3>Demo</h3>
+                    <p class="link-demo-container">
+                        Mouseover to view a demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="preview-link">Demo link</a>
+                    </p>
+                </section>
+
+                <section id="tab4-content" class="tab-content">
+                    <h2>Animation</h2>
+                    <div class="div-table">
+                        <div class="div-table-body">
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">Delay before displaying:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input type="number" id="durationDelay" name="durationDelay" class="input-milliseconds save-on-change" min="0" data-storage-key="durationDelay">&nbsp;ms
                                 </div>
-                                <div class="div-table-row">
-                                    <div class="div-table-cell desc">Password:&nbsp;</div>
-                                    <div class="div-table-cell">
-                                        <input type="password" id="pwd-bitly-pass">
-                                    </div>
+                            </div>
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">Fade in duration:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input type="number" id="durationFadeIn" name="durationFadeIn" class="input-milliseconds save-on-change" min="0" data-storage-key="durationFadeIn">&nbsp;ms
                                 </div>
-                                <div class="div-table-row">
-                                    <div class="div-table-cell desc">&nbsp;</div>
-                                    <div class="div-table-cell right-align">
-                                        <input type="button" id="btn-oauth-bitly" value="Login">
-                                    </div>
+                            </div>
+                            <div class="div-table-row">
+                                <div class="div-table-cell desc">Fade out duration:&nbsp;</div>
+                                <div class="div-table-cell">
+                                    <input type="number" id="durationFadeOut" name="durationFadeOut" class="input-milliseconds save-on-change" min="0" data-storage-key="durationFadeOut">&nbsp;ms
                                 </div>
                             </div>
                         </div>
-                        <div id="divOauthBitlyLoggedIn">
-                            <p>
-                                OAuth access token: <span id="lbl-oauth-bitly-token"></span>
-                            </p>
-                            <span>Forget Bit.ly OAuth token: </span>
-                            <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
-                        </div>
                     </div>
-                    <h3>
-                        Goo.gl
-                        <img src="images/check-mark.png" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
-                    </h3>
-                    <div>
-                        <input type="button" id="btn-oauth-googl">
-                        <p>
-                            Example link which points to <em>www.google.com</em>
-                            : <a href="http://goo.gl/fbsS">goo.gl/fbsS</a>
-                        </p>
-                        <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
+                    <h3>Demo</h3>
+                    <p class="link-demo-container">
+                        Mouseover to view a demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="preview-link">Demo link</a>
+                    </p>
+                </section>
+
+                <section id="tab5-content" class="tab-content">
+                    <h2>Short Links</h2>
+                    <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
+                    
+                    <div class="cl-accordion">
+                        <details>
+                            <summary>
+                                Bit.ly
+                                <img src="images/check-mark.png" alt="Bit.ly account authorised" id="auth-tick-bitly" class="auth-tick-hidden"></img>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"></path>
+                                </svg>
+                            </summary>
+                            <div>
+                                <div id="divOauthBitlyLoggedOut" class="div-table">
+                                    <div class="div-table-body">
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">Username:&nbsp;</div>
+                                            <div class="div-table-cell">
+                                                <input type="text" id="txtBitlyUser">
+                                            </div>
+                                        </div>
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">Password:&nbsp;</div>
+                                            <div class="div-table-cell">
+                                                <input type="password" id="pwd-bitly-pass">
+                                            </div>
+                                        </div>
+                                        <div class="div-table-row">
+                                            <div class="div-table-cell desc">&nbsp;</div>
+                                            <div class="div-table-cell right-align">
+                                                <input type="button" id="btn-oauth-bitly" value="Login">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="divOauthBitlyLoggedIn">
+                                    <p>
+                                        OAuth access token: <span id="lbl-oauth-bitly-token"></span>
+                                    </p>
+                                    <span>Forget Bit.ly OAuth token: </span>
+                                    <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
+                                </div>
+                            </div>
+                        </details>
+
+
+                        <details>
+                            <summary>
+                                Goo.gl
+                                <img src="images/check-mark.png" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"></path>
+                                </svg>
+                            </summary>
+                            <div>
+                                <input type="button" id="btn-oauth-googl">
+                                <p>
+                                    Example link which points to <em>www.google.com</em>
+                                    : <a href="http://goo.gl/fbsS" class="preview-link">goo.gl/fbsS</a>
+                                </p>
+                                <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
+                            </div>
+                        </details>
                     </div>
-                </div>
+                    <h3>What are Short Links?</h3>
+                    <p>
+                        A short link (often called a short URL) is a link to a webpage that has been shortened.
+                        URL shortening services take a URL and create a new, shorter URL that redirects to the original longer URL.
+                    </p>
+                    <p>
+                        Long URLs can often get very long and can be hard to remember or share.
+                        Shortened URLs can help with this.
+                        However, this means that the real destination is obfuscated.
+                    </p>
+                    <p>
+                        This extension allows you to identify the target destination of a short URL without clicking on it.
+                        Simply hover your mouse over the link and the extension will show you the real destination.
+                        This is done by communicating with the short URL service and asking it to expand the short URL, so will only work with services you have authenticated with.
+                    </p>
+                </section>
+
+                <section id="tab6-content" class="tab-content">
+                    <h2>About Clear Links</h2>
+                    <p>
+                        Version:
+                        <span id="about-page-extension-version">vX.X.X</span>
+                    </p>
+                    <p id="about-page-extension-description"></p>
+                    <h3>Reset default settings</h3>
+                    <button id="restore" class="btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="m653-208-88 88-85-85 88-88q-4-11-6-23t-2-24q0-58 41-99t99-41q18 0 35 4.5t32 12.5l-95 95 56 56 95-94q8 15 12.5 31.5T840-340q0 58-41 99t-99 41q-13 0-24.5-2t-22.5-6Zm178-352h-83q-26-88-99-144t-169-56q-117 0-198.5 81.5T200-480q0 72 32.5 132t87.5 98v-110h80v240H160v-80h94q-62-50-98-122.5T120-480q0-75 28.5-140.5t77-114q48.5-48.5 114-77T480-840q129 0 226.5 79.5T831-560Z"></path>
+                        </svg>
+                        Restore Defaults
+                    </button>
+                    <p>This will reset synced settings only, and excludes restoring locally stored settings (such as which "Websites" to work with and "Short Links").</p>
+                    <h3>Delete all saved information</h3>
+                    <button id="btn-del-all" class="btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"></path>
+                        </svg>
+                        Delete All
+                    </button>
+                    <p>
+                        <em>Warning</em>:
+                        This deletes all local and sync stored settings and access tokens - you will need to re-login to any Short URL services you use.
+                    </p>
+                </section>
+
             </div>
         </div>
-	
-        <p class="link-demo-container">
-            Mouseover to view demo of your saved settings: <a href="https://user:pass@www.example.com/search?q=test#bookmark" class="previewLink">Demo</a>
-        </p>
-	
-        <div id="div-btn-group">
-            <button id="save">Save All</button>
-            <button id="restore">Restore Defaults</button>
-            <button id="delAll">Delete All Saved Info</button>
-            <span id="saved">Saved.</span>
-            <div id="confirm">
-                Are you sure?
-                <button id="btnConfirmY">Yes</button>
-                <button id="btnConfirmN">No</button>
-                <br>
-                <span id="del-all-further-info">
-                    <em>Warning</em>: This deletes all local and sync stored settings and access tokens (e.g. Bit.ly) - you will need to re-login for most Short URL services.
-                </span>
-                <span id="restore-further-info">
-                    <em>Warning</em>: This resets synced settings only, and excludes restoring locally stored settings (such as "Domain activation" &amp; "Short URLs").
-                </span>
-            </div>
+
+        <div id="alert" class="alert-success">
+            <svg class="alert-icon alert-icon-saved hidden" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"></path>
+            </svg>
+            <svg class="alert-icon alert-icon-info hidden" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path>
+            </svg>
+            <svg class="alert-icon alert-icon-success hidden" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"></path>
+            </svg>
+            <svg class="alert-icon alert-icon-warning hidden" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z"></path>
+            </svg>
+            <svg class="alert-icon alert-icon-error hidden" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24">
+                <path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Zm40 360q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"></path>
+            </svg>
+            <p class="message"></p>
         </div>
-	
-        <script type="text/javascript" src="jquery-2.2.3.min.js"></script>
-        <script type="text/javascript" src="jquery-ui.min.js"></script>
-        <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
-        <script type="module" src="defaultSettings.js"></script>
-        <script type="module" src="themes.js"></script>
-        <script type="module" src="options.js"></script>
-        <script type="module" src="contentScriptLoaderForOptionsPage.js"></script>
+
     </body>
 </html>

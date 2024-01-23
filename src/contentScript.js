@@ -1,10 +1,14 @@
 import { defaultSettings } from './defaultSettings.js';
 
 let useShortUrlCache = true;
+let linkSelector = 'a';
 
-export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true) {
+export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
   settings = contentScriptSettings;
   useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
+  if (overrideLinkSelector) {
+    linkSelector = overrideLinkSelector;
+  }
 
   applyAllSettingToTooltip(settings);
 
@@ -21,6 +25,10 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
       applyAllSettingChangesToTooltip(event.data.message);
     }
   }, true);
+
+  // Attach mouse enter listeners
+  // NB: Should be done after overrideLinkSelector is set, so we can use the correct selector.
+  attachMouseEnterListeners();
 }
 
 // Cache settings
@@ -68,9 +76,9 @@ function ready(fn) {
 function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   const wrappedHandler = (e) => {
     if (!e.target) return;
-    const el = e.target.closest(selector);
-    if (el) {
-      eventHandler.call(el, e);
+    const targetElement = e.target.closest(selector);
+    if (targetElement) {
+      eventHandler.call(targetElement, e);
     }
   };
   // Add the wrapped event handler to the element
@@ -109,13 +117,16 @@ ready(function() {
   });
   // Store initial window dimensions
   cacheWinDimensions();
+});
 
+function attachMouseEnterListeners() {
   // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
-  addDelegatedEventListener(document.body, 'mouseenter', 'a', function() {
+  addDelegatedEventListener(document.body, 'mouseenter', linkSelector, function() {
     if (!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
     switch (this.protocol) {
+      // eslint-disable-next-line no-script-url
       case 'javascript:':
         if (settings.displayJavascriptLinks) {
           showTooltip(this, '&#x200B;', false, true, false);
@@ -182,7 +193,7 @@ ready(function() {
         break;
     }
   });
-});
+}
 
 /**
    * Determine if a given hostname is an external domain (if only showing external domains), otherwise always true
@@ -247,15 +258,15 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // Attach mouse move event to track cursor position (for tooltip positioning)
   const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
   // TODO - not necessary if using absolute corner positioning in options
-  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', 'a', mouseRelativeCursorPosition, {
-    hasTooltipAttr: hasTooltipAttr,
+  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', linkSelector, mouseRelativeCursorPosition, {
+    hasTooltipAttr,
   });
   // Show the tooltip - check if already attached to document, then attach if not.
   if (document.getElementById(tooltipContainerID) === null) {
     // Initial attach/Re-attach element - lazily attach element upon mouse-over of link.
     // Some sites detach this element dynamically (i.e. after page load), so check on each mouseover.
     // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
-    document.body.appendChild(tooltip); 
+    document.body.appendChild(tooltip);
   }
   // Update tooltip content
   urlText.innerHTML = urlToDisplay;
@@ -290,26 +301,26 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 }
 
 /**
-   * 
-   * @param {object} settings - All settings to be applied to the tooltip.
-   */
-function applyAllSettingToTooltip(settings) {
-  for (const key in settings) {
-    if (Object.hasOwn(settings, key)) {
-      applySettingToTooltip(key, settings[key]);
+  *
+  * @param {object} settings - All settings to be applied to the tooltip.
+  */
+function applyAllSettingToTooltip(allSettings) {
+  for (const key in allSettings) {
+    if (Object.hasOwn(allSettings, key)) {
+      applySettingToTooltip(key, allSettings[key]);
     }
   }
 }
 
 /**
-   * 
-   * @param {object} changes - A subset of settings that have been updated.
-   */
+  *
+  * @param {object} changes - A subset of settings that have been updated.
+  */
 function applyAllSettingChangesToTooltip(changes) {
   for (const key in changes) {
     if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
       settings[key] = changes[key].newValue;
-      applySettingToTooltip(key, changes[key]);
+      applySettingToTooltip(key, changes[key].newValue);
     }
   }
 }

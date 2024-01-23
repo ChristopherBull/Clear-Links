@@ -1,0 +1,136 @@
+/*
+ * Bespoke Confirm modal dialog
+ * Native window.confirm does not work on Options Page
+ * Credit :https://codepen.io/dcode-software/pen/LKywLG
+ */
+
+.confirm {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0 0 0 / 60%);
+  padding: 10px;
+  box-sizing: border-box;
+  opacity: 0;
+  animation-name: confirm-open-animation;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-closing {
+  animation-name: confirm-close-animation;
+}
+
+.confirm-window {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  font-size: 14px;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0 0 0 / 30%);
+  opacity: 0;
+  transform: scale(0.75);
+  animation-name: confirm-window-open-animation;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+  animation-delay: 0.2s;
+}
+
+.confirm-titlebar,
+.confirm-content,
+.confirm-buttons {
+  padding: 1.25em;
+}
+
+.confirm-titlebar {
+  background: #222;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confirm-title {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.confirm-close {
+  background: none;
+  outline: none;
+  border: none;
+  transform: scale(2.5);
+  color: #fff;
+  transition: color 0.15s;
+}
+
+.confirm-close:hover {
+  color: #f00;
+  cursor: pointer;
+}
+
+.confirm-content {
+  line-height: 1.8em;
+}
+
+.confirm-buttons {
+  background: #eee;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.confirm-button {
+  padding: 0.4em 0.8em;
+  border: 2px solid #009879;
+  border-radius: 5px;
+  background: #fff;
+  color: #009879;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-left: 0.6em;
+  cursor: pointer;
+  outline: none;
+}
+
+.confirm-button-fill {
+  background: #009879;
+  color: #fff;
+}
+
+.confirm-button:focus,
+.confirm-button:hover {
+  box-shadow: 0 0 3px rgba(0 0 0 / 50%);
+}
+
+@keyframes confirm-open-animation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-close-animation {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes confirm-window-open-animation {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
