@@ -177,10 +177,25 @@ async function initialize() {
   });
   [colorBackground, colorBorder, colorGeneralURLText, colorDomainText].forEach((colourPickerElem) => {
     colourPickerElem.addEventListener('change', (event) => {
-      document.querySelectorAll('.cl-container').forEach((el) => {
-        el.style.background = event.target.value;
-      });
-      themeSelect.value = '0';
+      try {
+        const el = event.target;
+        // Save the setting
+        chrome.storage.sync.set({
+          [el.dataset.storageKey]: el.value,
+        });
+        currentSyncSettingsValues[el.dataset.storageKey] = el.value;
+        // Update the preview items
+        document.querySelectorAll(el.dataset.previewClass).forEach((previewElement) => {
+          previewElement.style[el.dataset.styleKey] = el.value;
+        });
+        // Set theme to custom (saved upon its own onChange event)
+        themeSelect.value = '0';
+        // UI to show saved.
+        showPopup('saved');
+      } catch (err) {
+        console.error(err);
+        showPopup('error', 'Error saving setting: ' + err.message);
+      }
     });
   });
 
@@ -196,8 +211,6 @@ async function initialize() {
   document.getElementById('btn-domains-allowlist-remove').addEventListener('click', removeFromAllowlist);
   document.getElementById('btn-domains-denylist-add').addEventListener('click', addToDenylist);
   document.getElementById('btn-domains-denylist-remove').addEventListener('click', removeFromDenylist);
-  // Event listeners - Style
-  themeSelect.addEventListener('change', previewPresetTheme);
   // Event listeners - Short URLs
   btnOauthBitly.addEventListener('click', () => {
     oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
@@ -322,6 +335,21 @@ async function initialize() {
         showPopup('error', 'Error saving setting: ' + err.message);
       }
     }, 1500));
+  });
+  // Select field (theme) - Save settings on change
+  themeSelect.addEventListener('change', async () => {
+    try {
+      await chrome.storage.sync.set({
+        [themeSelect.dataset.storageKey]: themeSelect.value,
+      });
+      currentSyncSettingsValues[themeSelect.dataset.storageKey] = themeSelect.value;
+      previewPresetTheme();
+      // UI to show saved.
+      showPopup('saved');
+    } catch (err) {
+      console.error(err);
+      showPopup('error', 'Error saving setting: ' + err.message);
+    }
   });
 
   // Init previews -- Don't allow the preview links to actually navigate anywhere (just for mouseover demos).
@@ -509,69 +537,6 @@ function showPopup(type, message) {
 }
 
 // Click Events
-
-function btnSaveClick() {
-  // TODO REMOVE and convert to individual save actions per-element
-
-  // // Get option values that require validation.
-  // let iDurationDelay = parseInt(durationDelay.value);
-  // if (isNaN(iDurationDelay) || !Number.isInteger(iDurationDelay) || iDurationDelay < 0) {
-  //   iDurationDelay = defaultSettings.delay;
-  //   durationDelay.value = iDurationDelay;
-  // }
-  // let iDurationFadeIn = parseInt(durationFadeIn.value);
-  // if (isNaN(iDurationFadeIn) || !Number.isInteger(iDurationFadeIn) || iDurationFadeIn < 0) {
-  //   iDurationFadeIn = defaultSettings.durationFadeIn;
-  //   durationFadeIn.value = iDurationFadeIn;
-  // }
-  // let iDurationFadeOut = parseInt(durationFadeOut.value);
-  // if (isNaN(iDurationFadeOut) || !Number.isInteger(iDurationFadeOut) || iDurationFadeOut < 0) {
-  //   iDurationFadeOut = defaultSettings.durationFadeOut;
-  //   durationFadeOut.value = iDurationFadeOut;
-  // }
-
-  // Save values
-  chrome.storage.sync.set({
-    // General
-    // displayExternalDomainsOnly: chkDisplayExternalDomainsOnly.checked,
-    // displayDomainOnly: chkDisplayDomainOnly.checked,
-    // displayUrlScheme: chkDisplayUrlScheme.checked,
-    // displayUrlAuth: (rdoDisplayUrlNoAuth.checked
-    //   ? 0
-    //   : rdoDisplayUrlUsername.checked
-    //     ? 1
-    //     : rdoDisplayUrlPassword.checked ? 2 : 3),
-    // displayUrlHostname: chkDisplayUrlHostname.checked,
-    // displayUrlPort: chkDisplayUrlPort.checked,
-    // displayUrlPath: chkDisplayUrlPath.checked,
-    // displayUrlQuery: chkDisplayUrlQuery.checked,
-    // displayUrlFragment: chkDisplayUrlFragment.checked,
-    // displayJavascriptLinks: chkDisplayJavascriptLinks.checked,
-    // displayMailtoLinks: chkDisplayMailtoLinks.checked,
-    // displayOnKnownShortUrlDomainsOnly: chkDisplayShortUrlsOnly.checked,
-    // Style
-    theme: themeSelect.value,
-    // div
-    background: colorBackground.value,
-    cssColorBorder: colorBorder.value,
-    // p
-    cssColorGeneralURLText: colorGeneralURLText.value,
-    // spanDomain
-    cssColorDomainText: colorDomainText.value, // color
-    // Animation
-    // durationDelay: iDurationDelay,
-    // durationFadeIn: iDurationFadeIn,
-    // durationFadeOut: iDurationFadeOut,
-  }, function() { // On saved
-    chrome.storage.local.set({
-      // Page Activation
-      // activationFilter: parseInt($('input[name=activationType]:checked', '#form-activation-type').val()),
-    }, function() { // On (local only) saved
-      // Must occur after both sync and local are set (hence chained callback functions).
-      showPopup('saved');
-    });
-  });
-}
 
 /*
  * Restores default settings.
@@ -827,7 +792,7 @@ function previewPresetTheme() {
     el.style.color = colorGeneralURLText.value;
   });
   colorDomainText.value = themes[sTheme].spanDomain.color;
-  document.querySelectorAll('.ClDomain').forEach((el) => {
+  document.querySelectorAll('.cl-domain').forEach((el) => {
     el.style.color = colorDomainText.value;
   });
 }

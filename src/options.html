@@ -176,25 +176,25 @@
                             <div class="div-table-row">
                                 <div class="div-table-cell desc">Background:&nbsp;</div>
                                 <div class="div-table-cell">
-                                    <input id="colorBackground" type="color" name="backgroundColor">
+                                    <input id="colorBackground" type="color" name="backgroundColor" data-storage-key="background" data-style-key="background" data-preview-class=".cl-container">
                                 </div>
                             </div>
                             <div class="div-table-row">
                                 <div class="div-table-cell desc">Border Color:&nbsp;</div>
                                 <div class="div-table-cell">
-                                    <input id="colorBorder" type="color" name="cssColorBorder">
+                                    <input id="colorBorder" type="color" name="cssColorBorder" data-storage-key="cssColorBorder" data-style-key="borderColor" data-preview-class=".cl-container">
                                 </div>
                             </div>
                             <div class="div-table-row">
                                 <div class="div-table-cell desc">URL Text Colour:&nbsp;</div>
                                 <div class="div-table-cell">
-                                    <input id="colorGeneralURLText" type="color" name="colorGeneralURLText">
+                                    <input id="colorGeneralURLText" type="color" name="colorGeneralURLText" data-storage-key="cssColorGeneralURLText" data-style-key="color" data-preview-class=".cl-url">
                                 </div>
                             </div>
                             <div class="div-table-row">
                                 <div class="div-table-cell desc">URL's Domain Text Colour:&nbsp;</div>
                                 <div class="div-table-cell">
-                                    <input id="colorDomainText" type="color" name="domainTextColor">
+                                    <input id="colorDomainText" type="color" name="domainTextColor" data-storage-key="cssColorDomainText" data-style-key="color" data-preview-class=".cl-domain">
                                 </div>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                             <div class="div-table-row">
                                 <div class="div-table-cell">
                                     <span>Themes:</span>
-                                    <select id="theme-select">
+                                    <select id="theme-select" class="save-on-change" data-storage-key="theme">
                                         <option value="1" selected>Light</option>
                                         <option value="2">Dark</option>
                                         <option value="3">Original</option>
@@ -217,21 +217,21 @@
                                     <div id="style-preview">
                                         <div class="cl-container">
                                             <p class="cl-url">
-                                                <span class="ClDomain">www.preview.com</span>/index.html
+                                                <span class="cl-domain">www.preview.com</span>/index.html
                                             </p>
                                         </div>
                                         <br>
                                         <div class="cl-container">
                                             <img src="" alt="Secure protocol used in link" id="cl-icon-padlock-locked" class="cl-icon"></img>
                                             <p class="cl-url">
-                                                <span class="ClDomain">www.secure-preview.com</span>/index.html
+                                                <span class="cl-domain">www.secure-preview.com</span>/index.html
                                             </p>
                                         </div>
                                         <br>
                                         <div class="cl-container">
                                             <img src="" alt="This is a Mailto link" id="cl-icon-email" class="cl-icon"></img>
                                             <p class="cl-url">
-                                                <span class="ClDomain">bob@example.com</span>
+                                                <span class="cl-domain">bob@example.com</span>
                                             </p>
                                         </div>
                                         <br>
