@@ -282,7 +282,6 @@
 
                 <section id="tab5-content" class="tab-content">
                     <h2>Short Links</h2>
-                    <!-- TODO add hint about what short links (also known as Short URLs): https://en.wikipedia.org/wiki/URL_shortening -->
                     <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
                     
                     <div class="cl-accordion">
@@ -346,6 +345,21 @@
                             </div>
                         </details>
                     </div>
+                    <h3>What are Short Links?</h3>
+                    <p>
+                        A short link (often called a short URL) is a link to a webpage that has been shortened.
+                        URL shortening services take a URL and create a new, shorter URL that redirects to the original longer URL.
+                    </p>
+                    <p>
+                        Long URLs can often get very long and can be hard to remember or share.
+                        Shortened URLs can help with this.
+                        However, this means that the real destination is obfuscated.
+                    </p>
+                    <p>
+                        This extension allows you to identify the target destination of a short URL without clicking on it.
+                        Simply hover your mouse over the link and the extension will show you the real destination.
+                        This is done by communicating with the short URL service and asking it to expand the short URL, so will only work with services you have authenticated with.
+                    </p>
                 </section>
 
                 <section id="tab6-content" class="tab-content">
