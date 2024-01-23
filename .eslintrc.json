@@ -104,6 +104,8 @@
         "prefer-object-spread": "warn",
         "prefer-promise-reject-errors": "warn",
         "prefer-spread": "warn",
+        "require-await": "error",
+        "sort-imports": "warn",
         "sort-vars": "warn",
         "yoda": "warn",
 

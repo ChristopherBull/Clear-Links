@@ -1,8 +1,8 @@
-import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
-import { themes } from './themes.js';
-import { initAllSharedListeners } from './contentScriptSharedLib.js';
-import { Confirm } from './optionsConfirmDialog.js';
 import * as ContentScript from './contentScript.js';
+import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
+import { Confirm } from './optionsConfirmDialog.js';
+import { initAllSharedListeners } from './contentScriptSharedLib.js';
+import { themes } from './themes.js';
 
 
 /////////////////////
@@ -218,7 +218,7 @@ async function initialize() {
   });
   btnOauthGoogl.addEventListener('click', oauthGoogl);
   btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
-  btnOauthBitlyForgetToken.addEventListener('click', async () => {
+  btnOauthBitlyForgetToken.addEventListener('click', () => {
     // Confirm with user before forgetting OAuth token
     Confirm.open({
       title: 'Forget Bit.ly OAuth Token?',
@@ -542,7 +542,7 @@ function showPopup(type, message) {
 /*
  * Restores default settings.
  */
-async function restoreSyncedSettings() {
+function restoreSyncedSettings() {
   // Confirm with user before restoring default settings
   Confirm.open({
     title: 'Restore Default Settings',

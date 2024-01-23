@@ -1,4 +1,4 @@
-import { defaultSettingsLocal, defaultSettings } from './defaultSettings.js';
+import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 
 // Local settings (e.g. page activation options and locally stored auth tokens)
 let currentLocalSettingsValues = defaultSettingsLocal;
@@ -55,7 +55,7 @@ async function initialise() {
 }
 
 function injectExtension(tabID, hostname) {
-  activateOnTab(tabID, hostname, async function() {
+  activateOnTab(tabID, hostname, function() {
     const contentScriptSrc = chrome.runtime.getURL('contentScript.js');
     const contentScriptSharedSrc = chrome.runtime.getURL('contentScriptSharedLib.js');
     chrome.scripting.insertCSS({
