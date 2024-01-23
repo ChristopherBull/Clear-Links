@@ -12,8 +12,8 @@ export const Confirm = {
       message: '',
       okText: 'OK',
       cancelText: 'Cancel',
-      onOk: function () {},
-      oncancel: function () {},
+      onOk() {},
+      oncancel() {},
       // Override the default options with passed options
       ...options,
     };

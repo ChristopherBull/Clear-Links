@@ -172,7 +172,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
         } else {
           callbackAfterExpansion({
             ignore: true,
-            source: { url: url },
+            source: { url },
           });
         }
       });
@@ -241,9 +241,9 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
         if (response.ok) {
           // TODO cache the long URL
           // Create the JSON formatted response expected in contentScript: response.result.longUrl
-          callbackAfterExpansion({ 
+          callbackAfterExpansion({
             result: { longUrl: jsonResponse.long_url },
-            source: { url: url }, // for checking if the response is for the moused-over link (protect against delayed responses)
+            source: { url }, // for checking if the response is for the moused-over link (protect against delayed responses)
           });
         } else {
           console.error('Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description);
@@ -255,7 +255,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
   } else {
     callbackAfterExpansion({
       ignore: true,
-      source: { url: url },
+      source: { url },
     });
   }
 }

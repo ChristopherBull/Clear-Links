@@ -16,7 +16,7 @@ const shiftTabs = (linkId) => {
   allTabs.forEach((tab, i) => {
       
     if (tab.id.includes(linkId)) {
-      allTabs.forEach((tabItem) => { 
+      allTabs.forEach((tabItem) => {
         tabItem.style = `transform: translateY(-${i*500}px);`;
       });
     }
@@ -664,7 +664,7 @@ function isValidUrl(sUrl) {
     try {
       return new URL(sUrl);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       throw err;
     }
   }
@@ -829,7 +829,7 @@ function oauthGoogl(e, silent) {
   // Request Google OAuth
   chrome.identity.getAuthToken({ interactive: !silent }, function() { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
     if (chrome.runtime.lastError) {
-      console.log('Google OAuth failed (silent: ' + silent + ')');
+      console.info('Google OAuth failed (silent: ' + silent + ')');
       if (currentLocalSettingsValues.OAuthGooGl.enabled) {
         chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
       }

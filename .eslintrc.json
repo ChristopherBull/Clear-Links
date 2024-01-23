@@ -45,6 +45,8 @@
         "css" // CSS within JS
       ],
     "rules": {
+        "@html-eslint/no-multiple-empty-lines": "error",
+        "@html-eslint/no-trailing-spaces": "warn",
         "@stylistic/comma-dangle": ["error", "always-multiline"],
         "@stylistic/indent": ["error", 2],
         "@stylistic/keyword-spacing": ["warn", { "before": true, "after": true }],
@@ -58,6 +60,7 @@
         "no-alert": "warn",
         "no-array-constructor": "warn",
         "no-caller": "error",
+        "no-console": ["error", { "allow": ["info", "warn", "error"] }],
         "no-duplicate-imports": "error",
         "no-empty-static-block": "error",
         "no-eval": "error",
@@ -81,6 +84,7 @@
         "no-proto": "warn",
         "no-return-assign": "error",
         "no-script-url": "error",
+        "no-shadow": "error",
         "no-template-curly-in-string": "error",
         "no-throw-literal": "error",
         "no-unmodified-loop-condition": "warn",
@@ -94,6 +98,7 @@
         "no-useless-rename": "warn",
         "no-useless-return": "warn",
         "no-var": "error",
+        "object-shorthand": "warn",
         "operator-assignment": "warn",
         "prefer-const": "warn",
         "prefer-object-spread": "warn",

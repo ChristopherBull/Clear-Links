@@ -76,9 +76,9 @@ function ready(fn) {
 function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   const wrappedHandler = (e) => {
     if (!e.target) return;
-    const el = e.target.closest(selector);
-    if (el) {
-      eventHandler.call(el, e);
+    const targetElement = e.target.closest(selector);
+    if (targetElement) {
+      eventHandler.call(targetElement, e);
     }
   };
   // Add the wrapped event handler to the element
@@ -259,14 +259,14 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
   // TODO - not necessary if using absolute corner positioning in options
   const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', linkSelector, mouseRelativeCursorPosition, {
-    hasTooltipAttr: hasTooltipAttr,
+    hasTooltipAttr,
   });
   // Show the tooltip - check if already attached to document, then attach if not.
   if (document.getElementById(tooltipContainerID) === null) {
     // Initial attach/Re-attach element - lazily attach element upon mouse-over of link.
     // Some sites detach this element dynamically (i.e. after page load), so check on each mouseover.
     // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
-    document.body.appendChild(tooltip); 
+    document.body.appendChild(tooltip);
   }
   // Update tooltip content
   urlText.innerHTML = urlToDisplay;
@@ -301,21 +301,21 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 }
 
 /**
-   * 
-   * @param {object} settings - All settings to be applied to the tooltip.
-   */
-function applyAllSettingToTooltip(settings) {
-  for (const key in settings) {
-    if (Object.hasOwn(settings, key)) {
-      applySettingToTooltip(key, settings[key]);
+  *
+  * @param {object} settings - All settings to be applied to the tooltip.
+  */
+function applyAllSettingToTooltip(allSettings) {
+  for (const key in allSettings) {
+    if (Object.hasOwn(allSettings, key)) {
+      applySettingToTooltip(key, allSettings[key]);
     }
   }
 }
 
 /**
-   * 
-   * @param {object} changes - A subset of settings that have been updated.
-   */
+  *
+  * @param {object} changes - A subset of settings that have been updated.
+  */
 function applyAllSettingChangesToTooltip(changes) {
   for (const key in changes) {
     if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
