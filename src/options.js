@@ -769,13 +769,15 @@ async function removeFromDenylist() {
 
 /**
  * Apply theme presets to the Options page.
+ * This includes updating the preview items and saving the preset settings.
  * @param {Boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
  */
 function applyPresetTheme(savePresetSettings=false) {
   let sTheme;
   switch (themeSelect.value) {
     case '0': // Custom
-      return;
+      sTheme = 'custom';
+      break;
     case '1': // Light/Default
       sTheme = 'light';
       break;
@@ -786,17 +788,20 @@ function applyPresetTheme(savePresetSettings=false) {
       sTheme = 'original';
       break;
   }
-  colorBackground.value = themes[sTheme].div.background;
-  colorBorder.value = themes[sTheme].div['border-color'];
+  // Update the UI style options with predefined theme defaults
+  if (sTheme !== 'custom') {
+    colorBackground.value = themes[sTheme].div.background;
+    colorBorder.value = themes[sTheme].div['border-color'];
+    colorGeneralURLText.value = themes[sTheme].p.color;
+    colorDomainText.value = themes[sTheme].spanDomain.color;
+  }
   document.querySelectorAll('.cl-container').forEach((el) => {
     el.style.background = colorBackground.value;
     el.style.borderColor = colorBorder.value;
   });
-  colorGeneralURLText.value = themes[sTheme].p.color;
   document.querySelectorAll('.cl-url').forEach((el) => {
     el.style.color = colorGeneralURLText.value;
   });
-  colorDomainText.value = themes[sTheme].spanDomain.color;
   document.querySelectorAll('.cl-domain').forEach((el) => {
     el.style.color = colorDomainText.value;
   });
