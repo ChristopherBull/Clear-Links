@@ -141,7 +141,7 @@ function tabExists(tabId, callback) {
 
 function mergeSettingsChanges(currentSettings, changes) {
   for (const key in changes) {
-    if (Object.prototype.hasOwnProperty.call(changes, key) && changes[key].newValue !== undefined) {
+    if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
       currentSettings[key] = changes[key].newValue;
     }
   }

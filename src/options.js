@@ -653,20 +653,20 @@ function showActivationTypeOptions(type) {
 }
 
 function isValidUrl(sUrl) {
+  // Check if URL is empty or undefined
   if (!sUrl) {
-    return null;
-  } else {
-    // include URL protocol if not specified (otherwise URL constructor will throw exception)
-    if (!sUrl.includes('://')) {
-      sUrl = 'http://' + sUrl;
-    }
-    // Create URL object
-    try {
-      return new URL(sUrl);
-    } catch (err) {
-      console.error(err.message);
-      throw err;
-    }
+    throw new Error('URL is empty');
+  }
+  // include URL protocol if not specified (otherwise URL constructor will throw exception)
+  if (!sUrl.includes('://')) {
+    sUrl = 'http://' + sUrl;
+  }
+  // Create URL object
+  try {
+    return new URL(sUrl);
+  } catch (err) {
+    console.error(err.message);
+    throw err;
   }
 }
 

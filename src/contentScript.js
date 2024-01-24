@@ -415,9 +415,8 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
             return { isShort: true, toExpand: false, quickExpand: quickExpandUrl }; // TODO indicate an error
           }
           return { isShort: true, toExpand: true, quickExpand: sourceElem.dataset.expandedUrl };
-        } else {
-          return { isShort: true, toExpand: false, quickExpand: quickExpandUrl };
         }
+        return { isShort: true, toExpand: false, quickExpand: quickExpandUrl };
     }
   }
   return { isShort: bRecursiveIsShort, toExpand: false, quickExpand: quickExpandUrl };

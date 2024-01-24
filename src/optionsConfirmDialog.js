@@ -46,26 +46,26 @@ export const Confirm = {
     confirmEl.addEventListener('click', (e) => {
       if (e.target === confirmEl) {
         options.oncancel();
-        this._close(confirmEl);
+        this.close(confirmEl);
       }
     });
 
     btnOk.addEventListener('click', () => {
       options.onOk();
-      this._close(confirmEl);
+      this.close(confirmEl);
     });
 
     [btnCancel, btnClose].forEach((el) => {
       el.addEventListener('click', () => {
         options.oncancel();
-        this._close(confirmEl);
+        this.close(confirmEl);
       });
     });
 
     document.body.appendChild(template.content);
   },
 
-  _close(confirmEl) {
+  close(confirmEl) {
     confirmEl.classList.add('confirm-closing');
 
     confirmEl.addEventListener('animationend', () => {
