@@ -36,13 +36,22 @@ let settings;
 let winDimensions;
 // Init the tooltip
 const tooltipContainerID = 'cl-container';
-const tooltip = new DOMParser().parseFromString('<div id="' + tooltipContainerID + '"><img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img><img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img><img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img><img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img><img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img><p class="cl-url"></p></div>', 'text/html').body.firstElementChild;
-const secureIcon = tooltip.firstChild;
-const emailIcon = tooltip.childNodes[1];
-const jsIcon = tooltip.childNodes[2];
-const loadingIcon = tooltip.childNodes[3];
-const notExpandableIcon = tooltip.childNodes[4];
-const urlText = tooltip.childNodes[5];
+// TODO migrate to a single image element with multiple classes. Will need a map of alt text to class name.
+const tooltip = new DOMParser().parseFromString(`
+  <div id="${tooltipContainerID}">
+    <img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img>
+    <img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img>
+    <img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img>
+    <img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img>
+    <img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img>
+    <p class="cl-url"></p>
+  </div>`, 'text/html').body.firstElementChild;
+const secureIcon = tooltip.querySelector('.cl-icon-padlock-locked');
+const emailIcon = tooltip.querySelector('.cl-icon-email');
+const jsIcon = tooltip.querySelector('.cl-icon-js');
+const loadingIcon = tooltip.querySelector('.cl-icon-hourglass');
+const notExpandableIcon = tooltip.querySelector('.cl-icon-hourglass-broken');
+const urlText = tooltip.querySelector('.cl-url');
 // Timers
 let resizeEndTimer; // No native resize end event, so timing our own.
 
