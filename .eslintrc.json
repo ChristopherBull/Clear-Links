@@ -45,6 +45,7 @@
         "css" // CSS within JS
       ],
     "rules": {
+        "@html-eslint/lowercase": "error",
         "@html-eslint/no-multiple-empty-lines": "error",
         "@html-eslint/no-trailing-spaces": "warn",
         "@stylistic/comma-dangle": ["error", "always-multiline"],
