@@ -23,6 +23,14 @@
                     </a>
                 </li>
                 <li>
+                    <a id="tab-link-parts" title="Link Parts" href="#tab-link-parts">
+                        <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
+                            <path d="M40-360v-240h60v80h80v-80h60v240h-60v-100h-80v100H40Zm300 0v-180h-60v-60h180v60h-60v180h-60Zm220 0v-180h-60v-60h180v60h-60v180h-60Zm160 0v-240h140q24 0 42 18t18 42v40q0 24-18 42t-42 18h-80v80h-60Zm60-140h80v-40h-80v40Z"></path>
+                        </svg>
+                        Link Parts
+                    </a>
+                </li>
+                <li>
                     <a id="tab2" title="Websites" href="#tab2">
                         <svg class="tabs-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" height="24" viewBox="0 -960 960 960" width="24">
                             <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h420v-140H160v140Zm500 0h140v-360H660v360ZM160-460h420v-140H160v140Z"></path>
@@ -68,10 +76,29 @@
 
                 <section id="tab1-content" class="tab-content">
                     <h2>Visibility</h2>
+                    <p>When to display the tooltip.</p>
                     <label>
-                        <input type="checkbox" id="chkDisplayExternalDomainsOnly" class="save-on-change" data-storage-key="displayExternalDomainsOnly"> Show Clear Links' tooltip for links to external domains only
+                        <input type="checkbox" id="chkDisplayExternalDomainsOnly" class="save-on-change" data-storage-key="displayExternalDomainsOnly"> Only for links to external domains
                     </label>
-                    <br>
+                    <fieldset>
+                        <legend>Other link types to display:</legend>
+                        <label>
+                            <input type="checkbox" id="chkDisplayJavascriptLinks" class="save-on-change" data-storage-key="displayJavascriptLinks"> Javascript
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayMailtoLinks" class="save-on-change" data-storage-key="displayMailtoLinks"> Mailto
+                        </label>
+                        <br>
+                        <label>
+                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (currently: goo.gl)
+                        </label>
+                    </fieldset>
+                </section>
+
+                <section id="tab-link-parts-content" class="tab-content">
+                    <h2>Link Parts</h2>
+                    <p>Options for which parts of a link to be displayed.</p>
                     <fieldset>
                         <legend>
                             <input type="checkbox" id="chkDisplayDomainOnly" class="save-on-change" data-storage-key="displayDomainOnly"> Show Domain only
@@ -114,20 +141,6 @@
                         <br>
                         <label>
                             <input type="checkbox" id="chkDisplayUrlFragment" class="save-on-change" data-storage-key="displayUrlFragment"> Show Fragment (Hash)
-                        </label>
-                    </fieldset>
-                    <fieldset>
-                        <legend>Other link types to display:</legend>
-                        <label>
-                            <input type="checkbox" id="chkDisplayJavascriptLinks" class="save-on-change" data-storage-key="displayJavascriptLinks"> Javascript
-                        </label>
-                        <br>
-                        <label>
-                            <input type="checkbox" id="chkDisplayMailtoLinks" class="save-on-change" data-storage-key="displayMailtoLinks"> Mailto
-                        </label>
-                        <br>
-                        <label>
-                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (currently: goo.gl)
                         </label>
                     </fieldset>
                     <h3>Demo</h3>
