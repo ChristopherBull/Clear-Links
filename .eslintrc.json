@@ -1,7 +1,8 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2024": true,
+        "webextensions": true
     },
     "extends": [
         "eslint:recommended",
@@ -14,9 +15,7 @@
         "plugin:css/recommended"
     ],
     "globals": {
-        "$": "readonly", // TODO: Remove this (once jQuery is removed)
-        "gapi": "readonly", // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
-        "chrome": "readonly" // Chrome Extension API
+        "gapi": "readonly" // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
     },
     "overrides": [
         {
