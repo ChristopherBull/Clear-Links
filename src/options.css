@@ -409,6 +409,8 @@ input[type='checkbox'] {
 input[type='checkbox']::before {
   content: '';
   display: block;
+  font-family: system-ui, sans-serif;
+  font-weight: 900;
   width: 1.25em;
   height: 1.25em;
   border-radius: 1.25em;
