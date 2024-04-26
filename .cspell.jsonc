@@ -29,6 +29,7 @@
         // Technical terms
         "IIFE",
         // Libraries / APIs
+        "commitlint",
         "gapi",
         "urlshortener",
         "bitlink"
