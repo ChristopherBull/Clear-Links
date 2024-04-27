@@ -1,0 +1,74 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read # for checkout
+
+env:
+  NODE_VER: 20
+
+jobs:
+
+  quality_checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Use Node.js (LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VER }}
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        id: cache-npm
+        with:
+          path: |
+            ~/.npm
+            node_modules
+          key: ${{ runner.os }}-node$NODE_VER-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node$NODE_VER-
+      - name: Install dependencies (if no cache hit)
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Check spelling
+        run: npm run spell
+      - name: Lint Markdown
+        run: npm run lint-md
+      - name: Lint Src files
+        run: npm run lint
+
+  release:
+    name: Release
+    needs: quality_checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - name: Install dependencies
+        # Install dependencies from package.json with specific versions to ensure compatibility/reliability
+        run: npm clean-install
+      - name: Build # Copy src into `dist/` folder
+        run: make
+      - name: Release
+        env:
+          EXTENSION_ID: ${{secrets.EXTENSION_ID}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
+          GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
+          GOOGLE_REFRESH_TOKEN: ${{secrets.GOOGLE_REFRESH_TOKEN}}
+        run: npx semantic-release
