@@ -126,6 +126,7 @@ textarea { resize: vertical; }
 .auth-tick {
   float: right;
   margin-left: .5em;
+  height: 1em;
 }
 
 .hidden,
