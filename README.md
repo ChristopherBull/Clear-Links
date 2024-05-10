@@ -1,6 +1,6 @@
 # Clear Links
 
-[![Quality checks](https://github.com/ChristopherBull/Clear-Links/actions/workflows/quality-checks.yml/badge.svg)](https://github.com/ChristopherBull/Clear-Links/actions/workflows/quality-checks.yml)
+[![Quality Checks & Release](https://github.com/ChristopherBull/Clear-Links/actions/workflows/ci.yml/badge.svg)](https://github.com/ChristopherBull/Clear-Links/actions/workflows/ci.yml)
 
 This is a user experience improvement extension that reveals web links' destination in a more user-friendly and customisable tooltip, simply by moving your mouse over a link; by default, it highlights a URL's domain for links to external websites (customisable in the extension's Options menu) and thus enables more transparent links, improving explicit awareness of your navigation to an external website. One potential use case for Clear Links is to make you more easily aware of phishing email scams by allowing you to inspect a link's destination domain and allowing you to check if the destination is as expected -- identifying malicious links.
 
