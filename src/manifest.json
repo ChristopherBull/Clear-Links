@@ -33,8 +33,7 @@
 			"contentScript.css",
 			"contentScript.js",
 			"contentScriptSharedLib.js",
-			"defaultSettings.js",
-			"jquery-2.2.3.min.js"
+			"defaultSettings.js"
 		  ],
 		  "matches": [
 			"<all_urls>"
