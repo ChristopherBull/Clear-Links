@@ -35,9 +35,7 @@ jobs:
         run: npm ci
       - name: Check spelling
         run: npm run spell
-      - name: Lint Markdown
-        run: npm run lint-md
-      - name: Lint Src files
+      - name: Lint all files
         run: npm run lint
 
   release:
