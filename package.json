@@ -11,9 +11,9 @@
     "lint-md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
     "lint-src": "eslint src test",
     "spell": "cspell README.md \"/src/*.*\"",
-    "test": "cross-env NODE_ENV=test mocha",
+    "test": "npm run build && cross-env NODE_ENV=test mocha",
     "test-all": "npm run lint && npm run test-coverage && npm run spell",
-    "test-coverage": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text --reporter=lcovonly mocha",
+    "test-coverage": "npm run build && cross-env NODE_ENV=test nyc --reporter=html --reporter=text --reporter=lcovonly mocha",
     "prepare": "husky"
   },
   "devDependencies": {
