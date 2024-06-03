@@ -29,6 +29,9 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
   // Attach mouse enter listeners
   // NB: Should be done after overrideLinkSelector is set, so we can use the correct selector.
   attachMouseEnterListeners();
+
+  // Attach tooltip to DOM (reducing any future mouseover delays, as the tooltip will already be attached to the DOM)
+  document.body.appendChild(tooltip); // TODO refactor into a shared function (shares with `showTooltip()`)
 }
 
 // Cache settings

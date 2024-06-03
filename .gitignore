@@ -9,3 +9,7 @@ node_modules/
 # Test coverage reports
 .nyc_output
 coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

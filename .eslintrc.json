@@ -23,6 +23,13 @@
             "files": ["*.html"],
             "parser": "@html-eslint/parser",
             "extends": ["plugin:@html-eslint/recommended"]
+        },
+        {
+            // Playwright uses destructing in tests/fixtures
+            "files": ["*/e2e/*.test.js", "*/e2e/*.spec.js", "*/e2e/fixtures/*.js"],
+            "rules": {
+                "no-empty-pattern": "off"
+            }
         }
     ],
     "parserOptions": {
