@@ -19,6 +19,8 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+    - name: Build (allowing install for E2E browser tests)
+      run: make
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
