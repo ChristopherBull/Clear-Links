@@ -2,6 +2,7 @@
     "env": {
         "browser": true,
         "es2024": true,
+        "node": true,
         "webextensions": true
     },
     "extends": [
@@ -17,6 +18,15 @@
     "globals": {
         "gapi": "readonly" // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
     },
+    "ignorePatterns": [
+        ".nyc_output/",
+        "build/",
+        "coverage/",
+        "dist/",
+        "node_modules/",
+        "playwright-report/",
+        "test-results/"
+    ],
     "overrides": [
         {
             // HTML-only liniting of HTML files
