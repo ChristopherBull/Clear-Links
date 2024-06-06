@@ -30,7 +30,7 @@
     "@types/node": "^20.12.12",
     "chai": "^5.0.0",
     "cross-env": "^7.0.3",
-    "cspell": "^8.3.2",
+    "cspell": "^8.8.4",
     "eslint": "^8.56.0",
     "eslint-plugin-chai-expect": "^3.0.0",
     "eslint-plugin-css": "^0.9.1",
