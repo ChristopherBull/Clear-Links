@@ -20,18 +20,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VER }}
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        id: cache-npm
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node$NODE_VER-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node$NODE_VER-
-      - name: Install dependencies (if no cache hit)
-        if: steps.cache-npm.outputs.cache-hit != 'true'
+          cache: 'npm'
+      - name: Install dependencies
         run: npm ci
       - name: Check spelling
         run: npm run spell
@@ -59,6 +49,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
+          cache: 'npm'
       - name: Install dependencies
         # Install dependencies from package.json with specific versions to ensure compatibility/reliability
         run: npm clean-install
