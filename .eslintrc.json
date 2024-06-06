@@ -8,7 +8,6 @@
     "extends": [
         "eslint:recommended",
         "plugin:mocha/recommended",
-        "plugin:chai-expect/recommended",
         "plugin:sonarjs/recommended",
         "plugin:import/recommended",
         // "plugin:promise/recommended", // TODO renable and fix issues later
@@ -49,7 +48,6 @@
     "plugins": [
         // Test linting
         "mocha",
-        "chai-expect",
         // Style linting
         "@stylistic",
         // General linting
