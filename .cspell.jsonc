@@ -28,9 +28,15 @@
     "words": [
         // Technical terms
         "IIFE",
+        "liniting",
+        // ESlint terms and rule name
+        "camelcase",
+        "nonconstructor",
+        "webextensions",
         // Libraries / APIs
         "commitlint",
         "gapi",
+        "sonarjs",
         "urlshortener",
         "bitlink"
     ]
