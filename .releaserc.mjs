@@ -1,20 +1,20 @@
 export default {
-  "branches": ["main"],
-  "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+  branches: [ 'main' ],
+  plugins: [
+    '@semantic-release/commit-analyzer',
+    '@semantic-release/release-notes-generator',
     [
-      "semantic-release-chrome",
+      'semantic-release-chrome',
       {
-        "extensionId": `${process.env.EXTENSION_ID}`,
-        "asset": "clear-links-extension.zip"
-      }
+        extensionId: `${process.env.EXTENSION_ID}`,
+        asset: 'clear-links-extension.zip',
+      },
     ],
     [
-      "@semantic-release/github",
+      '@semantic-release/github',
       {
-        "assets": ["clear-links-extension.zip"]
-      }
-    ]
-  ]
-}
+        assets: [ 'clear-links-extension.zip' ],
+      },
+    ],
+  ],
+};

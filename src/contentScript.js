@@ -228,8 +228,7 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
     }
   } else {
     if (settings.displayUrlScheme && protocol) {
-      urlToDisplay += protocol +
-          (href.startsWith(protocol + '//') ? '//' : '');
+      urlToDisplay += protocol + (href.startsWith(protocol + '//') ? '//' : '');
     }
     if (settings.displayUrlAuth >= 1 && username) {
       urlToDisplay += username;
@@ -406,7 +405,7 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
       case 'j.mp':
       case 'goo.gl':
         // Request URL Expansion
-        window.postMessage({type : 'FROM_PAGE_SHORT_URL', message : { shortURL: sourceElem.href, checkCache: useShortUrlCache }}, '*');
+        window.postMessage({ type: 'FROM_PAGE_SHORT_URL', message: { shortURL: sourceElem.href, checkCache: useShortUrlCache } }, '*');
         return { isShort: true, toExpand: true, quickExpand: quickExpandUrl };
       case 't.co':
         if (window.location.hostname === 'twitter.com') { // only guarantee correct URL if on Twitter.com

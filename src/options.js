@@ -4,7 +4,6 @@ import { Confirm } from './optionsConfirmDialog.js';
 import { initAllSharedListeners } from './contentScriptSharedLib.js';
 import { themes } from './themes.js';
 
-
 /////////////////////
 // Vertical Tab UI //
 /////////////////////
@@ -14,10 +13,9 @@ const allTabs = document.querySelectorAll('.tab-content');
 
 const shiftTabs = (linkId) => {
   allTabs.forEach((tab, i) => {
-      
     if (tab.id.includes(linkId)) {
       allTabs.forEach((tabItem) => {
-        tabItem.style = `transform: translateY(-${i*500}px);`;
+        tabItem.style = `transform: translateY(-${i * 500}px);`;
       });
     }
   });
@@ -29,7 +27,7 @@ allLinks.forEach((elem) => {
     const hrefLinkClick = elem.href;
 
     allLinks.forEach((link) => {
-      if (link.href == hrefLinkClick){
+      if (link.href == hrefLinkClick) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
@@ -64,11 +62,13 @@ shiftTabs(activeLink.id);
  * @param {function} func - The function to debounce.
  * @param {number} timeout - The timeout in milliseconds.
  */
-function debounce(func, timeout = 300){
+function debounce(func, timeout = 300) {
   let timer;
   return (...args) => {
     clearTimeout(timer);
-    timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
   };
 }
 
@@ -173,9 +173,11 @@ async function initialize() {
   // Event handlers for UI changes only (prior to restoring settings, so UI will update to reflect settings)
   // Domain activation
   document.querySelectorAll('#form-activation-type input').forEach((el) => {
-    el.addEventListener('change', () => { showActivationTypeOptions(el.value); });
+    el.addEventListener('change', () => {
+      showActivationTypeOptions(el.value);
+    });
   });
-  [colorBackground, colorBorder, colorGeneralURLText, colorDomainText].forEach((colourPickerElem) => {
+  [ colorBackground, colorBorder, colorGeneralURLText, colorDomainText ].forEach((colourPickerElem) => {
     colourPickerElem.addEventListener('change', (event) => {
       try {
         const el = event.target;
@@ -678,7 +680,7 @@ async function addToAllowlist() {
     showPopup('error', 'Invalid domain: ' + err.message);
     return;
   }
-  
+
   // If tmpUrl is null, silently skip
   if (tmpUrl == null) {
     return;
@@ -726,12 +728,12 @@ async function addToDenylist() {
     showPopup('error', 'Invalid domain: ' + err.message);
     return;
   }
-  
+
   // If tmpUrl is null, silently skip
   if (tmpUrl == null) {
     return;
   }
-  
+
   // Is domain not already in Storage?
   if (currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
     // Add to Denylist Storage
@@ -772,7 +774,7 @@ async function removeFromDenylist() {
  * This includes updating the preview items and saving the preset settings.
  * @param {Boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
  */
-function applyPresetTheme(savePresetSettings=false) {
+function applyPresetTheme(savePresetSettings = false) {
   let sTheme;
   switch (themeSelect.value) {
     case '0': // Custom
@@ -911,13 +913,13 @@ function oauthBitlyBasicAuth(userID, userSecret) {
   fetch('https://api-ssl.bitly.com/oauth/access_token', {
     method: 'POST',
     headers: {
-      Authorization: 'Basic ' + btoa(userID + ':' + userSecret),
+      'Authorization': 'Basic ' + btoa(userID + ':' + userSecret),
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
       // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
-      response.text().then(function (txtResponse) {
+      response.text().then(function(txtResponse) {
         chrome.storage.local.set({
           OAuthBitLy: { enabled: true, token: txtResponse },
         }, function() { // On saved
@@ -932,7 +934,7 @@ function oauthBitlyBasicAuth(userID, userSecret) {
         btnOauthBitly.disabled = false;
       });
     } else {
-      response.json().then(function (jsonResponse) {
+      response.json().then(function(jsonResponse) {
         const errMessage = 'Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description;
         console.error(errMessage);
         showPopup('error', errMessage);

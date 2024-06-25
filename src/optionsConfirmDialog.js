@@ -55,7 +55,7 @@ export const Confirm = {
       this.close(confirmEl);
     });
 
-    [btnCancel, btnClose].forEach((el) => {
+    [ btnCancel, btnClose ].forEach((el) => {
       el.addEventListener('click', () => {
         options.oncancel();
         this.close(confirmEl);

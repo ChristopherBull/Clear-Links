@@ -232,12 +232,12 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
     fetch('https://api-ssl.bitly.com/v4/expand', {
       method: 'POST',
       headers: {
-        Authorization: 'Bearer ' + currentLocalSettingsValues.OAuthBitLy.token,
+        'Authorization': 'Bearer ' + currentLocalSettingsValues.OAuthBitLy.token,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ bitlink_id: urlHostAndPathname }),
-    }).then(function (response) {
-      response.json().then(function (jsonResponse) {
+    }).then(function(response) {
+      response.json().then(function(jsonResponse) {
         if (response.ok) {
           // TODO cache the long URL
           // Create the JSON formatted response expected in contentScript: response.result.longUrl
@@ -251,7 +251,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
           callbackAfterExpansion({ result: { error: { message: jsonResponse.message } } });
         }
       });
-    }).catch((err) => console.error(err));
+    }).catch(err => console.error(err));
   } else {
     callbackAfterExpansion({
       ignore: true,

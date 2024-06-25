@@ -28,7 +28,7 @@ export function setupMessagePassing() {
       // Request backend to expand the short URL
       const response = await chrome.runtime.sendMessage(event.data.message);
       // Return the response to the injected script
-      window.postMessage({type : 'TO_PAGE_EXPANDED_SHORT_URL', message : response}, '*');
+      window.postMessage({ type: 'TO_PAGE_EXPANDED_SHORT_URL', message: response }, '*');
     }
   }, false);
 }
@@ -40,7 +40,7 @@ export function listenForSettingsChanges() {
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
       // Send changes to injected script
-      window.postMessage({type : 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message : changes}, '*');
+      window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: changes }, '*');
     }
   });
 }

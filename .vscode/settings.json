@@ -3,5 +3,6 @@
         "html",
         "javascript",
         "markdown"
-    ]
+    ],
+    "eslint.useFlatConfig": true
 }

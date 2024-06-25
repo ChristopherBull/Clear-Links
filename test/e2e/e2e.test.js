@@ -26,4 +26,3 @@ test.describe('Tooltip shows', () => {
     await expect(await tooltip.getAttribute('style')).toContain('opacity: 1');
   });
 });
-

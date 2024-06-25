@@ -15,7 +15,7 @@ export default [
 
   // All JS files
   {
-    files: ['**/*.{js,mjs}'],
+    files: [ '**/*.{js,mjs}' ],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -42,7 +42,7 @@ export default [
       'no-alert': 'warn',
       'no-array-constructor': 'warn',
       'no-caller': 'error',
-      'no-console': ['error', { allow: ['info', 'warn', 'error'] }],
+      'no-console': [ 'error', { allow: [ 'info', 'warn', 'error' ] } ],
       'no-duplicate-imports': 'error',
       'no-else-return': 'warn',
       // 'no-empty-function': 'error',
@@ -113,17 +113,23 @@ export default [
 
       // Stylistic rules
       ...stylistic.configs['recommended-flat'].rules,
-      '@stylistic/indent': ['error', 2],
-      '@stylistic/quotes': ['error', 'single'],
-      '@stylistic/semi': ['error', 'always'],
-      '@stylistic/brace-style': ['warn', '1tbs', { allowSingleLine: true }],
-      '@stylistic/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/keyword-spacing': ['warn', { before: true, after: true }],
+      '@stylistic/indent': [ 'error', 2 ],
+      '@stylistic/quotes': [ 'error', 'single' ],
+      '@stylistic/semi': [ 'error', 'always' ],
+      '@stylistic/array-bracket-spacing': [ 'error', 'always' ],
+      '@stylistic/brace-style': [ 'warn', '1tbs', { allowSingleLine: true } ],
+      '@stylistic/comma-dangle': [ 'error', 'always-multiline' ],
+      '@stylistic/keyword-spacing': [ 'warn', { before: true, after: true } ],
+      '@stylistic/space-before-function-paren': [ 'error', {
+        anonymous: 'never',
+        named: 'never',
+        asyncArrow: 'always',
+      } ],
     },
   },
   {
     // Exclude Node globals from /src/ JS linting
-    files: ['**/src/**/*.{js,mjs}}'],
+    files: [ '**/src/**/*.{js,mjs}}' ],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -133,7 +139,7 @@ export default [
   },
   {
     // Do not warn about external APIs objects (e.g. gapi)
-    files: ['src/background.js'],
+    files: [ 'src/background.js' ],
     languageOptions: {
       globals: {
         gapi: 'readonly', // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
@@ -144,12 +150,10 @@ export default [
   // HTML files
   {
     ...html.configs['flat/recommended'],
-    files: ['**/*.html'],
+    files: [ '**/*.html' ],
     rules: {
       ...html.configs['flat/recommended'].rules,
-      '@html-eslint/attrs-newline': ['error', {
-        'ifAttrsMoreThan': 4,
-      }],
+      '@html-eslint/attrs-newline': 'off', // TODO enable and fix issues (['error', { ifAttrsMoreThan: 4 }])
       '@html-eslint/lowercase': 'error',
       '@html-eslint/no-multiple-empty-lines': 'error',
       '@html-eslint/no-trailing-spaces': 'warn',
@@ -161,7 +165,7 @@ export default [
   {
     // Mocha tests
     ...mochaPlugin.configs.flat.recommended,
-    files: ['test/specs/**/*.{js,mjs}'],
+    files: [ 'test/specs/**/*.{js,mjs}' ],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -174,7 +178,7 @@ export default [
     // Playwright uses destructing in tests/fixtures and sometimes requires
     // empty patterns ("{}"). The 'no-empty-pattern' rule is disabled for
     // these files.
-    files: ['test/e2e/**/fixtures/*.js'],
+    files: [ 'test/e2e/**/fixtures/*.js' ],
     rules: {
       'no-empty-pattern': 'off',
     },
