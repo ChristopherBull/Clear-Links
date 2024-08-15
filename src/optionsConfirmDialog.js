@@ -2,8 +2,6 @@
  * A stylised confirm dialog implementation.
  * Used when native confirm dialogs cannot be shown, such as in the Options page.
  * Based on: https://codepen.io/dcode-software/pen/LKywLG
- *
- * @type {{open: (function(options: {title: string, message: string, okText: string, cancelText: string, onOk: function, oncancel: function}): void, close: (function(confirmEl: HTMLElement): void)}}
  * @exports Confirm
  * @example
  * Confirm.open({
@@ -16,9 +14,21 @@
     });
  */
 export const Confirm = {
+  /**
+   * Opens the confirm dialog with the specified options.
+   * @param {object} options - The options for the confirm dialog.
+   * @param {string} options.title - The title of the confirm dialog.
+   * @param {string} options.message - The message of the confirm dialog.
+   * @param {string} [options.okText] - The text for the OK button.
+   * @param {string} [options.cancelText] - The text for the Cancel button.
+   * @param {Function} [options.onOk] - The callback function to be called when the OK button is clicked.
+   * @param {Function} [options.onCancel] - The callback function to be called when the Cancel button is clicked.
+   */
   open(options) {
+    /**
+     * @default
+     */
     options = {
-      // Default options
       title: '',
       message: '',
       okText: 'OK',
@@ -74,6 +84,10 @@ export const Confirm = {
     document.body.appendChild(template.content);
   },
 
+  /**
+   * Closes the confirm dialog.
+   * @param {HTMLElement} confirmEl - The confirm dialog element to be closed.
+   */
   close(confirmEl) {
     confirmEl.classList.add('confirm-closing');
 
