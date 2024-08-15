@@ -822,6 +822,7 @@ function applyPresetTheme(savePresetSettings = false) {
       cssColorBorder: colorBorder.value,
       cssColorDomainText: colorDomainText.value,
       cssColorGeneralURLText: colorGeneralURLText.value,
+      cssColorMailto: colorDomainText.value, // TODO make customisable - currently re-uses the domain text colour
       cssBackgroundColorIcon: colorIcon.value,
     });
   }
