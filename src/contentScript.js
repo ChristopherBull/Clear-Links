@@ -417,7 +417,7 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
           try {
             // Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefinite recursive loops).
             let expandedUrl;
-            if (sourceElem.dataset && sourceElem.dataset.expandedUrl) {
+            if (sourceElem?.dataset?.expandedUrl) {
               expandedUrl = new URL(sourceElem.dataset.expandedUrl);
             } else { // Some t.co links do not have a expandedUrl attr, but may have URL in 'title' attr.
               expandedUrl = new URL(sourceElem.title);

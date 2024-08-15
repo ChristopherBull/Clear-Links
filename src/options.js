@@ -528,7 +528,7 @@ function showPopup(type, message) {
       break;
     // Specific style/icons for more precise alert types
     case 'saved':
-      alertElem.querySelector('.message').textContent = message ? message : 'Saved';
+      alertElem.querySelector('.message').textContent = message || 'Saved';
       break;
   }
   // Show the alert
