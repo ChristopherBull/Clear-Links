@@ -103,6 +103,7 @@ let colorBackground;
 let colorBorder;
 let colorDomainText;
 let colorGeneralURLText;
+let colorIcon;
 let themeSelect;
 
 // DOM elements - Domain Activation
@@ -158,6 +159,7 @@ async function initialize() {
   colorBorder = document.getElementById('colorBorder');
   colorDomainText = document.getElementById('colorDomainText');
   colorGeneralURLText = document.getElementById('colorGeneralURLText');
+  colorIcon = document.getElementById('colorIcon');
   themeSelect = document.getElementById('theme-select');
   // DOM elements - Short URL
   txtBitlyUser = document.getElementById('txtBitlyUser');
@@ -177,7 +179,7 @@ async function initialize() {
       showActivationTypeOptions(el.value);
     });
   });
-  [ colorBackground, colorBorder, colorGeneralURLText, colorDomainText ].forEach((colourPickerElem) => {
+  [ colorBackground, colorBorder, colorGeneralURLText, colorDomainText, colorIcon ].forEach((colourPickerElem) => {
     colourPickerElem.addEventListener('change', (event) => {
       try {
         const el = event.target;
@@ -436,6 +438,7 @@ async function restoreSettings() {
     colorBorder.value = items.cssColorBorder;
     colorDomainText.value = items.cssColorDomainText;
     colorGeneralURLText.value = items.cssColorGeneralURLText;
+    colorIcon.value = items.cssBackgroundColorIcon;
     // Update Style preview
     applyPresetTheme();
     // Enable/Disable UI elements depending on selected options.
@@ -796,6 +799,7 @@ function applyPresetTheme(savePresetSettings = false) {
     colorBorder.value = themes[sTheme].div['border-color'];
     colorGeneralURLText.value = themes[sTheme].p.color;
     colorDomainText.value = themes[sTheme].spanDomain.color;
+    colorIcon.value = themes[sTheme].icon.background;
   }
   document.querySelectorAll('.cl-container').forEach((el) => {
     el.style.background = colorBackground.value;
@@ -807,6 +811,9 @@ function applyPresetTheme(savePresetSettings = false) {
   document.querySelectorAll('.cl-domain').forEach((el) => {
     el.style.color = colorDomainText.value;
   });
+  document.querySelectorAll('.cl-icon').forEach((el) => {
+    el.style.background = colorIcon.value;
+  });
   // Save the preset settings (the contentScript listens for these changes individually and updates the style accordingly)
   // NB: Cannot simply save the themeSelect.value, as the contentScript does not listen for changes to the themeSelect.value.
   if (savePresetSettings) {
@@ -815,6 +822,7 @@ function applyPresetTheme(savePresetSettings = false) {
       cssColorBorder: colorBorder.value,
       cssColorDomainText: colorDomainText.value,
       cssColorGeneralURLText: colorGeneralURLText.value,
+      cssBackgroundColorIcon: colorIcon.value,
     });
   }
 }

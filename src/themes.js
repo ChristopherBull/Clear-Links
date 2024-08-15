@@ -19,6 +19,9 @@ export const themes = {
     spanMailto: {
       color: '#808080',
     },
+    icon: {
+      background: '#808080',
+    },
   },
   dark: { // 2
     div: {
@@ -38,6 +41,9 @@ export const themes = {
     spanMailto: {
       color: '#bbbbbb',
     },
+    icon: {
+      background: '#f5f5f5',
+    },
   },
   original: { // 3
     div: {
@@ -56,6 +62,9 @@ export const themes = {
     },
     spanMailto: {
       color: '#BBCCD9',
+    },
+    icon: {
+      background: '#D3D3D3',
     },
   },
 };

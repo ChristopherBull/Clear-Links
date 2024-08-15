@@ -22,6 +22,8 @@ export const defaultSettings = {
   'border': '1px solid #A2A0A0',
   'border-radius': '3px',
   'cssColorBorder': '#A2A0A0', // border-color
+  // Style - icon
+  'cssBackgroundColorIcon': '#808080', // Grey
   // Style - p
   'cssColorGeneralURLText': '#dddddd', // color
   'font-family': 'sans-serif',

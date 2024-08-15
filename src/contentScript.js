@@ -356,6 +356,11 @@ function applySettingToTooltip(param, value) {
     case 'cssColorGeneralURLText':
       urlText.style.color = value;
       break;
+    case 'cssBackgroundColorIcon':
+      tooltip.querySelectorAll('.cl-icon').forEach((icon) => {
+        icon.style.backgroundColor = value;
+      });
+      break;
   }
 }
 
