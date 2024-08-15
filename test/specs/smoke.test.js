@@ -1,3 +1,6 @@
+/**
+ * This module contains smoke tests that are used to quickly pass/fail before other tests.
+ */
 import assert from 'assert';
 import fs from 'fs';
 

@@ -1,3 +1,6 @@
+/**
+ * This file contains tests for the manifest file.
+ */
 import './smoke.test.js'; // Forces smoke tests to run first
 import assert from 'assert';
 import fs from 'fs';
