@@ -45,7 +45,7 @@ export default [
       'no-console': [ 'error', { allow: [ 'info', 'warn', 'error' ] } ],
       'no-duplicate-imports': 'error',
       'no-else-return': 'warn',
-      // 'no-empty-function': 'error',
+      'no-empty-function': 'error',
       'no-empty-static-block': 'error',
       // 'no-eq-null': 'error',
       'no-eval': 'error',

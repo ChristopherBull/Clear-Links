@@ -880,7 +880,7 @@ function oauthGooglRevoke() {
       // TODO
     } else {
       // Remove the local cached token
-      chrome.identity.removeCachedAuthToken({ token: currentToken }, function() {});
+      chrome.identity.removeCachedAuthToken({ token: currentToken });
       // Make a request to revoke token in the server
       const xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + currentToken);

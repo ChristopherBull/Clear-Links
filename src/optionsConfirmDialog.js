@@ -1,9 +1,20 @@
-/*
- * A stylised confirm dialog with implementation.
+/**
+ * A stylised confirm dialog implementation.
  * Used when native confirm dialogs cannot be shown, such as in the Options page.
  * Based on: https://codepen.io/dcode-software/pen/LKywLG
+ *
+ * @type {{open: (function(options: {title: string, message: string, okText: string, cancelText: string, onOk: function, oncancel: function}): void, close: (function(confirmEl: HTMLElement): void)}}
+ * @exports Confirm
+ * @example
+ * Confirm.open({
+      title: 'Alert',
+      message: 'Are you sure?',
+      okText: 'Yes',
+      cancelText: 'No',
+      onOk: async () => { }, // Do something on OK button click
+      oncancel: async () => { } // Do something on Cancel button click
+    });
  */
-
 export const Confirm = {
   open(options) {
     options = {
@@ -12,8 +23,6 @@ export const Confirm = {
       message: '',
       okText: 'OK',
       cancelText: 'Cancel',
-      onOk() {},
-      oncancel() {},
       // Override the default options with passed options
       ...options,
     };
@@ -45,19 +54,19 @@ export const Confirm = {
 
     confirmEl.addEventListener('click', (e) => {
       if (e.target === confirmEl) {
-        options.oncancel();
+        options.oncancel?.();
         this.close(confirmEl);
       }
     });
 
     btnOk.addEventListener('click', () => {
-      options.onOk();
+      options.onOk?.();
       this.close(confirmEl);
     });
 
     [ btnCancel, btnClose ].forEach((el) => {
       el.addEventListener('click', () => {
-        options.oncancel();
+        options.oncancel?.();
         this.close(confirmEl);
       });
     });
