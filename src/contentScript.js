@@ -42,18 +42,18 @@ const tooltipContainerID = 'cl-container';
 // TODO migrate to a single image element with multiple classes. Will need a map of alt text to class name.
 const tooltip = new DOMParser().parseFromString(`
   <div id="${tooltipContainerID}">
-    <img src="" alt="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></img>
-    <img src="" alt="This is a Mailto link" class="cl-icon cl-icon-email"></img>
-    <img src="" alt="This link uses Javascript" class="cl-icon cl-icon-js"></img>
-    <img src="" alt="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></img>
-    <img src="" alt="Short URL is not expandable" class="cl-icon cl-icon-hourglass-broken"></img>
+    <span role="img" aria-label="Secure protocol used in link" class="cl-icon cl-icon-padlock-locked"></span>
+    <span role="img" aria-label="This is a Mailto link" class="cl-icon cl-icon-email"></span>
+    <span role="img" aria-label="This link uses Javascript" class="cl-icon cl-icon-js"></span>
+    <span role="img" aria-label="Requesting Full URL" class="cl-icon cl-loading cl-icon-hourglass"></span>
+    <span role="img" aria-label="Short URL is not expandable" class="cl-icon cl-icon-link-not-expandable"></span>
     <p class="cl-url"></p>
   </div>`, 'text/html').body.firstElementChild;
 const secureIcon = tooltip.querySelector('.cl-icon-padlock-locked');
 const emailIcon = tooltip.querySelector('.cl-icon-email');
 const jsIcon = tooltip.querySelector('.cl-icon-js');
 const loadingIcon = tooltip.querySelector('.cl-icon-hourglass');
-const notExpandableIcon = tooltip.querySelector('.cl-icon-hourglass-broken');
+const notExpandableIcon = tooltip.querySelector('.cl-icon-link-not-expandable');
 const urlText = tooltip.querySelector('.cl-url');
 // Timers
 let resizeEndTimer; // No native resize end event, so timing our own.

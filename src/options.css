@@ -64,18 +64,6 @@ textarea { resize: vertical; }
   margin-right: -6px;
 }
 
-#cl-icon-padlock-locked {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
-}
-
-#cl-icon-email {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
-}
-
-#cl-icon-js {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
-}
-
 #theme-select { margin-left: 5px; }
 
 /* Page Activation */

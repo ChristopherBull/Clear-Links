@@ -25,34 +25,43 @@
 }
 
 .cl-icon {
+  background: grey;
   display: none;
   float: left;
   margin-top: 2px;
   margin-right: 3px;
   width: 14px;
   height: 14px;
+  mask-size: contain;
+  mask-repeat: no-repeat;
 }
 
 .cl-icon-padlock-locked {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/green-padlock.png');
+  mask-image: url('chrome-extension://__MSG_@@extension_id__/images/lock.svg');
 }
 
 .cl-icon-email {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/email-icon.png');
+  mask-image: url('chrome-extension://__MSG_@@extension_id__/images/mail.svg');
 }
 
 .cl-icon-js {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/JS-icon.png');
+  mask-image: url('chrome-extension://__MSG_@@extension_id__/images/javascript.svg');
+
+  /* Override margins and sizes as the JS icon contains internal padding and otherwise looks smaller */
+  mask-size: 32px 32px;
+  margin: -7px;
+  height: 24px;
+  width: 24px;
 }
 
 .cl-icon-hourglass {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/hourglass.svg');
+  mask-image: url('chrome-extension://__MSG_@@extension_id__/images/hourglass.svg');
 }
 
-.cl-icon-hourglass-broken {
-  content: url('chrome-extension://__MSG_@@extension_id__/images/BrokenGlass.png');
+.cl-icon-link-not-expandable {
+  mask-image: url('chrome-extension://__MSG_@@extension_id__/images/visibility_off.svg');
 }
 
 .cl-loading {
-  animation: cl-loading-animation 1s infinite;
+  animation: cl-loading-animation 1.5s infinite;
 }
