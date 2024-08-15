@@ -53,7 +53,7 @@ Before submitting your code, make sure to run linting and tests:
 **Run all tests, spell checking, and linting**:
 
 ```sh
-npm run test:all
+npm run test
 ```
 
 Individual tests, linting, and other scripts are listed in the [package.json "scripts" field](./package.json). These checks will also run automatically in the [Continuous Integration (CI) pipeline](https://github.com/ChristopherBull/Clear-Links/actions) to ensure code quality and functionality.
@@ -68,13 +68,13 @@ Unit tests use [Mocha](https://mochajs.org/).
 2. **Run the tests** to ensure they pass:
 
 ```sh
-npm test
+npm test:unit
 ```
 
 ...or test with a coverage report:
 
 ```sh
-npm test:coverage
+npm test:unit:coverage
 ```
 
 ### Adding End-to-End Tests with Playwright

@@ -28,7 +28,7 @@ jobs:
       - name: Lint all files
         run: npm run lint
       - name: Test (build, run tests, and coverage report)
-        run: npm run test:coverage
+        run: npm run test:unit:coverage
   
   e2e-tests:
     name: E2E Tests
