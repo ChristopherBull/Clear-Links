@@ -92,7 +92,7 @@ export default [
       // 'no-warning-comments': 'warn',
       'object-shorthand': 'warn',
       'operator-assignment': 'warn',
-      // 'prefer-arrow-callback': 'warn', // careful with Mocha functions (which require the "function" keyword for `this` access). This rule allows functions with `this` to be defined with the "function" keyword.
+      // 'prefer-arrow-callback': 'warn',
       'prefer-const': 'warn',
       // 'prefer-destructuring': 'warn',
       'prefer-object-has-own': 'warn',
@@ -157,7 +157,7 @@ export default [
       '@html-eslint/lowercase': 'error',
       '@html-eslint/no-multiple-empty-lines': 'error',
       '@html-eslint/no-trailing-spaces': 'warn',
-      // '@html-eslint/id-naming-convention': ['error', 'kebab-case'], // TODO enable and fix issues
+      // '@html-eslint/id-naming-convention': [ 'error', 'kebab-case' ], // TODO enable and fix issues
     },
   },
 
@@ -172,6 +172,9 @@ export default [
         ...globals.mocha,
         ...globals.node,
       },
+    },
+    rules: {
+      'prefer-arrow-callback': 0, // Disabled as Mocha requires the "function" keyword for `this` access.
     },
   },
   {
