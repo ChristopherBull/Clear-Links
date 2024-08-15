@@ -26,9 +26,9 @@ export const themes = {
   dark: { // 2
     div: {
       'background': '#000000',
-      'border': '1px solid #aaaaaa',
+      'border': '1px solid #4b4b4b',
       'border-radius': '3px',
-      'border-color': '#cccccc',
+      'border-color': '#4b4b4b',
     },
     p: {
       'color': '#666666',
