@@ -47,6 +47,9 @@ chrome.webNavigation.onTabReplaced.addListener((details) => {
   });
 });
 
+/**
+ * Initializes the extension by loading local and synced settings.
+ */
 async function initialise() {
   // Load local settings
   currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
@@ -54,6 +57,11 @@ async function initialise() {
   currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
 }
 
+/**
+ * Injects the extension into a specified tab with the given hostname.
+ * @param {number} tabID - The ID of the tab to inject the extension into.
+ * @param {string} hostname - The hostname of the tab to inject the extension into.
+ */
 function injectExtension(tabID, hostname) {
   activateOnTab(tabID, hostname, function() {
     const contentScriptSrc = chrome.runtime.getURL('contentScript.js');
@@ -92,6 +100,7 @@ async function setupContentScript(src) {
  * This function is injected into the webpage, and is responsible for loading the main content script.
  * Chrome extensions do not allow JS modules to be executed, so this function instead dynamically imports the main content script.
  * @param {string} src - The URL of the content script to be injected into the webpage.
+ * @param {object} contentScriptSettings - The settings to be passed to the content script.
  */
 async function injectMainContentScript(src, contentScriptSettings) {
   const mainContentScript = await import(src);
@@ -99,6 +108,12 @@ async function injectMainContentScript(src, contentScriptSettings) {
   mainContentScript.initialise(contentScriptSettings);
 }
 
+/**
+ * Activates the extension on a tab based on the document hostname.
+ * @param {number} tabId - The ID of the tab to check if activating. Used to confirm tab exists.
+ * @param {string} docHostname - The hostname of the document associated with the tab.
+ * @param {Function} activationCallback - The callback function to be executed for activation.
+ */
 function activateOnTab(tabId, docHostname, activationCallback) {
   tabExists(tabId, function() { // i.e. don't activate on Options page
     switch (currentLocalSettingsValues.activationFilter) {
@@ -129,7 +144,12 @@ function isUrlToBeFiltered(tabHostname, filterListArray) {
   return filterListArray.indexOf(tabHostname) > -1;
 }
 
-// Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
+/**
+ * Checks if a tab with the given ID exists.
+ * Sometimes errors are thrown from Chrome settings tabs etc.
+ * @param {number} tabId - The ID of the tab to check.
+ * @param {Function} callback - The callback function to be executed if the tab exists.
+ */
 function tabExists(tabId, callback) {
   chrome.tabs.get(tabId, function() {
     if (!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
@@ -139,6 +159,11 @@ function tabExists(tabId, callback) {
   });
 }
 
+/**
+ * Merges the changes from the `changes` object into the `currentSettings` object.
+ * @param {object} currentSettings - The current settings object.
+ * @param {object} changes - The changes object containing the updated values.
+ */
 function mergeSettingsChanges(currentSettings, changes) {
   for (const key in changes) {
     if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {
@@ -151,7 +176,12 @@ function mergeSettingsChanges(currentSettings, changes) {
 // Store in local storage, not synced.
 // TODO - Periodically (24hr) clean cache of old not accessed short urls (e.g. not accessed for 7 days)
 
-// Short URL Expansion
+/**
+ * Expands a short URL to its original long URL.
+ * @param {string} url - The short URL to be expanded.
+ * @param {boolean} checkCache - Indicates whether to check the cache for the long URL.
+ * @param {Function} callbackAfterExpansion - The callback function to be executed after the URL is expanded.
+ */
 function expandURL(url, checkCache, callbackAfterExpansion) {
   // Check hash cache first before making an API request
   if (typeof checkCache !== 'undefined' && checkCache === true) {
@@ -182,6 +212,11 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
 
 // Google API - Authenticate
 let oauthTokenGoogl = '';
+
+/**
+ * Authenticates the Google API.
+ * @param {Function} postAuthCallback - The callback function to be executed after authentication.
+ */
 function authenticateGoogleAPI(postAuthCallback) {
   if (oauthTokenGoogl === '') {
     // TODO - check if should Auth with stored API key, or use chrome.identity.
@@ -206,7 +241,11 @@ function authenticateGoogleAPI(postAuthCallback) {
   }
 }
 
-// Google API - Expand URL
+/**
+ * Uses the Google API to expand short Google URLs (`goo.gl`).
+ * @param {string} url - The short Google URL to be expanded.
+ * @param {Function} callbackAfterExpansion - The callback function to be executed after the URL is expanded.
+ */
 function expandUrlGooGl(url, callbackAfterExpansion) {
   const request = gapi.client.urlshortener.url.get({
     shortUrl: url,
@@ -223,6 +262,11 @@ function expandUrlGooGl(url, callbackAfterExpansion) {
   });
 }
 
+/**
+ * Uses the Bitly API to expand short Bitly URLs (`bit.ly`).
+ * @param {string} url - The short Bitly URL to be expanded.
+ * @param {Function} callbackAfterExpansion - The callback function to be executed after the URL is expanded.
+ */
 function expandUrlBitLy(url, callbackAfterExpansion) {
   if (currentLocalSettingsValues.OAuthBitLy.enabled) {
     // Strip out the protocol (e.g. http://) from the url (could this be done upstream in contentScript.js?)
