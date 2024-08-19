@@ -2,7 +2,7 @@ import * as cssPlugin from 'eslint-plugin-css';
 import globals from 'globals';
 import html from '@html-eslint/eslint-plugin';
 import js from '@eslint/js';
-// import jsdoc from 'eslint-plugin-jsdoc';
+import jsdoc from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
 import sonarjs from 'eslint-plugin-sonarjs';
 import stylistic from '@stylistic/eslint-plugin';
@@ -10,7 +10,7 @@ import stylistic from '@stylistic/eslint-plugin';
 export default [
   cssPlugin.configs['flat/recommended'],
   js.configs.recommended,
-  // jsdoc.configs['flat/recommended'], // TODO enable and fix issues
+  jsdoc.configs['flat/recommended'],
   sonarjs.configs.recommended,
 
   // All JS files
@@ -107,6 +107,7 @@ export default [
       'yoda': 'warn',
 
       // TODO Update/enable these rules. Only temporarily disabled.
+      'jsdoc/no-defaults': 0,
       'no-unused-vars': 0, // TODO: Enable and fix issues
       'sonarjs/cognitive-complexity': 0,
       'sonarjs/no-duplicate-string': 0,
