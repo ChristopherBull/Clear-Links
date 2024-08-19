@@ -100,18 +100,18 @@ async function injectMainContentScript(src, contentScriptSettings) {
 }
 
 function activateOnTab(tabId, docHostname, activationCallback) {
-  tabExists(tabId, function(tabHostname) { // i.e. don't activate on Options page
+  tabExists(tabId, function() { // i.e. don't activate on Options page
     switch (currentLocalSettingsValues.activationFilter) {
       case 1: // Allow All
         activationCallback();
         break;
       case 2: // Allowlisted sites only
-        if (isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainWhitelist)) {
+        if (isUrlToBeFiltered(docHostname, currentLocalSettingsValues.domainWhitelist)) {
           activationCallback();
         }
         break;
       case 3: // Denylisted sites only
-        if (!isUrlToBeFiltered(tabHostname, currentLocalSettingsValues.domainBlacklist)) {
+        if (!isUrlToBeFiltered(docHostname, currentLocalSettingsValues.domainBlacklist)) {
           activationCallback();
         }
         break;
@@ -131,10 +131,10 @@ function isUrlToBeFiltered(tabHostname, filterListArray) {
 
 // Test tab ID actually exists (sometimes errors are thrown from Chrome settings tabs etc.)
 function tabExists(tabId, callback) {
-  chrome.tabs.get(tabId, function(tab) {
+  chrome.tabs.get(tabId, function() {
     if (!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
       // Tab exists
-      callback(new URL(tab.url).hostname); // TODO - TypeError: Failed to construct 'URL': Invalid URL
+      callback();
     }
   });
 }
