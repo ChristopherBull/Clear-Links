@@ -208,10 +208,10 @@ function attachMouseEnterListeners() {
 }
 
 /**
-   * Determine if a given hostname is an external domain (if only showing external domains), otherwise always true
-   * @param {string} hostname - The hostname of the link being hovered over.
-   * @returns {boolean} True if the link is an external domain, or if the user has not set the option to only show external domains.
-   */
+ * Determine if a given hostname is an external domain (if only showing external domains), otherwise always true
+ * @param {string} hostname - The hostname of the link being hovered over.
+ * @returns {boolean} True if the link is an external domain, or if the user has not set the option to only show external domains.
+ */
 function displayingExternalDomainsOnly(hostname) {
   return !!((settings.displayExternalDomainsOnly && hostname !== location.hostname) || !settings.displayExternalDomainsOnly);
 }
@@ -312,9 +312,9 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 }
 
 /**
-  *
-  * @param {object} settings - All settings to be applied to the tooltip.
-  */
+ *
+ * @param {object} allSettings - All settings to be applied to the tooltip.
+ */
 function applyAllSettingToTooltip(allSettings) {
   for (const key in allSettings) {
     if (Object.hasOwn(allSettings, key)) {
@@ -324,9 +324,9 @@ function applyAllSettingToTooltip(allSettings) {
 }
 
 /**
-  *
-  * @param {object} changes - A subset of settings that have been updated.
-  */
+ *
+ * @param {object} changes - A subset of settings that have been updated.
+ */
 function applyAllSettingChangesToTooltip(changes) {
   for (const key in changes) {
     if (Object.hasOwn(changes, key) && changes[key].newValue !== undefined) {

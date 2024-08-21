@@ -775,7 +775,7 @@ async function removeFromDenylist() {
 /**
  * Apply theme presets to the Options page.
  * This includes updating the preview items and saving the preset settings.
- * @param {Boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
+ * @param {boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
  */
 function applyPresetTheme(savePresetSettings = false) {
   let sTheme;
