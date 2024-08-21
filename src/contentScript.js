@@ -196,8 +196,6 @@ function attachMouseEnterListeners() {
           let isSecureIcon = false;
           if (this.protocol && this.protocol === 'https:') {
             isSecureIcon = true;
-          } else {
-            isSecureIcon = false;
           }
 
           showTooltip(this, urlToDisplay, isSecureIcon, false, false);
