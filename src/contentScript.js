@@ -3,6 +3,14 @@ import { defaultSettings } from './defaultSettings.js';
 let useShortUrlCache = true;
 let linkSelector = 'a';
 
+/**
+ * Initialises the content script.
+ * Stores the settings, sets up the message passing, attaches mouse listeners,
+ * and appends the tooltip to the DOM.
+ * @param {object} contentScriptSettings - The settings for the content script.
+ * @param {boolean} cacheShortUrls - Flag indicating whether to cache short URLs.
+ * @param {string} overrideLinkSelector - Alternative link selector (can be used to specify, e.g., `a.preview` in Options.html).
+ */
 export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
   settings = contentScriptSettings;
   useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
@@ -58,11 +66,11 @@ const urlText = tooltip.querySelector('.cl-url');
 // Timers
 let resizeEndTimer; // No native resize end event, so timing our own.
 
-/*
+/**
  * Document ready function.
  * `DOMContentLoaded` may fire before script/module has a chance to run, so check before adding a listener.
  * @see https://youmightnotneedjquery.com/#ready
- * @param {function} fn - The function to be executed when the document is ready.
+ * @param {Function} fn - The function to be executed when the document is ready.
  */
 function ready(fn) {
   if (document.readyState !== 'loading') {
@@ -72,7 +80,7 @@ function ready(fn) {
   }
 }
 
-/*
+/**
  * Add an event listener to an element. Allows event delegation of a `selector`
  * element to a parent element, which enables event listening for
  * future/dynamic elements, and is more performant than adding an event
@@ -80,8 +88,8 @@ function ready(fn) {
  * @param {string} el - The element to attach the event listener to.
  * @param {string} eventName - The name of the event to listen for.
  * @param {string} selector - The element selector to filter the event target by.
- * @param {function} eventHandler - The function to be executed when the event is fired.
- * @returns {function} The wrapped event handler.
+ * @param {Function} eventHandler - The function to be executed when the event is fired.
+ * @returns {Function} The wrapped event handler.
  * @see https://youmightnotneedjquery.com/#on
  * @see https://gomakethings.com/why-event-delegation-is-a-better-way-to-listen-for-events-in-vanilla-js/
  */
@@ -100,7 +108,7 @@ function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   return wrappedHandler;
 }
 
-/*
+/**
  * Add a delegated event listener to an element and pass additional parameters
  * to the event handler. This is done by wrapping the provided eventHandler.
  * Enables clean removal of event listener in the future by returning the
@@ -108,9 +116,9 @@ function addDelegatedEventListener(el, eventName, selector, eventHandler) {
  * @param {string} el - The element to attach the event listener to.
  * @param {string} eventName - The name of the event to listen for.
  * @param {string} selector - The element selector to filter the event target by.
- * @param {function} eventHandler - The function to be executed when the event is fired.
+ * @param {Function} eventHandler - The function to be executed when the event is fired.
  * @param {object} params - The parameters to be passed to the event handler.
- * @returns {function} The wrapped event handler. Useful for tracking removal of event listeners.
+ * @returns {Function} The wrapped event handler. Useful for tracking removal of event listeners.
  */
 function addDelegatedEventListenerWithParams(el, eventName, selector, eventHandler, params) {
   const wrappedHandler = (e) => {
@@ -131,6 +139,10 @@ ready(function() {
   cacheWinDimensions();
 });
 
+/**
+ * Attaches mouse enter event listeners to elements in the document body.
+ * The listeners handle the display of tooltips based on the properties of the hovered element.
+ */
 function attachMouseEnterListeners() {
   // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
   addDelegatedEventListener(document.body, 'mouseenter', linkSelector, function() {
@@ -214,10 +226,29 @@ function displayingExternalDomainsOnly(hostname) {
   return !!((settings.displayExternalDomainsOnly && hostname !== location.hostname) || !settings.displayExternalDomainsOnly);
 }
 
+/**
+ * Builds a string of HTML with a coloured hostname.
+ * @param {string} colour - The color of the hostname.
+ * @param {string} hostname - The hostname to be displayed.
+ * @returns {string} The HTML string with the coloured hostname.
+ */
 function buildStringHtmlColouredHostname(colour, hostname) {
   return '<span style="color:' + colour + ';">' + hostname + '</span>';
 }
 
+/**
+ * Formats URL parts into a displayable string.
+ * @param {string} href - The original URL.
+ * @param {string} protocol - The URL protocol.
+ * @param {string} username - The username for authentication.
+ * @param {string} password - The password for authentication.
+ * @param {string} hostname - The URL hostname.
+ * @param {string} port - The URL port.
+ * @param {string} pathname - The URL pathname.
+ * @param {string} search - The URL query string.
+ * @param {string} hash - The URL fragment identifier.
+ * @returns {string} The formatted URL string.
+ */
 function formatDissectedURL(href, protocol, username, password, hostname, port, pathname, search, hash) {
   let urlToDisplay = '';
   if (settings.displayDomainOnly) {
@@ -258,6 +289,14 @@ function formatDissectedURL(href, protocol, username, password, hostname, port, 
   return urlToDisplay;
 }
 
+/**
+ * Displays a tooltip for a given element with the provided URL and icon options.
+ * @param {HTMLElement} elem - The element to attach the tooltip to.
+ * @param {string} urlToDisplay - The URL to display in the tooltip.
+ * @param {boolean} isSecureIcon - Indicates whether to display the secure icon.
+ * @param {boolean} isJS - Indicates whether the URL is a JavaScript link.
+ * @param {boolean} isMailto - Indicates whether the URL is a mailto link.
+ */
 function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // When compiling the urlToDisplay sent to this function (for https, http, file), some HREFs (in combination with user options) may return an empty string.
   if (urlToDisplay === undefined || urlToDisplay.trim() === '') {
@@ -310,7 +349,7 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 }
 
 /**
- *
+ * Applies all settings and user preferences to the tooltip.
  * @param {object} allSettings - All settings to be applied to the tooltip.
  */
 function applyAllSettingToTooltip(allSettings) {
@@ -322,7 +361,7 @@ function applyAllSettingToTooltip(allSettings) {
 }
 
 /**
- *
+ * Applies a subset of settings that have been updated to the tooltip.
  * @param {object} changes - A subset of settings that have been updated.
  */
 function applyAllSettingChangesToTooltip(changes) {
@@ -334,6 +373,11 @@ function applyAllSettingChangesToTooltip(changes) {
   }
 }
 
+/**
+ * Applies a single setting to the tooltip.
+ * @param {string} param - The parameter to apply the setting to.
+ * @param {string} value - The value of the setting to apply.
+ */
 function applySettingToTooltip(param, value) {
   switch (param) {
     case 'background':
@@ -362,6 +406,9 @@ function applySettingToTooltip(param, value) {
   }
 }
 
+/**
+ * Caches the dimensions of the window.
+ */
 function cacheWinDimensions() {
   winDimensions = {
     h: window.innerHeight,
@@ -369,8 +416,14 @@ function cacheWinDimensions() {
   };
 }
 
+/**
+ * Calculates the relative cursor position for a mouse event and adjusts the position of the tooltip accordingly.
+ * Determines if tooltip breaches the window, and adjusts the position to keep it viewable.
+ * @param {MouseEvent} e - The mouse event object.
+ * @param {object} params - Additional parameters for the function.
+ * @param {boolean} params.hasTooltipAttr - Indicates whether the element has a tooltip attribute.
+ */
 function mouseRelativeCursorPosition(e, params) {
-  // Determine if tooltip breaches the window
   let top;
   if ((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {
     // Elements with existing default tooltips will cover ours, so adjust position.
@@ -395,6 +448,16 @@ function mouseRelativeCursorPosition(e, params) {
 
 const dataParamNameSourceShortURL = 'sourceShortUrl';
 
+/**
+ * Expands a short URL to its full URL.
+ * @param {URL} sourceElem - The source URL element.
+ * @param {string} [quickExpandUrl=''] - The quick expand URL.
+ * @param {boolean} [bRecursiveIsShort=false] - Indicates if the URL is recursive.
+ * @returns {object} - An object containing information about the expanded URL.
+ * @property {boolean} isShort - Indicates if the URL is short.
+ * @property {boolean} toExpand - Indicates if the URL needs to be expanded.
+ * @property {string} quickExpand - A cached URL to quick expand (reducing delay and API calls).
+ */
 function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = false) {
   if (sourceElem.pathname && sourceElem.pathname !== '/') { // No need to request full URL if no pathname (or just '/') present.
     // Cache the original short URL, so we can check if the user has moved on to another link before we receive the response.
@@ -436,6 +499,10 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
   return { isShort: bRecursiveIsShort, toExpand: false, quickExpand: quickExpandUrl };
 }
 
+/**
+ * Callback function for receiving an expanded URL response.
+ * @param {object} response - The response object containing the expanded URL information.
+ */
 function receiveExpandedURL(response) {
   // Check if the source short URL is the same as the one currently being hovered over (i.e., tooltip still waiting for response)
   if (tooltip.dataset[dataParamNameSourceShortURL] === response.source.url) {
