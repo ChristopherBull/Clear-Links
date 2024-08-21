@@ -10,6 +10,12 @@
  * Also sets up related listeners.
  */
 export function initAllSharedListeners() {
+  // Remove any preload checks (catch instances where the page is not preloaded)
+  // Check function exists, otherwise Options page throws error, as listener added in ActivationFiler (not options page)
+  if (typeof activateMainContentScripts === 'function') {
+    removeEventListener('focus', activateMainContentScripts);
+  }
+  // Init message passing and listeners
   setupMessagePassing();
   listenForSettingsChanges();
 }

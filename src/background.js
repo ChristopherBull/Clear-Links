@@ -21,9 +21,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Page activation (deny/allowlist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
   // Allows users to denylist/allowlist sites. Also, reduces extension's footprint.
-  if (request.activationHostname && sender.tab) {
-    // Respond to the contentScript so it knows to prepare to collaborate with the injected script (contentScripts can access some chrome.* APIs)
-    sendResponse({ inject: true });
+
+  // Tabs that preload are forced to skip injection, as we cannot work with tab URLs that start with 'chrome://' (e.g., new tabs, instead of eventual webpage)
+  // Pre-loaded tabs will be activated when they receive focus (see contentScriptActivationFilter.js)
+  if (request.activationHostname && !sender?.tab?.url.startsWith('chrome://')) {
     // Inject the main script into the webpage (it will have DOM access, but no access to chrome.* APIs)
     injectExtension(sender.tab.id, request.activationHostname);
     // URL expansion request
