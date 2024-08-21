@@ -44,8 +44,6 @@ make
 
 The build process performs a simple copy of files from `src/` and `res/` into `dist/`. Minification is not done to improve the [extension review times](https://developer.chrome.com/docs/webstore/review-process/#review-time-factors). This can then be [loaded into Chrome as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 
-
-
 ## Commit Message Guidelines
 
 We follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification for our commit messages. Here are some examples:
