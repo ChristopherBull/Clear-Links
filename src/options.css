@@ -1,3 +1,9 @@
+/* Force charset to utf-8 for non-ASCII characters:
+https://www.w3.org/International/questions/qa-css-charset.
+Issue occurs when CSS compilers simplify unicode hex into non-ASCII characters
+(e.g., checkmarks), which then breaks Chrome options UI */
+@charset "UTF-8";
+
 fieldset { border: 1px solid #ccc; }
 textarea { resize: vertical; }
 #div-btn-group { margin-top: 1em; }
