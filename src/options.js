@@ -750,6 +750,7 @@ async function addToAllowlist() {
     listDomainsAllowlist.add(option);
     // Clean UI
     txtDomainsAllowlist.value = '';
+    showPopup('saved');
   } else {
     showPopup('info', 'Domain already in allowlist');
   }
@@ -775,6 +776,7 @@ async function removeFromAllowlist() {
   indicesToRemove.forEach((index) => {
     listDomainsAllowlist.remove(index);
   });
+  showPopup('saved');
 }
 
 /**
@@ -807,6 +809,7 @@ async function addToDenylist() {
     listDomainsDenylist.add(option);
     // Clean UI
     txtDomainsDenylist.value = '';
+    showPopup('saved');
   } else {
     showPopup('info', 'Domain already in denylist');
   }
@@ -832,6 +835,7 @@ async function removeFromDenylist() {
   indicesToRemove.forEach((index) => {
     listDomainsDenylist.remove(index);
   });
+  showPopup('saved');
 }
 
 /* Styles */
