@@ -57,10 +57,11 @@ shiftTabs(activeLink.id);
 // Utilities //
 ///////////////
 
-/*
- * Debounce function.
- * @param {function} func - The function to debounce.
- * @param {number} timeout - The timeout in milliseconds.
+/**
+ * Debounces a function to limit the rate at which it is called.
+ * @param {Function} func - The function to be debounced.
+ * @param {number} [timeout=300] - The time in milliseconds to wait before invoking the function.
+ * @returns {Function} - The debounced function.
  */
 function debounce(func, timeout = 300) {
   let timer;
@@ -127,6 +128,21 @@ let btnOauthGooglRevoke;
 let currentSyncSettingsValues = defaultSettings;
 let currentLocalSettingsValues = defaultSettingsLocal;
 
+/**
+ * Initializes the options page.
+ *
+ * This function performs the following tasks:
+ * - Caches references to DOM elements used in the script.
+ * - Sets up event listeners for UI changes.
+ * - Restores settings and updates the UI accordingly.
+ * - Saves settings when UI elements are changed.
+ * - Handles short URL authentication and revocation.
+ * - Handles domain activation and allowlist/denylist management.
+ * - Handles theme selection and preview updates.
+ * - Initializes the content script for previewing settings.
+ * - Loads additional page content.
+ * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+ */
 async function initialize() {
   // Cache references to DOM elements
   // Only cache references to DOM elements that are used in this script multiple times.
@@ -377,12 +393,12 @@ async function initialize() {
   document.getElementById('about-page-extension-description').textContent = manifestData.description;
 }
 
-/*
+/**
  * Validates a number field value.
- * Checks is the number is NaN or negative.
- * @param {HTMLInputElement} el - The number field element.
- * @returns {number} The validated number value.
- * @throws {Error} If the value is invalid.
+ * Checks if the number is NaN or negative.
+ * @param {HTMLInputElement} el - The input element to validate.
+ * @returns {number} - The validated number value.
+ * @throws {Error} - If the value is not a number or is a negative number.
  */
 function validateNumberFieldValue(el) {
   const value = parseInt(el.value);
@@ -397,6 +413,16 @@ function validateNumberFieldValue(el) {
   return value;
 }
 
+/**
+ * Restores the settings for the Options menu UI.
+ * Retrieves synced and local non-synced settings from Chrome storage.
+ * Updates the UI elements with the retrieved settings.
+ * Handles errors and displays appropriate messages.
+ * Applies preset theme and enables/disables UI elements based on selected options.
+ * Loads allowlist and denylist for page activation.
+ * Updates OAuth tokens for connected/authorized accounts.
+ * @returns {Promise<void>} A promise that resolves when the settings are restored.
+ */
 async function restoreSettings() {
   try {
     // Get all the settings, update the UI
@@ -486,6 +512,11 @@ async function restoreSettings() {
   }
 }
 
+/**
+ * Displays a popup with a specific type and message.
+ * @param {string} type - The type of the popup. Possible values: 'info', 'success', 'warning', 'error', 'saved'.
+ * @param {string} message - The message to be displayed in the popup.
+ */
 function showPopup(type, message) {
   const alertElem = document.getElementById('alert');
   // Hide all icons
@@ -546,8 +577,8 @@ function showPopup(type, message) {
 
 // Click Events
 
-/*
- * Restores default settings.
+/**
+ * Shows a confirmation dialog which will restore synced settings to their default values.
  */
 function restoreSyncedSettings() {
   // Confirm with user before restoring default settings
@@ -566,8 +597,9 @@ function restoreSyncedSettings() {
   });
 }
 
-/*
- * Deletes all saved data.
+/**
+ * Function to handle the click event of the "Delete All Saved Data" button.
+ * Shows a confirmation dialog which will delete all saved data in the extension.
  */
 function btnDelAllSavedDataClick() {
   // Confirm with user before deleting all saved data
@@ -590,6 +622,10 @@ function btnDelAllSavedDataClick() {
   });
 }
 
+/**
+ * Function to handle the change event of the "chkDisplayDomainOnly" checkbox.
+ * Disables or enables various UI elements based on the checkbox's checked state.
+ */
 function chkDisplayDomainOnlyChange() {
   if (chkDisplayDomainOnly.checked) {
     chkDisplayUrlScheme.disabled = true;
@@ -638,9 +674,9 @@ function chkDisplayDomainOnlyChange() {
 
 /* Page activation */
 
-/*
- * Displays or hides additional options depending on the selected activation type.
- * @param {string|int} type - The activation type of the selected radio button. One of: 1='All', 2='Allowlist', 3='Denylist'.
+/**
+ * Shows or hides activation type UI options based on the provided type.
+ * @param {number} type - The activation type. One of: 1='All', 2='Allowlist', 3='Denylist'.
  */
 function showActivationTypeOptions(type) {
   switch (parseInt(type)) {
@@ -659,6 +695,12 @@ function showActivationTypeOptions(type) {
   }
 }
 
+/**
+ * Checks if a given URL is valid.
+ * @param {string} sUrl - The URL to be validated.
+ * @returns {URL} - The validated URL object.
+ * @throws {Error} - If the URL is empty or invalid.
+ */
 function isValidUrl(sUrl) {
   // Check if URL is empty or undefined
   if (!sUrl) {
@@ -677,6 +719,11 @@ function isValidUrl(sUrl) {
   }
 }
 
+/**
+ * Adds a domain to the allowlist.
+ * Saves the domain to local storage and updates the UI.
+ * @returns {Promise<void>} A promise that resolves when the domain is added to the allowlist.
+ */
 async function addToAllowlist() {
   let tmpUrl;
   try {
@@ -708,6 +755,11 @@ async function addToAllowlist() {
   }
 }
 
+/**
+ * Removes selected entries from the allowlist.
+ * Saves the updated allowlist to local storage and updates the UI.
+ * @returns {Promise<void>} A promise that resolves when the entries are removed.
+ */
 async function removeFromAllowlist() {
   // Determine which allowlist entries to remove
   const indicesToRemove = [];
@@ -725,6 +777,11 @@ async function removeFromAllowlist() {
   });
 }
 
+/**
+ * Adds a domain to the denylist.
+ * Saves the domain to local storage and updates the UI.
+ * @returns {Promise<void>} A promise that resolves when the domain is added to the denylist.
+ */
 async function addToDenylist() {
   let tmpUrl;
   try {
@@ -755,6 +812,11 @@ async function addToDenylist() {
   }
 }
 
+/**
+ * Removes selected entries from the denylist.
+ * Saves the updated denylist to local storage and updates the UI.
+ * @returns {Promise<void>} A promise that resolves when the entries are removed.
+ */
 async function removeFromDenylist() {
   // Determine which denylist entries to remove
   const indicesToRemove = [];
@@ -775,9 +837,8 @@ async function removeFromDenylist() {
 /* Styles */
 
 /**
- * Apply theme presets to the Options page.
- * This includes updating the preview items and saving the preset settings.
- * @param {boolean} savePresetSettings - Whether to save the preset settings (the contentScript listens for saved changes and updates the style accordingly)
+ * Applies a preset theme to the UI style options, updates preview items, and saves the preset settings.
+ * @param {boolean} [savePresetSettings=false] - Indicates whether to save the preset settings.
  */
 function applyPresetTheme(savePresetSettings = false) {
   let sTheme;
@@ -832,13 +893,19 @@ function applyPresetTheme(savePresetSettings = false) {
 
 /* Short URLs */
 
-// Retrieve OAuth tokens for UI purposes silently in the background
+/**
+ * Calls the oauthGoogl function with silent mode enabled.
+ */
 function oauthGooglSilent() {
   oauthGoogl(null, true);
 }
 
-// Retrieve Google OAuth token
-// Fails if "OAuth2 not granted or revoked"
+/**
+ * Requests Google OAuth token and updates the UI accordingly.
+ * Fails if "OAuth2 not granted or revoked"
+ * @param {Event} e - The event object.
+ * @param {boolean} silent - Indicates whether the OAuth request should be silent or interactive.
+ */
 function oauthGoogl(e, silent) {
   // Check if 'silent' is undefined
   if (typeof silent === 'undefined' || silent === null) {
@@ -875,7 +942,9 @@ function oauthGoogl(e, silent) {
   });
 }
 
-// Revoke the Clear Links' OAuth token for the user's Google account
+/**
+ * Revokes the OAuth token for Google authentication.
+ */
 function oauthGooglRevoke() {
   chrome.identity.getAuthToken({ interactive: false }, function(currentToken) {
     if (chrome.runtime.lastError) {
@@ -899,6 +968,9 @@ function oauthGooglRevoke() {
   });
 }
 
+/**
+ * Updates the UI based on the current state of Bitly OAuth.
+ */
 function oauthBitlyUpdateUI() {
   if (currentLocalSettingsValues.OAuthBitLy.enabled) {
     btnOauthBitly.disabled = true;
@@ -915,10 +987,15 @@ function oauthBitlyUpdateUI() {
   }
 }
 
+/**
+ * Performs OAuth authentication using HTTPS Basic Authentication Flow with Bitly.
+ * @param {string} userID - The user ID for authentication.
+ * @param {string} userSecret - The user secret for authentication.
+ */
 function oauthBitlyBasicAuth(userID, userSecret) {
   // Update UI (logging in)
   btnOauthBitly.disabled = true;
-  // HTTP Basic Authentication Flow (with hashed username and password)
+  // HTTPS Basic Authentication Flow (with hashed username and password)
   // Note 1: Unable to use "Resource Owner Credentials Grants" as "client_secret" is not secret in a public Chrome extension
   // Note 2: Unable to use "OAuth Web Flow", as it requires a "redirect_uri"; unable to get BitLy's implementation to work with Chrome Extensions' Options' pages. Also requires "client_secret" (see Note 2 for details)
   fetch('https://api-ssl.bitly.com/oauth/access_token', {
