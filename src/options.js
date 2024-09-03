@@ -533,12 +533,14 @@ function showPopup(type, message) {
   }
   // Show the alert
   alertElem.style.opacity = 1;
+  alertElem.style.visibility = 'visible';
   // Hide the alert after 3 seconds (clearing previous timeout if any)
   if (alertElem.timeout) {
     clearTimeout(alertElem.timeout);
   }
   alertElem.timeout = setTimeout(() => {
     alertElem.style.opacity = 0;
+    alertElem.style.visibility = 'hidden';
   }, 3000);
 }
 
