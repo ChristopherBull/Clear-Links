@@ -18,7 +18,7 @@ ifeq ($(OS),Windows_NT)
 	@echo Building Chrome extension, on Windows
 	if not exist "$(DIST_DIR_CHROME_WIN)" mkdir $(DIST_DIR_CHROME_WIN)
 	for %%i in ($(SRC_DIRS_WIN)) do xcopy /S /E /I /Y %%i $(DIST_DIR_CHROME_WIN)
-	del $(DIST_DIR_FIREFOX_WIN)\manifest.firefox.json
+	del $(DIST_DIR_CHROME_WIN)\manifest.firefox.json
 else
 	@echo Building Chrome extension, on Linux/MacOS
 	@mkdir -p $(DIST_DIR_CHROME)
