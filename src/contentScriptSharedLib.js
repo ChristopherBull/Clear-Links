@@ -41,13 +41,36 @@ export function setupMessagePassing() {
 }
 
 /**
- * Listen for changes to synced user options.
+ * Listen for changes to synced user options and send the changes to the injected script.
+ * If the changes are not synced (i.e. local offline contentScript settings),
+ * they are filtered to avoid background local-only settings being sent to contentScript.
  */
 export function listenForSettingsChanges() {
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
       // Send changes to injected script
       window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: changes }, '*');
+    } else if (namespace === 'local') {
+      // Filter out non-syncOffline changes
+      for (const key in changes) {
+        if (key === 'syncOffline') {
+          // Format filtered changes to match API (with `newValue` and `oldValue` keys)
+          const filteredMessage = {};
+          const newValue = changes[key].newValue;
+          const oldValue = changes[key].oldValue;
+          for (const syncOfflineKey in newValue) {
+            if (newValue[syncOfflineKey] !== oldValue?.[syncOfflineKey]) {
+              filteredMessage[syncOfflineKey] = {
+                oldValue: oldValue?.[syncOfflineKey],
+                newValue: newValue[syncOfflineKey],
+              };
+            }
+          }
+          // Send changes to injected script if any were found after filtering (otherwise ignore and reduce noise)
+          window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: filteredMessage }, '*');
+          break;
+        }
+      }
     }
   });
 }

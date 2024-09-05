@@ -73,6 +73,29 @@ function debounce(func, timeout = 300) {
   };
 }
 
+/**
+ * Sets the provided data in the sync storage.
+ * If an error occurs, the data will be stored in the local storage instead.
+ * @param {object} data - The data to be stored in the sync storage.
+ * @returns {Promise<void>} - A promise that resolves when the data is successfully stored.
+ */
+async function setSyncStorageWithOfflineFallback(data) {
+  try {
+    await chrome.storage.sync.set(data);
+  } catch (error) {
+    console.warn('Unable to save to Sync storage, saving to local storage instead: ' + error);
+    // Prepare fallback data for merging with existing data in syncOffline settings
+    const fallbackData = { syncOffline: {} };
+    for (const [ key, value ] of Object.entries(data)) {
+      fallbackData.syncOffline[`${key}`] = value;
+    }
+    // Merge fallbackData with existing data in syncOffline
+    Object.assign(currentLocalSettingsValues.syncOffline, fallbackData.syncOffline);
+    // Save to local storage
+    await chrome.storage.local.set({ syncOffline: currentLocalSettingsValues.syncOffline });
+  }
+}
+
 /////////////////////////////////
 // Options page -- Tab content //
 /////////////////////////////////
@@ -198,7 +221,7 @@ async function initialize() {
         // Set theme to custom
         themeSelect.value = '0';
         // Save the setting
-        chrome.storage.sync.set({
+        setSyncStorageWithOfflineFallback({
           [el.dataset.storageKey]: el.value,
           [themeSelect.dataset.storageKey]: themeSelect.value,
         });
@@ -261,7 +284,7 @@ async function initialize() {
   document.querySelectorAll('input[type=checkbox].save-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
       try {
-        await chrome.storage.sync.set({
+        await setSyncStorageWithOfflineFallback({
           [el.dataset.storageKey]: el.checked,
         });
         // UI to show saved.
@@ -276,7 +299,7 @@ async function initialize() {
   document.querySelectorAll('input[type=radio].save-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
       try {
-        await chrome.storage.sync.set({
+        await setSyncStorageWithOfflineFallback({
           [el.dataset.storageKey]: parseInt(el.value),
         });
         // UI to show saved.
@@ -337,7 +360,7 @@ async function initialize() {
       }
       try {
         // Save
-        await chrome.storage.sync.set({
+        await setSyncStorageWithOfflineFallback({
           [el.dataset.storageKey]: parseInt(value),
         });
         currentSyncSettingsValues[el.dataset.storageKey] = value;
@@ -354,7 +377,7 @@ async function initialize() {
   // Select field (theme) - Save settings on change
   themeSelect.addEventListener('change', async () => {
     try {
-      await chrome.storage.sync.set({
+      await setSyncStorageWithOfflineFallback({
         [themeSelect.dataset.storageKey]: themeSelect.value,
       });
       currentSyncSettingsValues[themeSelect.dataset.storageKey] = themeSelect.value;
@@ -418,16 +441,33 @@ function validateNumberFieldValue(el) {
  * @returns {Promise<void>} A promise that resolves when the settings are restored.
  */
 async function restoreSettings() {
+  // Get all local non-synced settings
   try {
-    // Get all the settings, update the UI
-    const items = await chrome.storage.sync.get(defaultSettings);
-    // Cache the settings
-    currentSyncSettingsValues = items;
-    // Update the Options menu UI - General
-    chkDisplayExternalDomainsOnly.checked = items.displayExternalDomainsOnly;
-    chkDisplayDomainOnly.checked = items.displayDomainOnly;
-    chkDisplayUrlScheme.checked = items.displayUrlScheme;
-    switch (parseInt(items.displayUrlAuth)) {
+    currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
+  } catch (err) {
+    // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
+    console.error(err);
+    showPopup('warning', 'Error restoring local settings. Using defaults instead.');
+  }
+
+  // Get all synced settings
+  try {
+    currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+  } catch (err) {
+    // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
+    console.warn('Sync storage not available. Will save sync settings locally instead: ' + err);
+    showPopup('warning', 'Error restoring synced settings. Loading local settings instead.');
+    // Cache the synced settings locally with the offline settings
+    currentSyncSettingsValues = currentLocalSettingsValues.syncOffline;
+  }
+
+  // Update the Options menu UI with the settings
+  try {
+    // Synced settings
+    chkDisplayExternalDomainsOnly.checked = currentSyncSettingsValues.displayExternalDomainsOnly;
+    chkDisplayDomainOnly.checked = currentSyncSettingsValues.displayDomainOnly;
+    chkDisplayUrlScheme.checked = currentSyncSettingsValues.displayUrlScheme;
+    switch (parseInt(currentSyncSettingsValues.displayUrlAuth)) {
       case 0:
         rdoDisplayUrlNoAuth.checked = true;
         break;
@@ -441,36 +481,34 @@ async function restoreSettings() {
         rdoDisplayUrlPassMask.checked = true;
         break;
     }
-    chkDisplayUrlHostname.checked = items.displayUrlHostname;
-    chkDisplayUrlPort.checked = items.displayUrlPort;
-    chkDisplayUrlPath.checked = items.displayUrlPath;
-    chkDisplayUrlQuery.checked = items.displayUrlQuery;
-    chkDisplayUrlFragment.checked = items.displayUrlFragment;
-    chkDisplayJavascriptLinks.checked = items.displayJavascriptLinks;
-    chkDisplayMailtoLinks.checked = items.displayMailtoLinks;
-    chkDisplayShortUrlsOnly.checked = items.displayOnKnownShortUrlDomainsOnly;
+    chkDisplayUrlHostname.checked = currentSyncSettingsValues.displayUrlHostname;
+    chkDisplayUrlPort.checked = currentSyncSettingsValues.displayUrlPort;
+    chkDisplayUrlPath.checked = currentSyncSettingsValues.displayUrlPath;
+    chkDisplayUrlQuery.checked = currentSyncSettingsValues.displayUrlQuery;
+    chkDisplayUrlFragment.checked = currentSyncSettingsValues.displayUrlFragment;
+    chkDisplayJavascriptLinks.checked = currentSyncSettingsValues.displayJavascriptLinks;
+    chkDisplayMailtoLinks.checked = currentSyncSettingsValues.displayMailtoLinks;
+    chkDisplayShortUrlsOnly.checked = currentSyncSettingsValues.displayOnKnownShortUrlDomainsOnly;
     // Update the Options menu UI
-    durationDelay.value = items.durationDelay;
-    durationFadeIn.value = items.durationFadeIn;
-    durationFadeOut.value = items.durationFadeOut;
-    themeSelect.value = items.theme;
-    colorBackground.value = items.background;
-    colorBorder.value = items.cssColorBorder;
-    colorDomainText.value = items.cssColorDomainText;
-    colorGeneralURLText.value = items.cssColorGeneralURLText;
-    colorIcon.value = items.cssBackgroundColorIcon;
+    durationDelay.value = currentSyncSettingsValues.durationDelay;
+    durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
+    durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
+    themeSelect.value = currentSyncSettingsValues.theme;
+    colorBackground.value = currentSyncSettingsValues.background;
+    colorBorder.value = currentSyncSettingsValues.cssColorBorder;
+    colorDomainText.value = currentSyncSettingsValues.cssColorDomainText;
+    colorGeneralURLText.value = currentSyncSettingsValues.cssColorGeneralURLText;
+    colorIcon.value = currentSyncSettingsValues.cssBackgroundColorIcon;
     // Update Style preview
     applyPresetTheme();
     // Enable/Disable UI elements depending on selected options.
     chkDisplayDomainOnlyChange();
 
     // Get non-synced settings
-    const itemsLocal = await chrome.storage.local.get(defaultSettingsLocal);
-    // Cache the local settings
-    currentLocalSettingsValues = itemsLocal;
+
     // Page Activation
-    document.querySelector('#activationType' + itemsLocal.activationFilter).checked = true;
-    showActivationTypeOptions(itemsLocal.activationFilter);
+    document.querySelector('#activationType' + currentLocalSettingsValues.activationFilter).checked = true;
+    showActivationTypeOptions(currentLocalSettingsValues.activationFilter);
     // Page Activation - Load allowlist
     let i;
     // Empty allowlist element
@@ -495,7 +533,7 @@ async function restoreSettings() {
       listDomainsDenylist.add(option);
     }
     // Short URLs -- OAuth tokens
-    document.getElementById('lbl-oauth-bitly-token').textContent = itemsLocal.OAuthBitLy.token;
+    document.getElementById('lbl-oauth-bitly-token').textContent = currentLocalSettingsValues.OAuthBitLy.token;
 
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
     oauthBitlyUpdateUI();
@@ -580,9 +618,17 @@ function restoreSyncedSettings() {
     message: 'Are you sure you want to restore default settings?<br><br><em>Warning:</em> This will delete all your saved settings and cannot be undone.',
     onOk: async () => {
       // Clear synced settings
-      await chrome.storage.sync.clear();
-      // Re-Save default sync values
-      await chrome.storage.sync.set(defaultSettings);
+      try {
+        await chrome.storage.sync.clear();
+        // Re-Save default sync values
+        await chrome.storage.sync.set(defaultSettings);
+      } catch (err) {
+        console.warn('Unable to reset Sync storage as it is unavailable, will reset offline copy: ' + err);
+        // Do not replace all local settings with defaults, only the syncOffline settings
+        await chrome.storage.local.set({
+          syncOffline: defaultSettings,
+        });
+      }
       // Update Options menu UI
       await restoreSettings();
       showPopup('saved', 'Default settings restored');
@@ -601,9 +647,13 @@ function btnDelAllSavedDataClick() {
     message: 'Are you sure you want to delete all data in this extension?<br><br><em>Warning:</em> This will delete all your saved settings, local preferences, and authentication credentials. This cannot be undone.',
     onOk: async () => {
       // Clear synced settings
-      await chrome.storage.sync.clear();
-      // Re-Save default sync values
-      await chrome.storage.sync.set(defaultSettings);
+      try {
+        await chrome.storage.sync.clear();
+        // Re-Save default sync values
+        await chrome.storage.sync.set(defaultSettings);
+      } catch (err) {
+        console.warn('Unable to clear Sync storage as it is unavailable: ' + err);
+      }
       // Clear local settings
       await chrome.storage.local.clear();
       // Re-Save default local values
@@ -877,7 +927,7 @@ function applyPresetTheme(savePresetSettings = false) {
   // Save the preset settings (the contentScript listens for these changes individually and updates the style accordingly)
   // NB: Cannot simply save the themeSelect.value, as the contentScript does not listen for changes to the themeSelect.value.
   if (savePresetSettings) {
-    chrome.storage.sync.set({
+    setSyncStorageWithOfflineFallback({
       background: colorBackground.value,
       cssColorBorder: colorBorder.value,
       cssColorDomainText: colorDomainText.value,

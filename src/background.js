@@ -55,7 +55,14 @@ async function initialise() {
   // Load local settings
   currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
   // Load synced settings
-  currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+  try {
+    currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+  } catch (err) {
+    // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
+    console.warn('Sync storage not available. Will save sync settings locally instead: ' + err);
+    // Cache the synced settings with the offline settings
+    currentSyncSettingsValues = currentLocalSettingsValues.syncOffline;
+  }
 }
 
 /**

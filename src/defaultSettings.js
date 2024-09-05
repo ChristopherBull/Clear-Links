@@ -46,4 +46,6 @@ export const defaultSettingsLocal = {
   domainBlacklist: [],
   // Oauth tokens - requires signing in and authorising accounts, so must be stored locally, not synced.
   OAuthBitLy: { enabled: false, token: '' },
+  // Offline mode - follows `defaultSettings` schema, but locally stored, if sync storage is unavailable.
+  syncOffline: defaultSettings,
 };
