@@ -28,7 +28,7 @@ export default [
       '@stylistic': stylistic,
     },
     rules: {
-      // 'camelcase': 'warn', // false-positives for external APIs objects (e.g. gapi, bitly)
+      'camelcase': 'warn',
       // 'capitalized-comments': 'warn', // Broken?!
       // 'complexity': 'warn', // why not use sonarjs for this?
       'default-case-last': 'error',
