@@ -8,6 +8,7 @@ export default {
       {
         extensionId: `${process.env.EXTENSION_ID}`,
         asset: 'clear-links-extension.zip',
+        distFolder: 'dist/chrome',
       },
     ],
     [
