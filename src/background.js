@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Some sites may load as pre-rendered and later tab is replaced (e.g. initial google searches from a new tab).
+// Some sites may preload (firing a premature onload event before attached to a tab) and later replace a tab's content (but no new onload event would fire).
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
 chrome.webNavigation.onTabReplaced.addListener((details) => {
   chrome.tabs.get(details.tabId, (tab) => {
