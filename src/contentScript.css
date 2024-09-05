@@ -8,6 +8,7 @@
 #cl-container, .cl-container {
   all: initial;
   opacity: 0;
+  display: none;
   transition: opacity 250ms 100ms;
   position: fixed;
   top: 0;

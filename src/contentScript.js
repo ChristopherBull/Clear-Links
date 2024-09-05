@@ -332,6 +332,7 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   }
 
   // Show the Tooltip
+  tooltip.style.display = 'inherit';
   tooltip.clientHeight; // Forces the browser to "reflow"
   tooltip.style.transitionDuration = settings.durationFadeIn + 'ms';
   tooltip.style.opacity = 1; // Transition to new opacity value
@@ -342,9 +343,18 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     // Cancel additional mousemove tracking when not over a link.
     window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition);
     // Hide the Tooltip.
-    tooltip.clientHeight; // Forces the browser to "reflow" (redraw)
     tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
     tooltip.style.opacity = 0; // Transition to new opacity value
+    // Set display to none after transition ends
+    // Must wait for transitionend event before changing display property,
+    // otherwise it disappears instantly and ignores animations.
+    tooltip.addEventListener('transitionend', (event) => {
+      // A transition may end before reaching 0 opacity (e.g. starting a mouseover for a new link), so check for this.
+      if (event.propertyName === 'opacity' && tooltip.style.opacity == 0) {
+        // Hide the tooltip - prevents it from interfering with the mouse cursor, despite being invisible.
+        tooltip.style.display = 'none';
+      }
+    }, { once: true });
   }, { once: true });
 }
 
