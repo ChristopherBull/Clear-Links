@@ -222,6 +222,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
         'Authorization': 'Bearer ' + currentLocalSettingsValues.OAuthBitLy.token,
         'Content-Type': 'application/json',
       },
+      // eslint-disable-next-line camelcase
       body: JSON.stringify({ bitlink_id: urlHostAndPathname }),
     }).then(function(response) {
       response.json().then(function(jsonResponse) {
