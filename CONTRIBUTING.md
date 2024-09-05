@@ -42,7 +42,7 @@ Build the project:
 make
 ```
 
-The build process performs a simple copy of files from `src/` and `res/` into `dist/`. Minification is not done to improve the [extension review times](https://developer.chrome.com/docs/webstore/review-process/#review-time-factors). This can then be [loaded into Chrome as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
+The build process performs a simple copy of files from `src/` and `res/` into `dist/`. Minification is not done to improve the [extension review times](https://developer.chrome.com/docs/webstore/review-process/#review-time-factors). This can then be loaded into your browser as an unpacked extension ([Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)).
 
 ## Commit Message Guidelines
 

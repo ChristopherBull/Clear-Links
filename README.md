@@ -17,6 +17,6 @@ Use the Makefile with the command `make` to prepare this extension. Files are co
 ## The Design
 
 The extension has three layers:
-Background -> content-script -> injected-script
+Background -> content-script ([ISOLATED](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts#isolated_world)) -> content-script (MAIN)
 
-The content script acts as a proxy for messages to the backend script. This is required for features that need access to `chrome.*` APIs under the more secure Chrome Manifest V3.
+The content script acts as a proxy for messages to the backend script. This is required for features that need access to `chrome.*` APIs under the more secure Manifest V3.

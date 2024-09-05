@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "Clear Links",
+    "version": "3.5.2",
+	"author": "Christopher Bull",
+    "description": "Makes website links more transparent and accessible, enhancing your awareness of your navigational security and privacy.",
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    },
+	"permissions": [
+		"scripting",
+		"storage",
+		"webNavigation"
+	],
+	"host_permissions": [
+		"http://*/",
+        "https://*/"
+	],
+	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgv1hEzO8elR0XP9jiGtSDApjag3UXFSbH/37/kubWHJPqVbNC+WNLiW2OQpInn8eoRUMVGWUVgfJysGsXCr8cf8xRvnGrDJKRgKQB67spzCbEtfj9fqR2FQhcg4mSFPwsy/OygXEWlrzjkENcZbf53oMDGspl6cMa0r8P+rwsxLGjdxEcZ4YQTTYZ3D2BflmcjLtgBOj5vtEPyL3adxuMG6v5+lu5JWqbayJSA2oysk+L19BQuTaMnXcb/j0s50PSQUa7LnkMMggijKTAm67Mj59iggbQVYcL4zu0KLztFrCJ5Xuy60JJgWKNMETukNy448yq5jzpKWfgWvtAlEI8QIDAQAB",
+	"web_accessible_resources": [
+		{
+		  "resources": [
+			"images/*",
+			"contentScript.css",
+			"contentScript.js",
+			"contentScriptSharedLib.js",
+			"defaultSettings.js"
+		  ],
+		  "matches": [
+			"<all_urls>"
+		  ]
+		}
+	],
+	"background": {
+		"scripts": [ "background.js" ],
+		"type": "module"
+	},
+	"options_ui": {
+		"page": "options.html"
+	},
+	"content_scripts": [
+        {
+            "matches": [ "<all_urls>" ],
+            "js": [ "contentScriptActivationFilter.js" ],
+			"run_at": "document_start"
+        }
+    ]
+}

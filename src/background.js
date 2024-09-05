@@ -82,14 +82,14 @@ function injectExtension(tabID, hostname) {
     chrome.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       args: [ contentScriptSharedSrc ],
-      function: setupContentScript,
+      func: setupContentScript,
     });
     // Inject function to load the main content script (part of the Main World)
     chrome.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       world: chrome.scripting.ExecutionWorld.MAIN,
       args: [ contentScriptSrc, currentSyncSettingsValues ],
-      function: injectMainContentScript,
+      func: injectMainContentScript,
     });
   });
 }

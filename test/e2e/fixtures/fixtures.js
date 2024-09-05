@@ -7,7 +7,7 @@ import path from 'path';
  */
 async function getBrowserContextWithExtension() {
   // Launch browser context with extension loaded
-  const pathToExtension = path.join(import.meta.dirname, '..', '..', '..', 'dist');
+  const pathToExtension = path.join(import.meta.dirname, '..', '..', '..', 'dist', 'chrome');
   return await chromium.launchPersistentContext('', {
     headless: false,
     args: [

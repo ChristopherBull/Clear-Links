@@ -4,6 +4,7 @@
 		"@stylistic/stylelint-plugin"
 	],
     "rules": {
+        "at-rule-no-vendor-prefix": null,
         "@stylistic/block-closing-brace-empty-line-before": "never",
         "@stylistic/block-closing-brace-space-before": "always-single-line",
         "@stylistic/block-closing-brace-newline-before": "always-multi-line",

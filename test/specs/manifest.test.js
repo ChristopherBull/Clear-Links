@@ -5,15 +5,15 @@ import './smoke.test.js'; // Forces smoke tests to run first
 import assert from 'assert';
 import fs from 'fs';
 
+const manifestPath = './dist/chrome/manifest.json';
+
 describe('Manifest File', function() {
   it('should pass if the manifest file exists', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestExists = fs.existsSync(manifestPath);
     assert.equal(manifestExists, true);
   });
 
   it('should pass if the manifest file is valid JSON', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestContent = fs.readFileSync(manifestPath, 'utf8');
     let manifest;
     try {
@@ -25,7 +25,6 @@ describe('Manifest File', function() {
   });
 
   it('should pass if the manifest file has required fields', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestContent = fs.readFileSync(manifestPath, 'utf8');
     const manifest = JSON.parse(manifestContent);
     const requiredFields = [ 'name', 'version', 'manifest_version', 'description', 'icons' ];
@@ -34,7 +33,6 @@ describe('Manifest File', function() {
   });
 
   it('should pass if the manifest file has valid content_scripts', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestContent = fs.readFileSync(manifestPath, 'utf8');
     const manifest = JSON.parse(manifestContent);
     const contentScripts = manifest.content_scripts;
@@ -47,7 +45,6 @@ describe('Manifest File', function() {
   });
 
   it('should pass if the manifest file has valid permissions', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestContent = fs.readFileSync(manifestPath, 'utf8');
     const manifest = JSON.parse(manifestContent);
     const permissions = manifest.permissions;
@@ -56,7 +53,6 @@ describe('Manifest File', function() {
   });
 
   it('should pass if the manifest file has valid background script', function() {
-    const manifestPath = './dist/manifest.json';
     const manifestContent = fs.readFileSync(manifestPath, 'utf8');
     const manifest = JSON.parse(manifestContent);
     const background = manifest.background;

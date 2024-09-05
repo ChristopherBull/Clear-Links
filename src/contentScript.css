@@ -66,3 +66,30 @@
 .cl-loading {
   animation: cl-loading-animation 1.5s infinite;
 }
+
+/** Mozilla Firefox */
+@-moz-document url-prefix() {
+  .cl-icon-padlock-locked {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/lock.svg');
+  }
+
+  .cl-icon-padlock-unlocked {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/lock_open_right.svg');
+  }
+
+  .cl-icon-email {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/mail.svg');
+  }
+
+  .cl-icon-js {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/javascript.svg');
+  }
+
+  .cl-icon-hourglass {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/hourglass.svg');
+  }
+
+  .cl-icon-link-not-expandable {
+    mask-image: url('moz-extension://__MSG_@@extension_id__/images/visibility_off.svg');
+  }
+}

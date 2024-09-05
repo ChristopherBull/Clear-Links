@@ -228,6 +228,7 @@ textarea { resize: vertical; }
 
 body {
   display: flex;
+  font-family: system-ui, sans-serif;
   justify-content: center;
   align-items: center;
   height: 100vh;
