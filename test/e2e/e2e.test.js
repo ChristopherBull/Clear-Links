@@ -17,7 +17,7 @@ test.describe('Tooltip shows', () => {
     await page.goto('/');
     // Wait for extension to load and activate on webpage
     tooltip = page.locator('#cl-container');
-    await tooltip.waitFor({ state: 'attached'});
+    await tooltip.waitFor({ state: 'attached' });
   });
 
   test('tooltip shown on link hover', async ({ page }) => {
