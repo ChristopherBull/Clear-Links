@@ -10,7 +10,7 @@
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
     "lint:src": "eslint src test",
-    "spell": "cspell README.md \"/src/*.*\"",
+    "spell": "cspell .",
     "test": "npm run lint && npm run test:unit:coverage && npm run spell && npm run test:e2e",
     "test:unit": "npm run build && cross-env NODE_ENV=test mocha test/specs/**/*.test.js",
     "test:unit:coverage": "npm run build && cross-env NODE_ENV=test nyc --reporter=html --reporter=text --reporter=lcovonly mocha test/specs/**/*.test.js",

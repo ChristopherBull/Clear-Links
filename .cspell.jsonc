@@ -22,10 +22,16 @@
         "**.lock",
         ".git/**",
         ".vscode/**",
+        "coverage/**",
+        "dist/**",
+        "Makefile",
         "node_modules/**",
-        "package.json"
+        "package.json",
+        "playwright-report/**"
     ],
     "words": [
+        // Brands, names
+        "chromimum",
         // Technical terms
         "IIFE",
         "liniting",
@@ -37,6 +43,8 @@
         "commitlint",
         "sonarjs",
         "urlshortener",
-        "bitlink"
+        "bitlink",
+        // Simple words
+        "checkmarks"
     ]
 }
