@@ -469,7 +469,6 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
     switch (sourceElem.hostname) {
       case 'bit.ly':
       case 'j.mp':
-      case 'goo.gl':
         // Request URL Expansion
         window.postMessage({ type: 'FROM_PAGE_SHORT_URL', message: { shortURL: sourceElem.href, checkCache: useShortUrlCache } }, '*');
         return { isShort: true, toExpand: true, quickExpand: quickExpandUrl };

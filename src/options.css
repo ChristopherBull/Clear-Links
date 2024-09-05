@@ -132,31 +132,6 @@ textarea { resize: vertical; }
   font-style: italic;
 }
 
-#btn-oauth-googl {
-  background-image: url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_normal_web.png');
-  background-repeat: no-repeat;
-  background-color: transparent;
-  width: 191px;
-  height: 46px;
-  padding: 0;
-  border: 0 none transparent;
-  box-shadow: none;
-  cursor: pointer;
-}
-
-#btn-oauth-googl:focus {
-  background-image: url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_focus_web.png');
-}
-
-#btn-oauth-googl:active {
-  background-image: url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_pressed_web.png');
-}
-
-#btn-oauth-googl:disabled {
-  background-image: url('chrome-extension://__MSG_@@extension_id__/images/btn_google_signin_dark_disabled_web.png');
-  cursor: auto;
-}
-
 .btn-danger {
   cursor: pointer;
   border: 1px solid var(--btn-danger);

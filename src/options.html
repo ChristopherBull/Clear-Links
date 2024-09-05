@@ -89,7 +89,7 @@
                         </label>
                         <br>
                         <label>
-                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (currently: goo.gl)
+                            <input type="checkbox" id="chkDisplayShortUrlsOnly" class="save-on-change" data-storage-key="displayOnKnownShortUrlDomainsOnly"> Known short URLs only (See Short Links)
                         </label>
                     </fieldset>
                 </section>
@@ -299,7 +299,7 @@
 
                 <section id="tab5-content" class="tab-content">
                     <h2>Short Links</h2>
-                    <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service (e.g. "goo.gl" short URLs are from Google).</p>
+                    <p>These services require you to login because of usage limits placed on communicating with each service. Logging in to these services will allow this extension to expand the short URLs associated with their respective service.</p>
                     
                     <div class="cl-accordion">
                         <details>
@@ -340,24 +340,6 @@
                                     <span>Forget Bit.ly OAuth token: </span>
                                     <input type="button" id="btn-oauth-bitly-forget-token" value="Logout">
                                 </div>
-                            </div>
-                        </details>
-
-                        <details>
-                            <summary>
-                                Goo.gl
-                                <img src="images/check.svg" alt="Google account authorised" id="auth-tick-googl" class="auth-tick-hidden"></img>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"></path>
-                                </svg>
-                            </summary>
-                            <div>
-                                <input type="button" id="btn-oauth-googl">
-                                <p>
-                                    Example link which points to <em>www.google.com</em>
-                                    : <a href="http://goo.gl/fbsS" class="preview-link">goo.gl/fbsS</a>
-                                </p>
-                                <input type="button" id="btn-oauth-googl-revoke" value="Revoke Google OAuth">
                             </div>
                         </details>
                     </div>

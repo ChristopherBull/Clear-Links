@@ -121,8 +121,6 @@ let btnOauthBitlyForgetToken;
 let btnOauthBitlyTick;
 let divOauthBitlyLoggedIn;
 let divOauthBitlyLoggedOut;
-let btnOauthGoogl;
-let btnOauthGooglRevoke;
 
 // Cached retrieved settings values.
 let currentSyncSettingsValues = defaultSettings;
@@ -185,8 +183,6 @@ async function initialize() {
   btnOauthBitlyTick = document.getElementById('auth-tick-bitly');
   divOauthBitlyLoggedIn = document.getElementById('divOauthBitlyLoggedIn');
   divOauthBitlyLoggedOut = document.getElementById('divOauthBitlyLoggedOut');
-  btnOauthGoogl = document.getElementById('btn-oauth-googl');
-  btnOauthGooglRevoke = document.getElementById('btn-oauth-googl-revoke');
 
   // Event handlers for UI changes only (prior to restoring settings, so UI will update to reflect settings)
   // Domain activation
@@ -236,8 +232,6 @@ async function initialize() {
   btnOauthBitly.addEventListener('click', () => {
     oauthBitlyBasicAuth(txtBitlyUser.value, pwdBitlyPass.value);
   });
-  btnOauthGoogl.addEventListener('click', oauthGoogl);
-  btnOauthGooglRevoke.addEventListener('click', oauthGooglRevoke);
   btnOauthBitlyForgetToken.addEventListener('click', () => {
     // Confirm with user before forgetting OAuth token
     Confirm.open({
@@ -504,7 +498,6 @@ async function restoreSettings() {
     document.getElementById('lbl-oauth-bitly-token').textContent = itemsLocal.OAuthBitLy.token;
 
     // Load OAuth tokens to show in the UI which accounts are connected/authorised
-    oauthGooglSilent();
     oauthBitlyUpdateUI();
   } catch (err) {
     console.error(err);
@@ -896,81 +889,6 @@ function applyPresetTheme(savePresetSettings = false) {
 }
 
 /* Short URLs */
-
-/**
- * Calls the oauthGoogl function with silent mode enabled.
- */
-function oauthGooglSilent() {
-  oauthGoogl(null, true);
-}
-
-/**
- * Requests Google OAuth token and updates the UI accordingly.
- * Fails if "OAuth2 not granted or revoked"
- * @param {Event} e - The event object.
- * @param {boolean} silent - Indicates whether the OAuth request should be silent or interactive.
- */
-function oauthGoogl(e, silent) {
-  // Check if 'silent' is undefined
-  if (typeof silent === 'undefined' || silent === null) {
-    silent = false; // Default
-  }
-  // Request Google OAuth
-  chrome.identity.getAuthToken({ interactive: !silent }, function() { // If unavailable ("OAuth2 not granted or revoked"), gets user to login; opens a login tab.
-    if (chrome.runtime.lastError) {
-      console.info('Google OAuth failed (silent: ' + silent + ')');
-      if (currentLocalSettingsValues.OAuthGooGl.enabled) {
-        chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
-      }
-      // TODO
-      // Update UI
-      btnOauthGoogl.disabled = false;
-      btnOauthGooglRevoke.style.display = 'none';
-    } else {
-      if (!currentLocalSettingsValues.OAuthGooGl.enabled) {
-        chrome.storage.local.set({ OAuthGooGl: { enabled: true } });
-      }
-      // Update UI - Show Auth token to user
-      btnOauthGoogl.disabled = true;
-      btnOauthGooglRevoke.style.display = 'inherit';
-      document.getElementById('auth-tick-googl').className = 'auth-tick';
-      // DEBUG ONLY - Test Auth by expanding an example URL
-      /* chrome.runtime.sendMessage({shortURL: 'http://goo.gl/fbsS', urlHostname: 'goo.gl'}, function(response) {
-        if(response.ignore || response.result.error){
-          console.log("Problem");
-        } else {
-          console.log(response.result.longUrl);
-        }
-      }); */
-    }
-  });
-}
-
-/**
- * Revokes the OAuth token for Google authentication.
- */
-function oauthGooglRevoke() {
-  chrome.identity.getAuthToken({ interactive: false }, function(currentToken) {
-    if (chrome.runtime.lastError) {
-      // TODO
-    } else {
-      // Remove the local cached token
-      chrome.identity.removeCachedAuthToken({ token: currentToken });
-      // Make a request to revoke token in the server
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://accounts.google.com/o/oauth2/revoke?token=' + currentToken);
-      xhr.send();
-
-      // Update local storage
-      chrome.storage.local.set({ OAuthGooGl: { enabled: false } });
-
-      // Update UI.
-      btnOauthGoogl.disabled = false;
-      btnOauthGooglRevoke.style.display = 'none';
-      document.getElementById('auth-tick-googl').className = 'auth-tick-hidden';
-    }
-  });
-}
 
 /**
  * Updates the UI based on the current state of Bitly OAuth.

@@ -138,15 +138,6 @@ export default [
       },
     },
   },
-  {
-    // Do not warn about external APIs objects (e.g. gapi)
-    files: [ 'src/background.js' ],
-    languageOptions: {
-      globals: {
-        gapi: 'readonly', // TODO: Remove this (once gapi is removed and migrated to new Google auth service)
-      },
-    },
-  },
 
   // HTML files
   {

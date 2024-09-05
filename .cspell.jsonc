@@ -35,7 +35,6 @@
         "webextensions",
         // Libraries / APIs
         "commitlint",
-        "gapi",
         "sonarjs",
         "urlshortener",
         "bitlink"

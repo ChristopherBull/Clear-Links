@@ -195,72 +195,7 @@ function expandURL(url, checkCache, callbackAfterExpansion) {
     case 'j.mp':
       expandUrlBitLy(url, callbackAfterExpansion);
       break;
-    case 'goo.gl':
-      // TODO - Check user options to see if goo.gl links should be expanded (a checkbox in the options menu, or (e.g.) is an API key available?)
-      authenticateGoogleAPI(function(bAuthSuccess) {
-        if (bAuthSuccess) {
-          expandUrlGooGl(url, callbackAfterExpansion);
-        } else {
-          callbackAfterExpansion({
-            ignore: true,
-            source: { url },
-          });
-        }
-      });
-      break;
   }
-}
-
-// Google API - Authenticate
-let oauthTokenGoogl = '';
-
-/**
- * Authenticates the Google API.
- * @param {Function} postAuthCallback - The callback function to be executed after authentication.
- */
-function authenticateGoogleAPI(postAuthCallback) {
-  if (oauthTokenGoogl === '') {
-    // TODO - check if should Auth with stored API key, or use chrome.identity.
-    chrome.identity.getAuthToken(function(token) { // interactive=false // Async
-      if (chrome.runtime.lastError) {
-        postAuthCallback(false); // Auth failed
-      } else {
-        // Authenticate (no need to 'gapi.auth.setToken(token)' if within 'chrome.identity.getAuthToken'
-        const manifest = chrome.runtime.getManifest();
-        gapi.auth.authorize({ client_id: manifest.oauth2.client_id, scope: manifest.oauth2.scopes, immediate: true }, function(authResult) {
-          if (authResult && !authResult.error) {
-            gapi.client.load('urlshortener', 'v1').then(function() {
-              oauthTokenGoogl = token; // Cache auth token
-              postAuthCallback(true); // Auth success
-            });
-          }
-        });
-      }
-    });
-  } else {
-    postAuthCallback(true); // Auth previously successful
-  }
-}
-
-/**
- * Uses the Google API to expand short Google URLs (`goo.gl`).
- * @param {string} url - The short Google URL to be expanded.
- * @param {Function} callbackAfterExpansion - The callback function to be executed after the URL is expanded.
- */
-function expandUrlGooGl(url, callbackAfterExpansion) {
-  const request = gapi.client.urlshortener.url.get({
-    shortUrl: url,
-  });
-  request.then(function(response) {
-    if (response.result.status === 'OK') {
-      callbackAfterExpansion(response);
-    } else { // Deal with malicious/removed links (which are known to Google)
-      callbackAfterExpansion({ result: { error: { message: 'Goo.gl link ' + response.result.status } } });
-    }
-  }, function(reason) {
-    console.error('Error (Goo.gl): "' + url + '" - ' + reason.result.error.message);
-    callbackAfterExpansion(reason);
-  });
 }
 
 /**
