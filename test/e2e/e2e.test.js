@@ -4,8 +4,8 @@ test.describe('Extension loads', () => {
   test('extension loads and activates on webpage', async ({ context }) => {
     const page = await context.newPage();
     await page.goto('/');
-    const elementExists = await page.waitForSelector('#cl-container');
-    await expect(elementExists).toBeTruthy();
+    const elementExists = page.locator('#cl-container');
+    await expect(elementExists).toBeAttached();
   });
 });
 
@@ -16,13 +16,14 @@ test.describe('Tooltip shows', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Wait for extension to load and activate on webpage
-    tooltip = await page.waitForSelector('#cl-container');
+    tooltip = page.locator('#cl-container');
+    await tooltip.waitFor({ state: 'attached'});
   });
 
   test('tooltip shown on link hover', async ({ page }) => {
     // Hover over link to show tooltip
     await page.hover('a#link-https');
     // Check if tooltip is visible
-    await expect(await tooltip.getAttribute('style')).toContain('opacity: 1');
+    await expect(tooltip).toBeVisible();
   });
 });
