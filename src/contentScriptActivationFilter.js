@@ -15,8 +15,9 @@ function activateMainContentScripts() {
 
 // Create a one-time backup activation point, after tab has focus, in case the tab is preloading
 // in the background and the initial injection request is rejected.
-// This named event listener should be removed once the content script is activated.
-window.addEventListener('focus', activateMainContentScripts, { once: true });
+if (!document.hasFocus()) {
+  window.addEventListener('focus', activateMainContentScripts, { once: true });
+}
 
 // Initial activation request (will be rejected if tab is preloading)
 // Will occur before load/ready events.
