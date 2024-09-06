@@ -29,6 +29,10 @@ jobs:
         run: npm run lint
       - name: Test (build, run tests, and coverage report)
         run: npm run test:unit:coverage
+      - name: Build (allowing linting which requires built extension)
+        run: make
+      - name: Lint with Mozilla's Web-ext (only Firefox supported for now)
+        run: npm run lint:web-ext:ff
   
   e2e-tests:
     name: E2E Tests

@@ -6,11 +6,12 @@
   "type": "module",
   "scripts": {
     "build": "make",
-    "build:package:ff": "web-ext build --source-dir dist/firefox",
+    "build:package:ff": "web-ext build --source-dir dist/firefox --overwrite-dest",
     "lint": "npm run lint:md && npm run lint:css && npm run lint:src",
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
     "lint:src": "eslint src test",
+    "lint:web-ext:ff": "make build_ff && web-ext lint --source-dir ./dist/firefox/",
     "spell": "cspell .",
     "test": "npm run lint && npm run test:unit:coverage && npm run spell && npm run test:e2e",
     "test:unit": "npm run build && cross-env NODE_ENV=test mocha test/specs/**/*.test.js",
