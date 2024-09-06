@@ -1,6 +1,8 @@
 # Source files
 SRC_DIRS := src/ res/
 SRC_DIRS_WIN := $(subst /,\,$(SRC_DIRS))
+LIB_BROWSER_POLYFILL := node_modules/webextension-polyfill/dist/browser-polyfill.min.js
+LIB_BROWSER_POLYFILL_WIN := $(subst /,\,$(LIB_BROWSER_POLYFILL))
 
 # Destination directory
 DIST_DIR := dist
@@ -10,7 +12,19 @@ DIST_DIR_CHROME_WIN := $(subst /,\,$(DIST_DIR_CHROME))
 DIST_DIR_FIREFOX_WIN := $(subst /,\,$(DIST_DIR_FIREFOX))
 
 # Build
-build: build_chrome build_ff
+build: build_prepare build_chrome build_ff
+build_chrome_only: build_prepare build_chrome
+build_ff_only: build_prepare build_ff
+
+# Prepare the build by copying the lib files
+build_prepare:
+ifeq ($(OS),Windows_NT)
+	if not exist "res\lib" mkdir res\lib
+	copy $(LIB_BROWSER_POLYFILL_WIN) res\lib
+else
+	@mkdir -p res/lib
+	@cp $(LIB_BROWSER_POLYFILL) res/lib/
+endif
 
 # Build the chrome extension
 build_chrome: $(SRC_DIRS)

@@ -4,6 +4,8 @@
 dist/
 # Build (packaged) directory
 web-ext-artifacts/
+# Ignored libs, as they are installed via npm during build
+res/lib/browser-polyfill.min.js
 
 # NodeJS
 node_modules/

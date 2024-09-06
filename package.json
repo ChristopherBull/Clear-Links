@@ -47,5 +47,8 @@
     "stylelint": "^16.8.1",
     "stylelint-config-standard": "^36.0.1",
     "web-ext": "^8.2.0"
+  },
+  "dependencies": {
+    "webextension-polyfill": "^0.12.0"
   }
 }
