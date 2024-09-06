@@ -4,6 +4,12 @@
     "version": "4.0.0",
 	"author": "Christopher Bull",
     "description": "Makes website links more transparent and accessible, enhancing your awareness of your navigational security and privacy.",
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "{606f9f3d-1c71-463d-a1aa-d10cf1e4aa64}",
+			"strict_min_version": "112.0"
+		}
+	},
     "icons": {
         "16": "icon16.png",
         "48": "icon48.png",
