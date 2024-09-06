@@ -24,7 +24,6 @@
 		"http://*/",
         "https://*/"
 	],
-	"key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgv1hEzO8elR0XP9jiGtSDApjag3UXFSbH/37/kubWHJPqVbNC+WNLiW2OQpInn8eoRUMVGWUVgfJysGsXCr8cf8xRvnGrDJKRgKQB67spzCbEtfj9fqR2FQhcg4mSFPwsy/OygXEWlrzjkENcZbf53oMDGspl6cMa0r8P+rwsxLGjdxEcZ4YQTTYZ3D2BflmcjLtgBOj5vtEPyL3adxuMG6v5+lu5JWqbayJSA2oysk+L19BQuTaMnXcb/j0s50PSQUa7LnkMMggijKTAm67Mj59iggbQVYcL4zu0KLztFrCJ5Xuy60JJgWKNMETukNy448yq5jzpKWfgWvtAlEI8QIDAQAB",
 	"web_accessible_resources": [
 		{
 		  "resources": [
