@@ -10,6 +10,13 @@ In addition, this extension optionally supports automatically expanding some [sh
 
 This will make a fine addition to your security and privacy digital tool belt.
 
+## Install
+
+This extension is published and can be added to your browsers:
+
+- [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/clear-web-links/)
+- [Chrome](https://chromewebstore.google.com/detail/clear-links/banknjcfbmhcbebgekpcenheaghfcood)
+
 ## Build
 
 Use the Makefile with the command `make` to prepare this extension. Files are copied and prepared within the `dist/` directory.
