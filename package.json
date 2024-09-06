@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "make",
+    "build:package:ff": "web-ext build --source-dir dist/firefox",
     "lint": "npm run lint:md && npm run lint:css && npm run lint:src",
     "lint:css": "stylelint \"src/**/*.css\"",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
@@ -43,6 +44,7 @@
     "semantic-release": "^24.0.0",
     "semantic-release-chrome": "^3.2.0",
     "stylelint": "^16.8.1",
-    "stylelint-config-standard": "^36.0.1"
+    "stylelint-config-standard": "^36.0.1",
+    "web-ext": "^8.2.0"
   }
 }

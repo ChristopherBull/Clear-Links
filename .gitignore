@@ -1,7 +1,9 @@
 .DS_Store
 
-# Build directory
+# Build (unpackaged) directory
 dist/
+# Build (packaged) directory
+web-ext-artifacts/
 
 # NodeJS
 node_modules/
