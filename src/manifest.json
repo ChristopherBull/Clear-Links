@@ -43,7 +43,10 @@
 	"content_scripts": [
         {
             "matches": [ "<all_urls>" ],
-            "js": [ "contentScriptActivationFilter.js" ],
+            "js": [
+				"./lib/browser-polyfill.min.js",
+				"contentScriptActivationFilter.js"
+			],
 			"run_at": "document_start"
         }
     ]

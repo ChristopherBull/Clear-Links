@@ -10,7 +10,7 @@
  * extension injected.
  */
 function activateMainContentScripts() {
-  chrome.runtime.sendMessage({ activationHostname: window.location.hostname });
+  browser.runtime.sendMessage({ activationHostname: window.location.hostname });
 }
 
 // Create a one-time backup activation point, after tab has focus, in case the tab is preloading

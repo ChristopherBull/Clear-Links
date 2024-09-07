@@ -81,7 +81,7 @@ function debounce(func, timeout = 300) {
  */
 async function setSyncStorageWithOfflineFallback(data) {
   try {
-    await chrome.storage.sync.set(data);
+    await browser.storage.sync.set(data);
   } catch (error) {
     console.warn('Unable to save to Sync storage, saving to local storage instead: ' + error);
     // Prepare fallback data for merging with existing data in syncOffline settings
@@ -92,7 +92,7 @@ async function setSyncStorageWithOfflineFallback(data) {
     // Merge fallbackData with existing data in syncOffline
     Object.assign(currentLocalSettingsValues.syncOffline, fallbackData.syncOffline);
     // Save to local storage
-    await chrome.storage.local.set({ syncOffline: currentLocalSettingsValues.syncOffline });
+    await browser.storage.local.set({ syncOffline: currentLocalSettingsValues.syncOffline });
   }
 }
 
@@ -263,7 +263,7 @@ async function initialize() {
       onOk: async () => {
         try {
           // Remove token from local settings
-          await chrome.storage.local.set({
+          await browser.storage.local.set({
             OAuthBitLy: { enabled: false, token: '' },
           });
           // Update cached copy of local settings
@@ -314,7 +314,7 @@ async function initialize() {
   document.querySelectorAll('input[type=radio].save-local-on-change').forEach((el) => {
     el.addEventListener('change', async () => {
       try {
-        await chrome.storage.local.set({
+        await browser.storage.local.set({
           [el.dataset.storageKey]: parseInt(el.value),
         });
         // UI to show saved.
@@ -405,7 +405,7 @@ async function initialize() {
   initAllSharedListeners();
 
   // Load additional page content (one-time)
-  const manifestData = chrome.runtime.getManifest();
+  const manifestData = browser.runtime.getManifest();
   document.getElementById('about-page-extension-version').textContent = manifestData.version;
   document.getElementById('about-page-extension-description').textContent = manifestData.description;
 }
@@ -443,7 +443,7 @@ function validateNumberFieldValue(el) {
 async function restoreSettings() {
   // Get all local non-synced settings
   try {
-    currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
+    currentLocalSettingsValues = await browser.storage.local.get(defaultSettingsLocal);
   } catch (err) {
     // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
     console.error(err);
@@ -452,7 +452,7 @@ async function restoreSettings() {
 
   // Get all synced settings
   try {
-    currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+    currentSyncSettingsValues = await browser.storage.sync.get(defaultSettings);
   } catch (err) {
     // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
     console.warn('Sync storage not available. Will save sync settings locally instead: ' + err);
@@ -619,13 +619,13 @@ function restoreSyncedSettings() {
     onOk: async () => {
       // Clear synced settings
       try {
-        await chrome.storage.sync.clear();
+        await browser.storage.sync.clear();
         // Re-Save default sync values
-        await chrome.storage.sync.set(defaultSettings);
+        await browser.storage.sync.set(defaultSettings);
       } catch (err) {
         console.warn('Unable to reset Sync storage as it is unavailable, will reset offline copy: ' + err);
         // Do not replace all local settings with defaults, only the syncOffline settings
-        await chrome.storage.local.set({
+        await browser.storage.local.set({
           syncOffline: defaultSettings,
         });
       }
@@ -648,16 +648,16 @@ function btnDelAllSavedDataClick() {
     onOk: async () => {
       // Clear synced settings
       try {
-        await chrome.storage.sync.clear();
+        await browser.storage.sync.clear();
         // Re-Save default sync values
-        await chrome.storage.sync.set(defaultSettings);
+        await browser.storage.sync.set(defaultSettings);
       } catch (err) {
         console.warn('Unable to clear Sync storage as it is unavailable: ' + err);
       }
       // Clear local settings
-      await chrome.storage.local.clear();
+      await browser.storage.local.clear();
       // Re-Save default local values
-      await chrome.storage.local.set(defaultSettingsLocal);
+      await browser.storage.local.set(defaultSettingsLocal);
       // Update Options menu UI
       await restoreSettings();
       showPopup('success', 'All data deleted.');
@@ -786,7 +786,7 @@ async function addToAllowlist() {
   if (currentLocalSettingsValues.domainWhitelist.indexOf(tmpUrl.hostname) === -1) {
     // Add to Allowlist Storage
     currentLocalSettingsValues.domainWhitelist.push(tmpUrl.hostname);
-    await chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
+    await browser.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
     // Add to Allowlist UI
     const option = document.createElement('option');
     option.text = tmpUrl.hostname;
@@ -814,7 +814,7 @@ async function removeFromAllowlist() {
     }
   }
   // Update the local storage
-  await chrome.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
+  await browser.storage.local.set({ domainWhitelist: currentLocalSettingsValues.domainWhitelist });
   // Update the UI
   indicesToRemove.forEach((index) => {
     listDomainsAllowlist.remove(index);
@@ -845,7 +845,7 @@ async function addToDenylist() {
   if (currentLocalSettingsValues.domainBlacklist.indexOf(tmpUrl.hostname) === -1) {
     // Add to Denylist Storage
     currentLocalSettingsValues.domainBlacklist.push(tmpUrl.hostname);
-    await chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
+    await browser.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
     // Add to Denylist UI
     const option = document.createElement('option');
     option.text = tmpUrl.hostname;
@@ -873,7 +873,7 @@ async function removeFromDenylist() {
     }
   }
   // Update the local storage
-  await chrome.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
+  await browser.storage.local.set({ domainBlacklist: currentLocalSettingsValues.domainBlacklist });
   // Update the UI
   indicesToRemove.forEach((index) => {
     listDomainsDenylist.remove(index);
@@ -980,7 +980,7 @@ function oauthBitlyBasicAuth(userID, userSecret) {
     if (response.ok) {
       // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
       response.text().then(function(txtResponse) {
-        chrome.storage.local.set({
+        browser.storage.local.set({
           OAuthBitLy: { enabled: true, token: txtResponse },
         }, function() { // On saved
           // Update local copy of settings

@@ -1,3 +1,4 @@
+import './lib/browser-polyfill.min.js';
 import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 
 // Local settings (e.g. page activation options and locally stored auth tokens)
@@ -8,7 +9,7 @@ let currentSyncSettingsValues = defaultSettings;
 initialise();
 
 // Listen for options changes
-chrome.storage.onChanged.addListener((changes, namespace) => {
+browser.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'local') {
     mergeSettingsChanges(currentLocalSettingsValues, changes);
   } else if (namespace === 'sync') {
@@ -17,7 +18,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 // Message Passing
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Page activation (deny/allowlist)
   // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
   // Allows users to denylist/allowlist sites. Also, reduces extension's footprint.
@@ -25,7 +26,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Tabs that preload are forced to skip injection, as we cannot work with tab URLs that start with 'chrome://' (e.g., new tabs, instead of eventual webpage)
   // Pre-loaded tabs will be activated when they receive focus (see contentScriptActivationFilter.js)
   if (request.activationHostname && !sender?.tab?.url.startsWith('chrome://')) {
-    // Inject the main script into the webpage (it will have DOM access, but no access to chrome.* APIs)
+    // Inject the main script into the webpage (it will have DOM access, but no access to browser.* APIs)
     injectExtension(sender.tab.id, request.activationHostname);
     // URL expansion request
   } else if (request.shortURL) {
@@ -39,13 +40,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Some sites may preload (firing a premature onload event before attached to a tab) and later replace a tab's content (but no new onload event would fire).
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
-chrome.webNavigation.onTabReplaced.addListener((details) => {
-  chrome.tabs.get(details.tabId, (tab) => {
-    if (!chrome.runtime.lastError) {
-      // Tab exists
-      injectExtension(tab.id, new URL(tab.url).hostname);
-    }
-  });
+browser.webNavigation.onTabReplaced.addListener(async (details) => {
+  try {
+    const tab = await browser.tabs.get(details.tabId);
+    // Tab exists
+    injectExtension(tab.id, new URL(tab.url).hostname);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 /**
@@ -53,10 +55,10 @@ chrome.webNavigation.onTabReplaced.addListener((details) => {
  */
 async function initialise() {
   // Load local settings
-  currentLocalSettingsValues = await chrome.storage.local.get(defaultSettingsLocal);
+  currentLocalSettingsValues = await browser.storage.local.get(defaultSettingsLocal);
   // Load synced settings
   try {
-    currentSyncSettingsValues = await chrome.storage.sync.get(defaultSettings);
+    currentSyncSettingsValues = await browser.storage.sync.get(defaultSettings);
   } catch (err) {
     // Settings initialised earlier with defaults, so no need to re-initialise defaults here.
     console.warn('Sync storage not available. Will save sync settings locally instead: ' + err);
@@ -72,22 +74,22 @@ async function initialise() {
  */
 function injectExtension(tabID, hostname) {
   activateOnTab(tabID, hostname, function() {
-    const contentScriptSrc = chrome.runtime.getURL('contentScript.js');
-    const contentScriptSharedSrc = chrome.runtime.getURL('contentScriptSharedLib.js');
-    chrome.scripting.insertCSS({
+    const contentScriptSrc = browser.runtime.getURL('contentScript.js');
+    const contentScriptSharedSrc = browser.runtime.getURL('contentScriptSharedLib.js');
+    browser.scripting.insertCSS({
       files: [ 'contentScript.css' ],
       target: { allFrames: true, tabId: tabID },
     });
     // Add to Content Script (part of the Isolated World)
-    chrome.scripting.executeScript({
+    browser.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       args: [ contentScriptSharedSrc ],
       func: setupContentScript,
     });
     // Inject function to load the main content script (part of the Main World)
-    chrome.scripting.executeScript({
+    browser.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
-      world: chrome.scripting.ExecutionWorld.MAIN,
+      world: browser.scripting.ExecutionWorld.MAIN,
       args: [ contentScriptSrc, currentSyncSettingsValues ],
       func: injectMainContentScript,
     });
@@ -158,13 +160,14 @@ function isUrlToBeFiltered(tabHostname, filterListArray) {
  * @param {number} tabId - The ID of the tab to check.
  * @param {Function} callback - The callback function to be executed if the tab exists.
  */
-function tabExists(tabId, callback) {
-  chrome.tabs.get(tabId, function() {
-    if (!chrome.runtime.lastError) { // TODO check if tab.url is undefined/empty, etc.
-      // Tab exists
-      callback();
-    }
-  });
+async function tabExists(tabId, callback) {
+  try {
+    await browser.tabs.get(tabId);
+    // Tab exists
+    callback();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /**
