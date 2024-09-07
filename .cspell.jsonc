@@ -24,6 +24,7 @@
         ".vscode/**",
         "coverage/**",
         "dist/**",
+        "res/lib/**",
         "Makefile",
         "node_modules/**",
         "package.json",
