@@ -83,6 +83,8 @@ jobs:
         run: make
       - name: Release
         env:
+          AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
+          AMO_API_SECRET: ${{ secrets.AMO_API_SECRET }}
           EXTENSION_ID: ${{secrets.EXTENSION_ID}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
