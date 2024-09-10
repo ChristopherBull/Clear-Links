@@ -32,7 +32,7 @@ export default [
       // 'capitalized-comments': 'warn', // Broken?!
       // 'complexity': 'warn', // why not use sonarjs for this?
       'default-case-last': 'error',
-      // 'default-param-last': 'error',
+      'default-param-last': 'error',
       'dot-notation': 'warn',
       // 'eqeqeq': 'error',
       // 'line-comment-position': 'warn',

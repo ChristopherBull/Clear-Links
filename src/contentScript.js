@@ -18,7 +18,7 @@ const shadowRoot = shadowDomContainer.attachShadow({ mode: 'open' });
  * @param {boolean} cacheShortUrls - Flag indicating whether to cache short URLs.
  * @param {string} overrideLinkSelector - Alternative link selector (can be used to specify, e.g., `a.preview` in Options.html).
  */
-export function initialise(cssURL, contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
+export function initialise(cssURL, contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector = null) {
   settings = contentScriptSettings;
   useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
   if (overrideLinkSelector) {
