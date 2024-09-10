@@ -19,7 +19,7 @@ describe('Manifest File', function() {
     try {
       manifest = JSON.parse(manifestContent);
     } catch (error) {
-      assert.fail('Invalid JSON format');
+      assert.fail(`Invalid JSON format: ${error.message}`);
     }
     assert.ok(manifest);
   });

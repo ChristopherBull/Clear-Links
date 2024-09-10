@@ -108,7 +108,6 @@ export default [
 
       // TODO Update/enable these rules. Only temporarily disabled.
       'jsdoc/no-defaults': 0,
-      'no-unused-vars': 0, // TODO: Enable and fix issues
       'sonarjs/cognitive-complexity': 0,
       'sonarjs/no-duplicate-string': 0,
 

@@ -347,7 +347,7 @@ async function initialize() {
       try {
         // Validate - Check if value is valid (after debounce, to ensure saving valid numbers only)
         value = validateNumberFieldValue(el);
-      } catch (err) {
+      } catch {
         // Silently skip saving invalid values (error reporting occurred on the immediate change event handler)
         return;
       }

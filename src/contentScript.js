@@ -226,6 +226,7 @@ function attachMouseEnterListeners() {
               try {
                 tmpUrl = new URL(isShortAndExpandable.quickExpand);
               } catch (err) {
+                console.error('Error parsing short URL from quickExpand property:', err);
                 break;
               }
               urlToDisplay = formatDissectedURL(tmpUrl.href, tmpUrl.protocol, tmpUrl.username, tmpUrl.password, tmpUrl.hostname, tmpUrl.port, tmpUrl.pathname, tmpUrl.search, tmpUrl.hash);
