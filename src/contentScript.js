@@ -54,6 +54,29 @@ export function initialise(cssURL, contentScriptSettings = defaultSettings, cach
   // Attach tooltip to DOM (reducing any future mouseover delays, as the tooltip will already be attached to the DOM)
   shadowRoot.appendChild(tooltip);
   document.body.appendChild(shadowDomContainer);
+
+  // Asynchronously initialise the rest of the content script that requires the DOM to be ready
+  initialiseAfterDomReady();
+}
+
+/**
+ * Initialises parts of the content script that require the DOM to be loaded.
+ * This function waits for the document to be ready before proceeding with
+ * the initialisation of the rest of the content script.
+ * @returns {Promise<void>} A promise that resolves when this stage of the
+ * initialisation is complete.
+ */
+async function initialiseAfterDomReady() {
+  // Wait for the document to be ready before initialising the rest of the content script
+  await ready();
+
+  // Listen for window size changes
+  addEventListener('resize', () => {
+    clearTimeout(resizeEndTimer);
+    resizeEndTimer = setTimeout(cacheWinDimensions, 250);
+  });
+  // Store initial window dimensions
+  cacheWinDimensions();
 }
 
 // Cache settings
@@ -81,17 +104,34 @@ const urlText = tooltip.querySelector('.cl-url');
 let resizeEndTimer; // No native resize end event, so timing our own.
 
 /**
- * Document ready function.
- * `DOMContentLoaded` may fire before script/module has a chance to run, so check before adding a listener.
+ * Checks if the document is still loading and, if so, returns a promise that resolves
+ * when the 'DOMContentLoaded' event is fired.
+ * `DOMContentLoaded` may fire before script/module has a chance to run, hence this can check.
  * @see https://youmightnotneedjquery.com/#ready
- * @param {Function} fn - The function to be executed when the document is ready.
+ * @returns {Promise<Event>|undefined} A promise that resolves when the 'DOMContentLoaded' event is fired,
+ * or undefined if the document is already loaded.
  */
-function ready(fn) {
-  if (document.readyState !== 'loading') {
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn, { once: true });
+function ready() {
+  if (document.readyState == 'loading') {
+    return untilEvent(document, 'DOMContentLoaded');
   }
+}
+
+/**
+ * Attaches a one-time event listener to an item that resolves a promise when the event is triggered.
+ * The event listener is automatically removed after the event is triggered once.
+ * Typical usage is to allow async/await syntax for one-time event listeners:
+ * `await untilEvent(document, 'DOMContentLoaded');`
+ * @param {EventTarget} item - The target to which the event listener is attached.
+ * @param {string} eventType - The type of the event to listen for.
+ * @returns {Promise<Event>} A promise that resolves with the event object when the event is triggered.
+ */
+function untilEvent(item, eventType) {
+  return new Promise((resolve) => {
+    item.addEventListener(eventType, (event) => {
+      resolve(event);
+    }, { once: true });
+  });
 }
 
 /**
@@ -141,17 +181,6 @@ function addDelegatedEventListenerWithParams(el, eventName, selector, eventHandl
   addDelegatedEventListener(el, eventName, selector, wrappedHandler);
   return wrappedHandler;
 }
-
-// Main - Document ready
-ready(function() {
-  // Listen for window size changes
-  addEventListener('resize', () => {
-    clearTimeout(resizeEndTimer);
-    resizeEndTimer = setTimeout(cacheWinDimensions, 250);
-  });
-  // Store initial window dimensions
-  cacheWinDimensions();
-});
 
 /**
  * Attaches mouse enter event listeners to elements in the document body.
