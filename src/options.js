@@ -22,7 +22,7 @@ const shiftTabs = (linkId) => {
 };
 
 allLinks.forEach((elem) => {
-  elem.addEventListener('click', function() {
+  elem.addEventListener('click', () => {
     const linkId = elem.id;
     const hrefLinkClick = elem.href;
 
@@ -977,13 +977,13 @@ function oauthBitlyBasicAuth(userID, userSecret) {
       'Authorization': 'Basic ' + btoa(userID + ':' + userSecret),
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-  }).then(function(response) {
+  }).then((response) => {
     if (response.ok) {
       // On success - "HTTP Basic Authentication Flow" response (access token) is a String, not an Object.
-      response.text().then(function(txtResponse) {
+      response.text().then((txtResponse) => {
         browser.storage.local.set({
           OAuthBitLy: { enabled: true, token: txtResponse },
-        }, function() { // On saved
+        }, () => { // On saved
           // Update local copy of settings
           currentLocalSettingsValues.OAuthBitLy = { enabled: true, token: txtResponse };
           // Update UI (after saved)
@@ -995,7 +995,7 @@ function oauthBitlyBasicAuth(userID, userSecret) {
         btnOauthBitly.disabled = false;
       });
     } else {
-      response.json().then(function(jsonResponse) {
+      response.json().then((jsonResponse) => {
         const errMessage = 'Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description;
         console.error(errMessage);
         showPopup('error', errMessage);

@@ -73,7 +73,7 @@ async function initialise() {
  * @param {string} hostname - The hostname of the tab to inject the extension into.
  */
 function injectExtension(tabID, hostname) {
-  activateOnTab(tabID, hostname, function() {
+  activateOnTab(tabID, hostname, () => {
     const contentScriptSrc = browser.runtime.getURL('contentScript.js');
     const contentScriptSharedSrc = browser.runtime.getURL('contentScriptSharedLib.js');
     const contentScriptCssSrc = browser.runtime.getURL('contentScript.css');
@@ -127,7 +127,7 @@ async function injectMainContentScript(srcURL, cssURL, contentScriptSettings) {
  * @param {Function} activationCallback - The callback function to be executed for activation.
  */
 function activateOnTab(tabId, docHostname, activationCallback) {
-  tabExists(tabId, function() { // Don't activate on Options page
+  tabExists(tabId, () => { // Don't activate on Options page
     switch (currentLocalSettingsValues.activationFilter) {
       case 1: // Allow All
         activationCallback();
@@ -229,8 +229,8 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
       },
       // eslint-disable-next-line camelcase
       body: JSON.stringify({ bitlink_id: urlHostAndPathname }),
-    }).then(function(response) {
-      response.json().then(function(jsonResponse) {
+    }).then((response) => {
+      response.json().then((jsonResponse) => {
         if (response.ok) {
           // TODO cache the long URL
           // Create the JSON formatted response expected in contentScript: response.result.longUrl

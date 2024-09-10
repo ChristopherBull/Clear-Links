@@ -92,7 +92,7 @@ export default [
       // 'no-warning-comments': 'warn',
       'object-shorthand': 'warn',
       'operator-assignment': 'warn',
-      // 'prefer-arrow-callback': 'warn',
+      'prefer-arrow-callback': 'warn',
       'prefer-const': 'warn',
       // 'prefer-destructuring': 'warn',
       'prefer-object-has-own': 'warn',
