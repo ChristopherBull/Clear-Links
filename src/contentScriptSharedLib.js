@@ -51,26 +51,41 @@ export function listenForSettingsChanges() {
       // Send changes to injected script
       window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: changes }, '*');
     } else if (namespace === 'local') {
-      // Filter out non-syncOffline changes
-      for (const key in changes) {
-        if (key === 'syncOffline') {
-          // Format filtered changes to match API (with `newValue` and `oldValue` keys)
-          const filteredMessage = {};
-          const newValue = changes[key].newValue;
-          const oldValue = changes[key].oldValue;
-          for (const syncOfflineKey in newValue) {
-            if (newValue[syncOfflineKey] !== oldValue?.[syncOfflineKey]) {
-              filteredMessage[syncOfflineKey] = {
-                oldValue: oldValue?.[syncOfflineKey],
-                newValue: newValue[syncOfflineKey],
-              };
-            }
-          }
-          // Send changes to injected script if any were found after filtering (otherwise ignore and reduce noise)
-          window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: filteredMessage }, '*');
-          break;
-        }
+      const filteredChanges = filterSyncOfflineChanges(changes);
+      // Send changes to injected script if any were found after filtering (otherwise ignore and reduce noise)
+      if (filteredChanges) {
+        window.postMessage({ type: 'TO_PAGE_SYNC_USER_OPTIONS_CHANGED', message: filteredChanges }, '*');
       }
     }
   });
+}
+
+/**
+ * Filters changes to only include differences in the `syncOffline` key.
+ * Also maps the filtered changes to match the API structure, including `newValue`
+ * and `oldValue` keys. It then compares the `newValue` and `oldValue` of each sub-key within
+ * `syncOffline` and includes only those that have changed.
+ * @param {object} changes - The changes object containing key-value pairs of changes.
+ * @returns {object|null} The filtered changes object containing only the differences in `syncOffline`
+ * or `null` if no changes.
+ */
+function filterSyncOfflineChanges(changes) {
+  for (const key in changes) {
+    if (key === 'syncOffline') {
+      // Format filtered changes to match API (with `newValue` and `oldValue` keys)
+      const filteredChanges = {};
+      const newValue = changes[key].newValue;
+      const oldValue = changes[key].oldValue;
+      for (const syncOfflineKey in newValue) {
+        if (newValue[syncOfflineKey] !== oldValue?.[syncOfflineKey]) {
+          filteredChanges[syncOfflineKey] = {
+            oldValue: oldValue?.[syncOfflineKey],
+            newValue: newValue[syncOfflineKey],
+          };
+        }
+      }
+      return filteredChanges;
+    }
+  }
+  return null;
 }
