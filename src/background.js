@@ -76,10 +76,7 @@ function injectExtension(tabID, hostname) {
   activateOnTab(tabID, hostname, function() {
     const contentScriptSrc = browser.runtime.getURL('contentScript.js');
     const contentScriptSharedSrc = browser.runtime.getURL('contentScriptSharedLib.js');
-    browser.scripting.insertCSS({
-      files: [ 'contentScript.css' ],
-      target: { allFrames: true, tabId: tabID },
-    });
+    const contentScriptCssSrc = browser.runtime.getURL('contentScript.css');
     // Add to Content Script (part of the Isolated World)
     browser.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
@@ -90,7 +87,11 @@ function injectExtension(tabID, hostname) {
     browser.scripting.executeScript({
       target: { tabId: tabID, allFrames: true },
       world: browser.scripting.ExecutionWorld.MAIN,
-      args: [ contentScriptSrc, currentSyncSettingsValues ],
+      args: [
+        contentScriptSrc,
+        contentScriptCssSrc,
+        currentSyncSettingsValues,
+      ],
       func: injectMainContentScript,
     });
   });
@@ -109,13 +110,14 @@ async function setupContentScript(src) {
 /**
  * This function is injected into the webpage, and is responsible for loading the main content script.
  * Chrome extensions do not allow JS modules to be executed, so this function instead dynamically imports the main content script.
- * @param {string} src - The URL of the content script to be injected into the webpage.
+ * @param {string} srcURL - The URL of the content script to be injected into the webpage.
+ * @param {string} cssURL - The URL of the content script's CSS to be injected into the webpage. Is dynamically loaded because of cross-browser URL scheme differences.
  * @param {object} contentScriptSettings - The settings to be passed to the content script.
  */
-async function injectMainContentScript(src, contentScriptSettings) {
-  const mainContentScript = await import(src);
+async function injectMainContentScript(srcURL, cssURL, contentScriptSettings) {
+  const mainContentScript = await import(srcURL);
   // Initialise content script with default settings.
-  mainContentScript.initialise(contentScriptSettings);
+  mainContentScript.initialise(cssURL, contentScriptSettings);
 }
 
 /**

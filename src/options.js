@@ -400,7 +400,8 @@ async function initialize() {
 
   // Initialise content script -- for previewing settings within the Options Page
   // Options page should not cache Short URLs to enable user to repeatedly test example short URLs given in the Options page.
-  ContentScript.initialise(currentSyncSettingsValues, false, 'a.preview-link');
+  const urlContentScriptCSS = browser.runtime.getURL('contentScript.css');
+  ContentScript.initialise(urlContentScriptCSS, currentSyncSettingsValues, false, 'a.preview-link');
   // Setup message passing and related listeners.
   initAllSharedListeners();
 

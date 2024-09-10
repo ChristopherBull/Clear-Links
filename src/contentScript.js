@@ -3,15 +3,22 @@ import { defaultSettings } from './defaultSettings.js';
 let useShortUrlCache = true;
 let linkSelector = 'a';
 
+// Create a shadow root for the tooltip element
+// This reduces the chance of CSS inheritance and some DOM/JS interaction issues.
+// Also, create a custom element container to encapsulate a shadow DOM, as shadow DOM of the body does not work.
+const shadowDomContainer = document.createElement('clear-link-container');
+const shadowRoot = shadowDomContainer.attachShadow({ mode: 'open' });
+
 /**
  * Initialises the content script.
  * Stores the settings, sets up the message passing, attaches mouse listeners,
  * and appends the tooltip to the DOM.
+ * @param {string} cssURL - The URL of the content script's CSS to be injected into the webpage. Is dynamically loaded because of cross-browser URL scheme differences.
  * @param {object} contentScriptSettings - The settings for the content script.
  * @param {boolean} cacheShortUrls - Flag indicating whether to cache short URLs.
  * @param {string} overrideLinkSelector - Alternative link selector (can be used to specify, e.g., `a.preview` in Options.html).
  */
-export function initialise(contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
+export function initialise(cssURL, contentScriptSettings = defaultSettings, cacheShortUrls = true, overrideLinkSelector) {
   settings = contentScriptSettings;
   useShortUrlCache = cacheShortUrls; // TODO - migrate to settings object (synced storage)
   if (overrideLinkSelector) {
@@ -38,8 +45,15 @@ export function initialise(contentScriptSettings = defaultSettings, cacheShortUr
   // NB: Should be done after overrideLinkSelector is set, so we can use the correct selector.
   attachMouseEnterListeners();
 
+  // Insert CSS into the Shadow DOM
+  const style = document.createElement('link');
+  style.rel = 'stylesheet';
+  style.href = cssURL;
+  shadowRoot.appendChild(style);
+
   // Attach tooltip to DOM (reducing any future mouseover delays, as the tooltip will already be attached to the DOM)
-  document.body.appendChild(tooltip); // TODO refactor into a shared function (shares with `showTooltip()`)
+  shadowRoot.appendChild(tooltip);
+  document.body.appendChild(shadowDomContainer);
 }
 
 // Cache settings
@@ -309,13 +323,6 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', linkSelector, mouseRelativeCursorPosition, {
     hasTooltipAttr,
   });
-  // Show the tooltip - check if already attached to document, then attach if not.
-  if (document.getElementById(tooltipContainerID) === null) {
-    // Initial attach/Re-attach element - lazily attach element upon mouse-over of link.
-    // Some sites detach this element dynamically (i.e. after page load), so check on each mouseover.
-    // Attaching at bottom of document reduces chance of CSS inheritance issues, and stops need to attach/detach after each event.
-    document.body.appendChild(tooltip);
-  }
   // Update tooltip content
   urlText.innerHTML = urlToDisplay;
   secureIcon.style.display = isSecureIcon ? 'inline-block' : 'none';
