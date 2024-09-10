@@ -29,7 +29,7 @@ export default [
     },
     rules: {
       'camelcase': 'warn',
-      // 'capitalized-comments': 'warn', // Broken?!
+      'capitalized-comments': [ 'warn', 'always', { ignoreConsecutiveComments: true } ],
       // 'complexity': 'warn', // why not use sonarjs for this?
       'default-case-last': 'error',
       'default-param-last': 'error',

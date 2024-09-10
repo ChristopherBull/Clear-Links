@@ -25,7 +25,7 @@ function getAllRecursiveKeysAndStructure(obj) {
     if (isObject(obj[property])) {
       keysAndStructure[property] = getAllRecursiveKeysAndStructure(obj[property]);
     } else {
-      keysAndStructure[property] = null; // null is a placeholder for any value, which allows theme values to be of different types
+      keysAndStructure[property] = null; // `null` is a placeholder for any value, which allows theme values to be of different types
     }
   }
   return keysAndStructure;

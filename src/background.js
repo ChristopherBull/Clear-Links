@@ -34,7 +34,7 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
       // TODO - Store response.result.longUrl into a cache/map
       sendResponse(response);
     });
-    return true; // necessary to inform contentScript to expect an Async message response
+    return true; // Necessary to inform contentScript to expect an Async message response
   }
 });
 
@@ -127,7 +127,7 @@ async function injectMainContentScript(srcURL, cssURL, contentScriptSettings) {
  * @param {Function} activationCallback - The callback function to be executed for activation.
  */
 function activateOnTab(tabId, docHostname, activationCallback) {
-  tabExists(tabId, function() { // i.e. don't activate on Options page
+  tabExists(tabId, function() { // Don't activate on Options page
     switch (currentLocalSettingsValues.activationFilter) {
       case 1: // Allow All
         activationCallback();
@@ -236,7 +236,7 @@ function expandUrlBitLy(url, callbackAfterExpansion) {
           // Create the JSON formatted response expected in contentScript: response.result.longUrl
           callbackAfterExpansion({
             result: { longUrl: jsonResponse.long_url },
-            source: { url }, // for checking if the response is for the moused-over link (protect against delayed responses)
+            source: { url }, // For checking if the response is for the moused-over link (protect against delayed responses)
           });
         } else {
           console.error('Bit.ly error (' + response.status + '): ' + jsonResponse.message + ' - ' + jsonResponse.description);

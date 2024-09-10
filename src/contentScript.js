@@ -490,7 +490,7 @@ function expandShortUrl(sourceElem, quickExpandUrl = '', bRecursiveIsShort = fal
         window.postMessage({ type: 'FROM_PAGE_SHORT_URL', message: { shortURL: sourceElem.href, checkCache: useShortUrlCache } }, '*');
         return { isShort: true, toExpand: true, quickExpand: quickExpandUrl };
       case 't.co':
-        if (window.location.hostname === 'twitter.com') { // only guarantee correct URL if on Twitter.com
+        if (window.location.hostname === 'twitter.com') { // Only guarantee correct URL if on Twitter.com
           try {
             // Attempt to expand the source behind the t.co link (unless it is a further 't.co' link; avoids indefinite recursive loops).
             let expandedUrl;

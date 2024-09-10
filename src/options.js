@@ -38,7 +38,7 @@ allLinks.forEach((elem) => {
   });
 });
 
-// handle proper selection for initial load
+// Handle proper selection for initial load
 const currentHash = window.location.hash;
 let activeLink = document.querySelector('.tabs a');
 
@@ -750,7 +750,7 @@ function isValidUrl(sUrl) {
   if (!sUrl) {
     throw new Error('URL is empty');
   }
-  // include URL protocol if not specified (otherwise URL constructor will throw exception)
+  // Include URL protocol if not specified (otherwise URL constructor will throw exception)
   if (!sUrl.includes('://')) {
     sUrl = 'http://' + sUrl;
   }

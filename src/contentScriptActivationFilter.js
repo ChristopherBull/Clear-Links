@@ -19,6 +19,6 @@ if (!document.hasFocus()) {
   window.addEventListener('focus', activateMainContentScripts, { once: true });
 }
 
-// Initial activation request (will be rejected if tab is preloading)
+// Initial activation request (will be rejected if tab is preloading).
 // Will occur before load/ready events.
 activateMainContentScripts();

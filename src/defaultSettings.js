@@ -21,17 +21,17 @@ export const defaultSettings = {
   'background': '#ffffff',
   'border': '1px solid #A2A0A0',
   'border-radius': '3px',
-  'cssColorBorder': '#A2A0A0', // border-color
+  'cssColorBorder': '#A2A0A0',
   // Style - icon
-  'cssBackgroundColorIcon': '#808080', // Grey
+  'cssBackgroundColorIcon': '#808080',
   // Style - p
-  'cssColorGeneralURLText': '#dddddd', // color
+  'cssColorGeneralURLText': '#dddddd',
   'font-family': 'sans-serif',
   'font-size': 'small',
   // Style - span Domain
-  'cssColorDomainText': '#808080', // color
+  'cssColorDomainText': '#808080',
   // Style - span MailTo
-  'cssColorMailto': '#808080', // color
+  'cssColorMailto': '#808080',
   // Animation
   'durationDelay': 100,
   'durationFadeIn': 150,
