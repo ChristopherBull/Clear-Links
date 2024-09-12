@@ -40,10 +40,18 @@ export default defineConfig({
     //   use: { ...devices['Desktop Chrome'] },
     // },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+      // Cannot run Firefox tests in parallel due to install workaround in
+      // `test/e2e/fixtures/fixtures.js` using RDP (only 1 browser instance
+      // can listen/connect to RDP port at a time).
+      // NOTE: This is a temporary workaround until Playwright supports
+      // installing Firefox extensions (microsoft/playwright#7297), after which
+      // this `fullyParallel` option can be deleted (i.e. inherit from
+      // the global config).
+      fullyParallel: false,
+    },
 
     // {
     //   name: 'webkit',
