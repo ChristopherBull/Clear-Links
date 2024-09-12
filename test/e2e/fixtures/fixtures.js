@@ -22,13 +22,13 @@ async function getBrowserContextWithExtension(browserName) {
       headless: false,
       args: [
         // Browser-specific flags
-        '--headless=new', // Force head-full mode
+        '--headless=new', // Force headless mode which is compatible with extensions
         `--disable-extensions-except=${extensionPath[browserName]}`,
         `--load-extension=${extensionPath[browserName]}`,
       ],
     },
     firefox: {
-      headless: false,
+      headless: true,
       args: [ '-start-debugger-server', String(RDP_PORT) ],
       firefoxUserPrefs: {
         'devtools.debugger.remote-enabled': true,
