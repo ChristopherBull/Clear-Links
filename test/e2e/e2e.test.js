@@ -31,4 +31,15 @@ test.describe('Tooltip shows', () => {
     // Check if tooltip is visible
     await expect(tooltip).toBeVisible();
   });
+
+  test('tooltip hides on link mouseleave', async ({ page }) => {
+    // Hover over link to show tooltip
+    await page.hover('a#link-https');
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+    // Move mouse away from link to hide tooltip
+    await page.mouse.move(0, 0);
+    // Check if tooltip is visible
+    await expect(tooltip).toHaveCSS('opacity', '0');
+  });
 });
