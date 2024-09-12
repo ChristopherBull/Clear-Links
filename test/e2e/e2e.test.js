@@ -20,6 +20,11 @@ test.describe('Tooltip shows', () => {
     await tooltip.waitFor({ state: 'attached' });
   });
 
+  test('tooltip hidden initially', async () => {
+    // Check if tooltip is visible
+    await expect(tooltip).toBeHidden();
+  });
+
   test('tooltip shown on link hover', async ({ page }) => {
     // Hover over link to show tooltip
     await page.hover('a#link-https');
