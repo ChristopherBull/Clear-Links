@@ -39,6 +39,34 @@ test.describe('Tooltip shows', () => {
     await expect(tooltip).toBeVisible();
     // Move mouse away from link to hide tooltip
     await page.mouse.move(0, 0);
+    // Check if tooltip is hidden
+    await expect(tooltip).toBeHidden();
+  });
+
+  test('tooltip shows on second separate link mouseover event', async ({ page }) => {
+    // Check if moving mouse cursor over multiple links hides the tooltip correctly
+    // Hover over link to show tooltip
+    await page.hover('a#link-https');
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+    // Hover over another link to show tooltip
+    await page.hover('a#link-http');
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+  });
+
+  test('tooltip hides after two separate link mouseover events', async ({ page }) => {
+    // Check if moving mouse cursor over multiple links hides the tooltip correctly
+    // Hover over link to show tooltip
+    await page.hover('a#link-https');
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+    // Hover over another link to show tooltip
+    await page.hover('a#link-http');
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+    // Move mouse away from link to hide tooltip
+    await page.mouse.move(0, 0);
     // Check if tooltip is visible
     await expect(tooltip).toBeHidden();
   });
