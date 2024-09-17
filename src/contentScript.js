@@ -1,7 +1,8 @@
 import { defaultSettings } from './defaultSettings.js';
 
 let useShortUrlCache = true;
-let linkSelector = 'a';
+let linkSelector = 'a'; // May include class/ID when overridden during initialisation
+const linkSelectorNodeName = 'A'; // Used for nodeName check in mouseenter event listener
 
 // Create a shadow root for the tooltip element
 // This reduces the chance of CSS inheritance and some DOM/JS interaction issues.
@@ -44,6 +45,24 @@ export function initialise(cssURL, contentScriptSettings = defaultSettings, cach
   // Attach mouse enter listeners
   // NB: Should be done after overrideLinkSelector is set, so we can use the correct selector.
   attachMouseEnterListeners();
+  // Animation listeners - setting display:none only when opacity reaches 0, otherwise it cancels the fade-out animation.
+  // Note: listen for 'transitioncancel', as well as 'transitionend', to
+  // ensure the tooltip is hidden when the opacity reaches 0. This is because
+  // the 'transitionend' event may not fire with quick/automated movements.
+  const animationEndListeners = [ 'transitionend', 'transitioncancel' ];
+  animationEndListeners.forEach((eventName) => {
+    tooltip.addEventListener(eventName, (event) => {
+      // Properly hide the tooltip when the opacity reaches 0 and no animations are running
+      // Opacity 0 is still considered visible (e.g. selectable), so need to set display to 'none'.
+      // Sometimes the tooltip may have multiple ongoing animations (fast
+      // mouse movements) or be transitioning to a visible state, so check
+      // if the opacity is already 0 and no animations are running. Then jump
+      // straight to display=none.
+      if (event.propertyName === 'opacity' && tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
+        tooltip.style.display = 'none';
+      }
+    });
+  });
 
   // Insert CSS into the Shadow DOM
   const style = document.createElement('link');
@@ -151,9 +170,8 @@ function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   const wrappedHandler = (e) => {
     if (!e.target) return;
     const targetElement = e.target.closest(selector);
-    if (targetElement) {
-      eventHandler.call(targetElement, e);
-    }
+    if (!targetElement) return;
+    eventHandler.call(targetElement, e);
   };
   // Add the wrapped event handler to the element
   // Note: useCapture is set to true otherwise the
@@ -381,17 +399,25 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
     window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition);
     // Hide the Tooltip.
     tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
-    tooltip.style.opacity = 0; // Transition to new opacity value
-    // Set display to none after transition ends
-    // Must wait for transitionend event before changing display property,
-    // otherwise it disappears instantly and ignores animations.
-    tooltip.addEventListener('transitionend', (event) => {
-      // A transition may end before reaching 0 opacity (e.g. starting a mouseover for a new link), so check for this.
-      if (event.propertyName === 'opacity' && tooltip.style.opacity == 0) {
-        // Hide the tooltip - prevents it from interfering with the mouse cursor, despite being invisible.
+
+    // Sometimes the tooltip may have multiple ongoing animations (fast mouse movements),
+    // so check if the opacity is already 0 and no animations are running. Then jump straight to display=none.
+    // Otherwise, set opacity to 0 and wait for transitionend event before setting display to none.
+    if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
+      // Transition already complete, so set display to none
+      tooltip.style.display = 'none';
+    } else {
+      // Transition to new opacity value
+      tooltip.style.opacity = 0;
+      // Check again if opacity is 0 (after just setting it) and if any
+      // animations are created. This is a necessary backup check, in case
+      // transitionend/cancel event doesn't fire. For example, if the user
+      // moves the mouse quickly over multiple links, opacity may be 0 but no
+      // transitionend/cancel event may occur.
+      if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
         tooltip.style.display = 'none';
       }
-    }, { once: true });
+    }
   }, { once: true });
 }
 
