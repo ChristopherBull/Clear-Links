@@ -206,7 +206,12 @@ function addDelegatedEventListenerWithParams(el, eventName, selector, eventHandl
  */
 function attachMouseEnterListeners() {
   // Attach and detach the tooltip -- this works for current and dynamically (future) created elements
-  addDelegatedEventListener(document.body, 'mouseenter', linkSelector, function() {
+  addDelegatedEventListener(document.body, 'mouseenter', linkSelector, function(e) {
+    // As Delegated Event Listener can activate multiple times for a single
+    // link (layered DOM elements), we need to check the targetElement to
+    // reduce multiple unnecessary activations.
+    if (e.target.nodeName !== linkSelectorNodeName) return;
+    // Prepare to show the tooltip
     if (!this.href) {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
