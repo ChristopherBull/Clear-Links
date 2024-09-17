@@ -40,6 +40,6 @@ test.describe('Tooltip shows', () => {
     // Move mouse away from link to hide tooltip
     await page.mouse.move(0, 0);
     // Check if tooltip is visible
-    await expect(tooltip).toHaveCSS('opacity', '0');
+    await expect(tooltip).toBeHidden();
   });
 });
