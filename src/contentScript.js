@@ -10,6 +10,9 @@ const linkSelectorNodeName = 'A'; // Used for nodeName check in mouseenter event
 const shadowDomContainer = document.createElement('clear-link-container');
 const shadowRoot = shadowDomContainer.attachShadow({ mode: 'open' });
 
+// State variables
+let hasTooltipAttr = false;
+
 /**
  * Initialises the content script.
  * Stores the settings, sets up the message passing, attaches mouse listeners,
@@ -63,6 +66,8 @@ export function initialise(cssURL, contentScriptSettings = defaultSettings, cach
       }
     });
   });
+  // Attach mouse move event listener to track cursor position (for tooltip positioning)
+  window.addEventListener('mousemove', mouseRelativeCursorPosition);
 
   // Insert CSS into the Shadow DOM
   const style = document.createElement('link');
@@ -177,26 +182,6 @@ function addDelegatedEventListener(el, eventName, selector, eventHandler) {
   // Note: useCapture is set to true otherwise the
   // event will not be appropriately delegated.
   el.addEventListener(eventName, wrappedHandler, true);
-  return wrappedHandler;
-}
-
-/**
- * Add a delegated event listener to an element and pass additional parameters
- * to the event handler. This is done by wrapping the provided eventHandler.
- * Enables clean removal of event listener in the future by returning the
- * wrapped event handler.
- * @param {string} el - The element to attach the event listener to.
- * @param {string} eventName - The name of the event to listen for.
- * @param {string} selector - The element selector to filter the event target by.
- * @param {Function} eventHandler - The function to be executed when the event is fired.
- * @param {object} params - The parameters to be passed to the event handler.
- * @returns {Function} The wrapped event handler. Useful for tracking removal of event listeners.
- */
-function addDelegatedEventListenerWithParams(el, eventName, selector, eventHandler, params) {
-  const wrappedHandler = (e) => {
-    eventHandler(e, params);
-  };
-  addDelegatedEventListener(el, eventName, selector, wrappedHandler);
   return wrappedHandler;
 }
 
@@ -369,13 +354,8 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   if (urlToDisplay === undefined || urlToDisplay.trim() === '') {
     return;
   }
-
-  // Attach mouse move event to track cursor position (for tooltip positioning)
-  const hasTooltipAttr = elem.title !== undefined && elem.title !== '';
-  // TODO - not necessary if using absolute corner positioning in options
-  const wrappedMouseRelativeCursorPosition = addDelegatedEventListenerWithParams(window, 'mousemove', linkSelector, mouseRelativeCursorPosition, {
-    hasTooltipAttr,
-  });
+  // Record state of tooltip attributes used for mousemove event
+  hasTooltipAttr = elem.title !== undefined && elem.title !== '';
   // Update tooltip content
   urlText.innerHTML = urlToDisplay;
   secureIcon.style.display = isSecureIcon ? 'inline-block' : 'none';
@@ -400,8 +380,6 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   // Hide the Tooltip when mouse leaves link.
   // Add a one-time mouseleave event to the link, to cancel additional mousemove tracking when not over a link.
   elem.addEventListener('mouseleave', () => {
-    // Cancel additional mousemove tracking when not over a link.
-    window.removeEventListener('mousemove', wrappedMouseRelativeCursorPosition);
     // Hide the Tooltip.
     tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
 
@@ -498,14 +476,16 @@ function cacheWinDimensions() {
  * Calculates the relative cursor position for a mouse event and adjusts the position of the tooltip accordingly.
  * Determines if tooltip breaches the window, and adjusts the position to keep it viewable.
  * @param {MouseEvent} e - The mouse event object.
- * @param {object} params - Additional parameters for the function.
- * @param {boolean} params.hasTooltipAttr - Indicates whether the element has a tooltip attribute.
  */
-function mouseRelativeCursorPosition(e, params) {
+function mouseRelativeCursorPosition(e) {
+  // Check if the tooltip is visible, otherwise don't bother calculating position
+  if (!tooltip.checkVisibility()) return;
+
+  // Calculate relative position for tooltip offset
   let top;
   if ((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {
     // Elements with existing default tooltips will cover ours, so adjust position.
-    if (params.hasTooltipAttr) {
+    if (hasTooltipAttr) {
       top = (e.clientY - (tooltip.offsetHeight / 2)); // Avoid "real" tooltips obscuring my tooltip
     } else {
       top = (e.clientY + 20);
