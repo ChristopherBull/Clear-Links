@@ -36,7 +36,7 @@
     "eslint-plugin-css": "^0.11.0",
     "eslint-plugin-jsdoc": "^50.2.4",
     "eslint-plugin-mocha": "^10.5.0",
-    "eslint-plugin-sonarjs": "^1.0.4",
+    "eslint-plugin-sonarjs": "^2.0.2",
     "http-server": "^14.1.1",
     "husky": "^9.1.6",
     "markdownlint-cli2": "^0.14.0",
