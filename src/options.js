@@ -755,7 +755,7 @@ function isValidUrl(sUrl) {
   }
   // Include URL protocol if not specified (otherwise URL constructor will throw exception)
   if (!sUrl.includes('://')) {
-    sUrl = 'http://' + sUrl;
+    sUrl = 'https://' + sUrl;
   }
   // Create URL object
   try {

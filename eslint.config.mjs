@@ -109,7 +109,11 @@ export default [
       // TODO Update/enable these rules. Only temporarily disabled.
       'jsdoc/no-defaults': 0,
       'sonarjs/cognitive-complexity': 0,
+      'sonarjs/sonar-max-params': 0,
       'sonarjs/no-duplicate-string': 0,
+      'sonarjs/todo-tag': 0,
+      // Broken rules
+      'sonarjs/sonar-no-fallthrough': 0, // Broken in eslint-plugin-sonarjs v2.0.2
 
       // Stylistic rules
       ...stylistic.configs['recommended-flat'].rules,

@@ -201,7 +201,7 @@ function attachMouseEnterListeners() {
       return; // Ignore elements with no href attr (empty href still report a URL though)
     }
     switch (this.protocol) {
-      // eslint-disable-next-line no-script-url
+      // eslint-disable-next-line no-script-url, sonarjs/code-eval
       case 'javascript:':
         if (settings.displayJavascriptLinks) {
           showTooltip(this, '&#x200B;', false, true, false);
@@ -373,6 +373,7 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 
   // Show the Tooltip
   tooltip.style.display = 'inherit';
+  // eslint-disable-next-line sonarjs/no-unused-expressions
   tooltip.clientHeight; // Forces the browser to "reflow"
   tooltip.style.transitionDuration = settings.durationFadeIn + 'ms';
   tooltip.style.opacity = 1; // Transition to new opacity value
