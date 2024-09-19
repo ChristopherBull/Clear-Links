@@ -481,6 +481,9 @@ function mouseRelativeCursorPosition(e) {
   // Check if the tooltip is visible, otherwise don't bother calculating position
   if (!tooltip.checkVisibility()) return;
 
+  // Check if the mouse is over a link, and whether the tooltip should follow the cursor during fade out
+  if (!settings.followCursorDuringFadeOut && !e.target?.closest(linkSelector)) return;
+
   // Calculate relative position for tooltip offset
   let top;
   if ((e.clientY + tooltip.offsetHeight + 50) <= winDimensions.h) {

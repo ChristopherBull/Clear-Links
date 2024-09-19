@@ -36,6 +36,7 @@ export const defaultSettings = {
   'durationDelay': 100,
   'durationFadeIn': 150,
   'durationFadeOut': 200,
+  'followCursorDuringFadeOut': true,
 };
 // Local (not synced) default settings
 export const defaultSettingsLocal = {

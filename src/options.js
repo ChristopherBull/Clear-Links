@@ -123,6 +123,7 @@ let chkDisplayShortUrlsOnly;
 let durationDelay;
 let durationFadeIn;
 let durationFadeOut;
+let chkFollowCursorDuringFadeOut;
 let colorBackground;
 let colorBorder;
 let colorDomainText;
@@ -192,6 +193,7 @@ async function initialize() {
   durationDelay = document.getElementById('durationDelay');
   durationFadeIn = document.getElementById('durationFadeIn');
   durationFadeOut = document.getElementById('durationFadeOut');
+  chkFollowCursorDuringFadeOut = document.getElementById('chkFollowCursorDuringFadeOut');
   colorBackground = document.getElementById('colorBackground');
   colorBorder = document.getElementById('colorBorder');
   colorDomainText = document.getElementById('colorDomainText');
@@ -494,6 +496,7 @@ async function restoreSettings() {
     durationDelay.value = currentSyncSettingsValues.durationDelay;
     durationFadeIn.value = currentSyncSettingsValues.durationFadeIn;
     durationFadeOut.value = currentSyncSettingsValues.durationFadeOut;
+    chkFollowCursorDuringFadeOut.checked = currentSyncSettingsValues.followCursorDuringFadeOut;
     themeSelect.value = currentSyncSettingsValues.theme;
     colorBackground.value = currentSyncSettingsValues.background;
     colorBorder.value = currentSyncSettingsValues.cssColorBorder;
