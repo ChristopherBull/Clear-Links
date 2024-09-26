@@ -1,8 +1,7 @@
 import { expect, test } from './fixtures/fixtures.js';
 
 test.describe('Extension loads', () => {
-  test('extension loads and activates on webpage', async ({ context }) => {
-    const page = await context.newPage();
+  test('extension loads and activates on webpage', async ({ page }) => {
     await page.goto('/');
     const elementExists = page.locator('#cl-container');
     await expect(elementExists).toBeAttached();
