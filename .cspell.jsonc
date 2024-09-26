@@ -32,6 +32,8 @@
         "playwright-report/**"
     ],
     "words": [
+        // Browser extension IDs
+        "banknjcfbmhcbebgekpcenheaghfcood",
         // Brands, names
         "chromimum",
         // Technical terms
