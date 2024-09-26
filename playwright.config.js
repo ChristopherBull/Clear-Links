@@ -13,6 +13,7 @@ const TESTING_WEBSERVER_BASE_URL = 'http://127.0.0.1:8080';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  outputDir: 'docs/test-results/e2e/playwright',
   testDir: './test/e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -23,7 +24,9 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: [
+    [ 'html', { outputFolder: 'docs/test-results/e2e/playwright-report' } ],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */

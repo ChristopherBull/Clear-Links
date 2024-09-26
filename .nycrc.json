@@ -3,6 +3,7 @@
     "include": [
         "src/**/*.js"
     ],
+    "report-dir": "./docs/test-results/specs/coverage",
     "reporter": [
         "lcov",
         "text-summary"

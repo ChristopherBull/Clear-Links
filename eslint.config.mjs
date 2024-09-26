@@ -190,7 +190,7 @@ export default [
       'dist/**',
       'node_modules/**',
       'playwright-report/**',
-      'test-results/**',
+      'docs/test-results/**',
     ],
   },
 ];

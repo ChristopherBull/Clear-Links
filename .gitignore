@@ -10,10 +10,9 @@ res/lib/browser-polyfill.min.js
 # NodeJS
 node_modules/
 
-# Test coverage reports
-.nyc_output
-coverage
-/test-results/
-/playwright-report/
+# Test/coverage reports
 /blob-report/
+/docs/test-results/
+# Testing cache directories
+.nyc_output
 /playwright/.cache/

@@ -9,7 +9,7 @@
     "build:package:ff": "web-ext build --source-dir dist/firefox --overwrite-dest",
     "lint": "npm run lint:md && npm run lint:css && npm run lint:src && make build_ff_only && npm run lint:web-ext:ff",
     "lint:css": "stylelint \"src/**/*.css\"",
-    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"!node_modules\" \"!docs/test-results\" \"!dist\"",
     "lint:src": "eslint src test",
     "lint:web-ext:ff": "web-ext lint --source-dir ./dist/firefox/",
     "spell": "cspell .",
