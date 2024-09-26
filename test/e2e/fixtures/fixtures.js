@@ -67,11 +67,24 @@ export const test = base.test.extend({
     await use(context);
     await context.close();
   },
-  page: async ({ browserName }, use) => {
-    const context = await getBrowserContextWithExtension(browserName);
-    const page = await context.newPage();
+  extensionId: async ({ backgroundPage }, use) => {
+    // Get extension ID from chromium extension
+    // NOTE: other browser's service workers not yet supported by Playwright
+    const extensionId = backgroundPage.url().split('/')[2];
+    await use(extensionId);
+  },
+  // Extension's background page, a.k.a. Service Worker (MV3 replaced background pages with Service Workers)
+  backgroundPage: async ({ context }, use) => {
+    // Get the service worker
+    let [ background ] = context.serviceWorkers();
+    if (!background) {
+      background = await context.waitForEvent('serviceworker');
+    }
+    await use(background);
+  },
+  optionsPage: async ({ page, extensionId }, use) => {
+    await page.goto(`chrome-extension://${extensionId}/options.html`);
     await use(page);
-    await context.close();
   },
 });
 export const expect = test.expect;
