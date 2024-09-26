@@ -24,6 +24,7 @@
         ".vscode/**",
         "coverage/**",
         "dist/**",
+        "docs/test-results/**",
         "res/lib/**",
         "Makefile",
         "node_modules/**",
@@ -40,8 +41,10 @@
         "camelcase",
         "nonconstructor",
         "webextensions",
-        // Libraries / APIs
+        // Libraries / APIs (and terms related to them)
         "commitlint",
+        "monocart",
+        "serviceworker",
         "sonarjs",
         "urlshortener",
         "bitlink",

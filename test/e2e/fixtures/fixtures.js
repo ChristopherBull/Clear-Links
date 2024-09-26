@@ -1,4 +1,5 @@
 import { test as base, chromium, firefox } from '@playwright/test';
+import { addCoverageReport } from 'monocart-reporter';
 import { connect } from '../../../node_modules/web-ext/lib/firefox/remote.js';
 import path from 'path';
 
@@ -62,6 +63,42 @@ async function getBrowserContextWithExtension(browserName) {
 }
 
 export const test = base.test.extend({
+  autoTestFixture: [ async ({ page, browserName }, use) => {
+    // Enable coverage reports
+    // Note: Coverage API may only be available for specific browsers
+    const isCoverageAvailable = browserName.toLowerCase() === 'chromium';
+
+    // Start JS and CSS coverage collection
+    if (isCoverageAvailable) {
+      await Promise.all([
+        page.coverage.startJSCoverage({
+          resetOnNavigation: false,
+        }),
+        page.coverage.startCSSCoverage({
+          resetOnNavigation: false,
+        }),
+      ]);
+    }
+
+    await use('autoTestFixture');
+
+    // Stop JS and CSS coverage collection
+    if (isCoverageAvailable) {
+      const [ jsCoverage, cssCoverage ] = await Promise.all([
+        page.coverage.stopJSCoverage(),
+        page.coverage.stopCSSCoverage(),
+      ]);
+      const coverageList = [ ...jsCoverage, ...cssCoverage ];
+      // Handle Playwright's raw coverage reports
+      // Skip processing if any tests do not create coverage data
+      if (coverageList.length) {
+        await addCoverageReport(coverageList, test.info());
+      }
+    }
+  }, {
+    scope: 'test',
+    auto: true,
+  } ],
   context: async ({ browserName }, use) => {
     const context = await getBrowserContextWithExtension(browserName);
     await use(context);

@@ -61,6 +61,16 @@ jobs:
         name: E2E - Playwright Testing Report
         path: docs/test-results/e2e/playwright-report/
         retention-days: 30
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: E2E - Monocart Testing and Coverage Report
+        path: docs/test-results/e2e/monocart-report/
+        retention-days: 30
+    - name: Add markdown E2E coverage report to job summary
+      run: |
+        cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
+        cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
 
   release:
     name: Release

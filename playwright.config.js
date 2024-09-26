@@ -25,7 +25,36 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
+    process.env.CI
+      ? [ 'dot' ]
+      : [ 'list' ],
     [ 'html', { outputFolder: 'docs/test-results/e2e/playwright-report' } ],
+    [ 'monocart-reporter', {
+      name: 'E2E Testing of Clear Links',
+      outputFile: './docs/test-results/e2e/monocart-report/index.html',
+      // global coverage report options
+      coverage: {
+        // all: [ './dist' ],
+        // entryFilter: entry => !entry.url.includes('/lib/'), // Skip 3rd-party library files
+        // sourceFilter: sourcePath => sourcePath.search(/src\/.+/) !== -1,
+        entryFilter: {
+          '**/node_modules/**': false,
+          '**/lib/**': false, // Skip any included 3rd-party libraries
+          // Coverage reports are only available for V8-based browsers, so filter by relevant extension IDs
+          '**/banknjcfbmhcbebgekpcenheaghfcood/*': true, // Chrome extension ID
+        },
+        sourceFilter: {
+          '**/node_modules/**': false,
+          '**/src/**': true,
+        },
+        reports: process.env.CI
+          // All runs generate a v8 report.
+          // Only CI generates the markdown report (for GitHub Actions step summary).
+          ? [ 'v8', 'console-summary', 'markdown-summary', 'markdown-details' ]
+          // Only run v8-json outside CI (for IDE extensions)
+          : [ 'v8', 'console-details', 'v8-json', 'markdown-summary', 'markdown-details' ],
+      },
+    } ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {

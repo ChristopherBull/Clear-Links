@@ -30,3 +30,7 @@ jobs:
         name: playwright-report
         path: docs/test-results/e2e/playwright-report/
         retention-days: 30
+    - name: Add markdown E2E coverage report to job summary
+      run: |
+        cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
+        cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
