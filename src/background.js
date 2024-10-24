@@ -1,4 +1,6 @@
 import './lib/browser-polyfill.min.js';
+import * as ActionBadge from './action-badge.js';
+import * as Permissions from './permissions.js';
 import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 
 // Local settings (e.g. page activation options and locally stored auth tokens)
@@ -65,6 +67,38 @@ async function initialise() {
     // Cache the synced settings with the offline settings
     currentSyncSettingsValues = currentLocalSettingsValues.syncOffline;
   }
+
+  // Check permissions
+  // Regardless of whether host permissions for `http(s)://*/` are required
+  // or optional in the manifest, browsers may require the user to explicitly
+  // grant them. This is especially true for Firefox, which requires the user
+  // to grant host permissions for all websites. If the user denies these
+  // permissions, the extension will not work.
+  const criticalPermissionsGranted = await Permissions.areCriticalPermissionsGranted();
+  // Set Action Badge text to indicate user attention is required to fix a permissions issue
+  if (!criticalPermissionsGranted) {
+    ActionBadge.setErrorStatus();
+  }
+
+  // These permissions event listeners are only for permissions that require
+  // user attention. They have to be checked in the background script as well
+  // as the action popup script, as either can be the first to detect a
+  // permissions change (and the other may not be active).
+  browser.permissions.onAdded.addListener((permissions) => {
+    // Check that all permissions that require user attention are granted
+    if (Permissions.containsCriticalPermissions(permissions)) {
+      // Clear permissions warnings
+      // Ensure badge text/status is hidden
+      ActionBadge.clearStatus();
+    }
+  });
+  browser.permissions.onRemoved.addListener((permissions) => {
+    if (Permissions.containsCriticalPermissions(permissions)) {
+      // Set Action Badge text to indicate user attention is required to fix a permissions issue
+      // This is a critical status, not a warning, as without the critical permissions the core extension functionality cannot work.
+      ActionBadge.setErrorStatus();
+    }
+  });
 }
 
 /**

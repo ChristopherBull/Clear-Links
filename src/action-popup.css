@@ -1,0 +1,116 @@
+html {
+  min-width: 25em;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #005a9c;
+}
+
+#permission-status {
+  display: none;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+#permission-status svg {
+  width: 36px;
+  height: 36px;
+  vertical-align: middle;
+  margin-right: .75em;
+}
+
+#permission-status svg.status-warning-icon {
+  fill: #ffa500;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.button-accept {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.button-accept:hover {
+  background-color: #218838;
+}
+
+.button-neutral {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.button-neutral:hover {
+  background-color: #5a6268;
+}
+
+#permission-status button {
+  margin-left: 1.25em;
+}
+
+#permission-status #status-more-info {
+  display: none;
+  margin-top: .5em;
+}
+
+#link-all-settings {
+  color: #005a9c;
+  cursor: pointer;
+  float: right;
+  text-decoration: none;
+  font-size: smaller;
+  vertical-align: middle;
+}
+
+#icon-settings {
+  width: 24px;
+  height: 24px;
+  fill: #7e7e7e;
+  transition: fill 0.3s;
+  vertical-align: text-top;
+}
+
+#link-all-settings:hover {
+  color: #003f6b;
+}
+
+#link-all-settings:hover #icon-settings {
+  fill: #444;
+}
+
+#link-all-settings:hover .heading-link-text {
+  text-decoration: underline;
+}
+
+#icon-open-in-new {
+  width: 16px;
+  height: 16px;
+  fill: #005a9c;
+  vertical-align: text-top;
+}
+
+#link-all-settings:hover #icon-open-in-new {
+  fill: #003f6b;
+}
