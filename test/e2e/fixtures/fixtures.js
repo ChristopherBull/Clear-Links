@@ -99,6 +99,16 @@ export const test = base.test.extend({
     scope: 'test',
     auto: true,
   } ],
+  browserExtensionUrlProtocol: async ({ browserName }, use) => {
+    // Get the extension protocol for the browser
+    if (browserName === 'chromium') {
+      await use('chrome-extension');
+    } else if (browserName === 'firefox') {
+      await use('moz-extension');
+    } else {
+      throw new Error(`Unsupported browser: ${browserName}`);
+    }
+  },
   context: async ({ browserName }, use) => {
     const context = await getBrowserContextWithExtension(browserName);
     await use(context);
