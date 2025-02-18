@@ -246,7 +246,7 @@ body {
   margin: 16px;
   border-radius: 16px;
   background-color: var(--white);
-  box-shadow: rgba(100 100 111 0.2) 0 7px 29px 0;
+  box-shadow: rgb(100 100 111 / 20%) 0 7px 29px 0;
 }
 
 header {

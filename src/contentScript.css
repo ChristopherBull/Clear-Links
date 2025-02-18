@@ -68,7 +68,7 @@
 }
 
 /** Mozilla Firefox */
-@-moz-document url-prefix() {
+@supports (-moz-appearance:none) {
   .cl-icon-padlock-locked {
     mask-image: url('moz-extension://__MSG_@@extension_id__/images/lock.svg');
   }
