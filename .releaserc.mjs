@@ -1,8 +1,34 @@
 export default {
   branches: [ 'main' ],
   plugins: [
-    '@semantic-release/commit-analyzer',
-    '@semantic-release/release-notes-generator',
+    [
+      '@semantic-release/commit-analyzer',
+      {
+        preset: 'conventionalcommits',
+      },
+    ],
+    [
+      '@semantic-release/release-notes-generator',
+      {
+        preset: 'conventionalcommits',
+        // Override the default type definitions to include emojis
+        presetConfig: {
+          types: [
+            { type: 'feat', section: '✨ Features' },
+            { type: 'fix', section: '🐛 Bug Fixes' },
+            { type: 'docs', section: '📝 Documentation' },
+            { type: 'style', section: '💄 Styles' },
+            { type: 'refactor', section: '♻️ Code Refactoring' },
+            { type: 'perf', section: '⚡ Performance Improvements' },
+            { type: 'test', section: '✅ Tests' },
+            { type: 'build', section: '👷 Build System' },
+            { type: 'ci', section: '🤖 Continuous Integration' },
+            { type: 'chore', section: '🛠️ Chores', hidden: true },
+            { type: 'revert', section: '⏪ Reverts' },
+          ],
+        },
+      },
+    ],
     [
       'semantic-release-chrome',
       {
