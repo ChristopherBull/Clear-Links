@@ -24,7 +24,24 @@ Use the Makefile with the command `make` to prepare this extension. Files are co
 
 ## The Design
 
-The extension has three layers:
-Background -> content-script ([ISOLATED](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts#isolated_world)) -> content-script (MAIN)
+The extension consists of three architectural layers:
 
-The content script acts as a proxy for messages to the backend script. This is required for features that need access to `browser.*` APIs under the more secure Manifest V3.
+1. **Background** – The backend script handling core logic and interacting with browser APIs.
+2. **Content Script (ISOLATED)** – An execution environment [isolated from the page's context](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/scripting/ExecutionWorld).
+3. **Content Script (MAIN)** – The main script injected into webpages to interact with the DOM.
+
+```mermaid
+graph LR;
+  subgraph Browser
+    A[Extension<br>Background Script] 
+  end
+
+  subgraph Web Page [Browser Tab / Web Page]
+    B["Extension<br>Content Script (ISOLATED)"] <-->|Message Passing| C["Extension<br>Content Script (MAIN)"];
+    C -->|Interact with| D[Web Page];
+  end
+
+  A <-->|Message Passing| B;
+```
+
+Due to the stricter security model in [Manifest V3](https://extensionworkshop.com/documentation/develop/manifest-v3-migration-guide/), direct access to `browser.*` APIs from content scripts is restricted by using isolated environments by default. For a background script to interact with a web page, [message passing](https://developer.chrome.com/docs/extensions/develop/concepts/messaging) is used; a content script added to the main execution environment forwards messages to the background script via the isolated content script, ensuring a secure communication flow.
