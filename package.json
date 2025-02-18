@@ -32,7 +32,7 @@
     "@stylistic/stylelint-plugin": "^3.0.1",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "cross-env": "^7.0.3",
-    "cspell": "^8.14.4",
+    "cspell": "^8.17.3",
     "eslint": "^9.10.0",
     "eslint-plugin-css": "^0.11.0",
     "eslint-plugin-jsdoc": "^50.2.4",
