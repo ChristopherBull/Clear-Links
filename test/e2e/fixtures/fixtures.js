@@ -1,5 +1,7 @@
 import { test as base, chromium, firefox } from '@playwright/test';
 import { addCoverageReport } from 'monocart-reporter';
+// Import `Connect` from the internal API of the `web-ext` package (required for Firefox RDP workaround)
+// eslint-disable-next-line sonarjs/no-internal-api-use
 import { connect } from '../../../node_modules/web-ext/lib/firefox/remote.js';
 import path from 'path';
 

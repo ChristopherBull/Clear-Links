@@ -373,7 +373,6 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
 
   // Show the Tooltip
   tooltip.style.display = 'inherit';
-  // eslint-disable-next-line sonarjs/no-unused-expressions
   tooltip.clientHeight; // Forces the browser to "reflow"
   tooltip.style.transitionDuration = settings.durationFadeIn + 'ms';
   tooltip.style.opacity = 1; // Transition to new opacity value
