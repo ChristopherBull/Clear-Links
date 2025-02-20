@@ -16,3 +16,6 @@ node_modules/
 # Testing cache directories
 .nyc_output
 /playwright/.cache/
+
+# Documentation generation
+swark-output/
