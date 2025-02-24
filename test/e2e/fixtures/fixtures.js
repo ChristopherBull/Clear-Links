@@ -8,7 +8,7 @@ import path from 'path';
 const RDP_PORT = 12345;
 
 const extensionPath = {
-  // NOTE: chromimum and firefox browserName defined by Playwright. Do not change.
+  // NOTE: chromium and firefox browserName defined by Playwright. Do not change.
   chromium: path.join(import.meta.dirname, '..', '..', '..', 'dist', 'chrome'),
   firefox: path.join(import.meta.dirname, '..', '..', '..', 'dist', 'firefox'),
 };
