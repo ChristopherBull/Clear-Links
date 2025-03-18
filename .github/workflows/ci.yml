@@ -71,13 +71,14 @@ jobs:
       run: |
         cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
         cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
+    # Remove the Extension ID folder name from lcov coverage report (which is added due to loading into browser with Playwright)
+    - run: sed -i 's|SF:[^/]*/|SF:|g' docs/test-results/e2e/monocart-report/coverage/lcov.info
     - name: Upload coverage report to Qlty
       uses: qltysh/qlty-action/coverage@main
       with:
         coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: docs/test-results/e2e/monocart-report/coverage/lcov.info
-    - run: sed -i 's|SF:[^/]*/|SF:|g' docs/test-results/e2e/monocart-report/coverage/lcov.info
-    - run: cat docs/test-results/e2e/monocart-report/coverage/lcov.info
+    # - run: cat docs/test-results/e2e/monocart-report/coverage/lcov.info
     # Workaround: Codacy cannot find files from coverage reports, as it is looking for a folder with the extension ID name
     # due to coverage report being generated from E2E testing whilst extension was loaded into a browser.
     # Attempt 1
