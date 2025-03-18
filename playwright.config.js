@@ -49,8 +49,9 @@ export default defineConfig({
         },
         reports: process.env.CI
           // All runs generate a v8 report.
-          // Only CI generates the markdown report (for GitHub Actions step summary).
-          ? [ 'v8', 'console-summary', 'markdown-summary', 'markdown-details' ]
+          // Only CI generates the markdown report (for GitHub Actions step summary)
+          // and lcov reports.
+          ? [ 'v8', 'console-summary', 'lcovonly', 'markdown-summary', 'markdown-details' ]
           // Only run v8-json outside CI (for IDE extensions)
           : [ 'v8', 'console-details', 'v8-json', 'markdown-summary', 'markdown-details' ],
       },

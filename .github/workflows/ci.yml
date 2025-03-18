@@ -71,6 +71,16 @@ jobs:
       run: |
         cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
         cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
+    - name: Upload coverage report to Qlty
+      uses: qltysh/qlty-action/coverage@main
+      with:
+        coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+        files: docs/test-results/e2e/monocart-report/coverage/lcov.info
+    - name: Upload coverage report to Codacy
+      uses: codacy/codacy-coverage-reporter-action@v1
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: docs/test-results/e2e/monocart-report/coverage/lcov.info
 
   release:
     name: Release
