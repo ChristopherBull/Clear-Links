@@ -85,8 +85,10 @@ jobs:
     # - run: cd dist/${{secrets.EXTENSION_ID}}
     - name: Codacy+Playwright workaround - Copy files to a folder with Extension ID as the name
       run: |
-        rsync -a dist/chrome dist/${{ vars.EXTENSION_ID }} --exclude images
+        rsync -a dist/chrome/ dist/${{ vars.EXTENSION_ID }} --exclude images
+        echo "..."
         ls dist/${{ vars.EXTENSION_ID }}
+        echo "..."
     - name: Upload coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
