@@ -84,11 +84,9 @@ jobs:
     # - run: ls dist/${{secrets.EXTENSION_ID}}
     # - run: cd dist/${{secrets.EXTENSION_ID}}
     - name: Codacy+Playwright workaround - Copy files to a folder with Extension ID as the name
-      env:
-        EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
       run: |
-        rsync -a dist/chrome dist/$EXTENSION_ID --exclude images
-        ls dist/$EXTENSION_ID
+        rsync -a dist/chrome dist/${{ vars.EXTENSION_ID }} --exclude images
+        ls dist/${{ vars.EXTENSION_ID }}
     - name: Upload coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
@@ -124,7 +122,7 @@ jobs:
         env:
           AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
           AMO_API_SECRET: ${{ secrets.AMO_API_SECRET }}
-          EXTENSION_ID: ${{secrets.EXTENSION_ID}}
+          EXTENSION_ID: ${{vars.EXTENSION_ID}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
           GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
