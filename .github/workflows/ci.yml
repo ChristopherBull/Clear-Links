@@ -76,17 +76,20 @@ jobs:
       with:
         coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: docs/test-results/e2e/monocart-report/coverage/lcov.info
+    - run: sed -i 's|SF:[^/]*/|SF:|g' docs/test-results/e2e/monocart-report/coverage/lcov.info
     - run: cat docs/test-results/e2e/monocart-report/coverage/lcov.info
     # Workaround: Codacy cannot find files from coverage reports, as it is looking for a folder with the extension ID name
     # due to coverage report being generated from E2E testing whilst extension was loaded into a browser.
+    # Attempt 1
     # - run: rsync -a dist/chrome dist/${{secrets.EXTENSION_ID}} --exclude images
     # - run: ls dist/chrome
     # - run: ls dist/${{secrets.EXTENSION_ID}}
     # - run: cd dist/${{secrets.EXTENSION_ID}}
-    - name: Codacy+Playwright workaround - Copy files to a folder with Extension ID as the name, at root
-      run: |
-        rsync -a dist/chrome/ ${{ vars.EXTENSION_ID }} --exclude images
-        ls ${{ vars.EXTENSION_ID }}
+    # Attempt 2
+    # - name: Codacy+Playwright workaround - Copy files to a folder with Extension ID as the name, at root
+    #   run: |
+    #     rsync -a dist/chrome/ ${{ vars.EXTENSION_ID }} --exclude images
+    #     ls ${{ vars.EXTENSION_ID }}
     - name: Upload coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
