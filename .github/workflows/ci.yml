@@ -77,6 +77,7 @@ jobs:
         coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: docs/test-results/e2e/monocart-report/coverage/lcov.info
     - run: cat docs/test-results/e2e/monocart-report/coverage/lcov.info
+    - run: cat /home/runner/work/Clear-Links/Clear-Links/docs/test-results/e2e/monocart-report/coverage/lcov.info
     - name: Upload coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
