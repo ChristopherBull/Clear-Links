@@ -68,11 +68,13 @@ jobs:
         path: docs/test-results/e2e/monocart-report/
         retention-days: 30
     - name: Remove extension ID from lcov and markdown results files
+      # If "..." exists, remove it first, then lazily match part of the EXTENSION_ID.
+      # Otherwise, remove the full EXTENSION_ID and optional trailing "/".
       run: |
         EXTENSION_ID="${{ vars.EXTENSION_ID }}"
-        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/lcov.info
-        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/coverage-summary.md
-        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/coverage-details.md
+        sed -i -E "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/lcov.info
+        sed -i -E "s/\.\.\. *$EXTENSION_ID*|$EXTENSION_ID\///g" docs/test-results/e2e/monocart-report/coverage/coverage-summary.md
+        sed -i -E "s/\.\.\. *$EXTENSION_ID*|$EXTENSION_ID\///g" docs/test-results/e2e/monocart-report/coverage/coverage-details.md
     - name: Add markdown E2E coverage report to job summary
       run: |
         cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
