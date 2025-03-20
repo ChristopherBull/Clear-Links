@@ -47,6 +47,10 @@ export default defineConfig({
           '**/node_modules/**': false,
           '**/src/**': true,
         },
+        sourcePath: {
+          // Remove the extension ID source path (due to being loaded in the browser)
+          'banknjcfbmhcbebgekpcenheaghfcood/': '',
+        },
         reports: process.env.CI
           // All runs generate a v8 report.
           // Only CI generates the markdown report (for GitHub Actions step summary)
