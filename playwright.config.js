@@ -48,8 +48,8 @@ export default defineConfig({
           '**/src/**': true,
         },
         sourcePath: {
-          // Remove the extension ID source path (due to being loaded in the browser)
-          'banknjcfbmhcbebgekpcenheaghfcood/': '',
+          // Replace the extension ID source path, due to being loaded in the browser, with the correct path
+          'banknjcfbmhcbebgekpcenheaghfcood/': 'src/',
         },
         reports: process.env.CI
           // All runs generate a v8 report.
