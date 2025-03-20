@@ -67,30 +67,21 @@ jobs:
         name: E2E - Monocart Testing and Coverage Report
         path: docs/test-results/e2e/monocart-report/
         retention-days: 30
+    - name: Remove extension ID from lcov and markdown results files
+      run: |
+        EXTENSION_ID="${{ vars.EXTENSION_ID }}"
+        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/lcov.info
+        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/coverage-summary.md
+        sed -i "s|$EXTENSION_ID/||g" docs/test-results/e2e/monocart-report/coverage/coverage-details.md
     - name: Add markdown E2E coverage report to job summary
       run: |
         cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
         cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
-    # Remove the Extension ID folder name from lcov coverage report (which is added due to loading into browser with Playwright)
-    - run: sed -i 's|SF:[^/]*/|SF:|g' docs/test-results/e2e/monocart-report/coverage/lcov.info
     - name: Upload coverage report to Qlty
       uses: qltysh/qlty-action/coverage@main
       with:
         coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
         files: docs/test-results/e2e/monocart-report/coverage/lcov.info
-    # - run: cat docs/test-results/e2e/monocart-report/coverage/lcov.info
-    # Workaround: Codacy cannot find files from coverage reports, as it is looking for a folder with the extension ID name
-    # due to coverage report being generated from E2E testing whilst extension was loaded into a browser.
-    # Attempt 1
-    # - run: rsync -a dist/chrome dist/${{secrets.EXTENSION_ID}} --exclude images
-    # - run: ls dist/chrome
-    # - run: ls dist/${{secrets.EXTENSION_ID}}
-    # - run: cd dist/${{secrets.EXTENSION_ID}}
-    # Attempt 2
-    # - name: Codacy+Playwright workaround - Copy files to a folder with Extension ID as the name, at root
-    #   run: |
-    #     rsync -a dist/chrome/ ${{ vars.EXTENSION_ID }} --exclude images
-    #     ls ${{ vars.EXTENSION_ID }}
     - name: Upload coverage report to Codacy
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
