@@ -4,6 +4,10 @@
 
 [![Quality Checks & Release](https://github.com/ChristopherBull/Clear-Links/actions/workflows/ci.yml/badge.svg)](https://github.com/ChristopherBull/Clear-Links/actions/workflows/ci.yml)
 [![Monthly Browser Tests](https://github.com/ChristopherBull/Clear-Links/actions/workflows/monthly-e2e.yml/badge.svg)](https://github.com/ChristopherBull/Clear-Links/actions/workflows/monthly-e2e.yml)
+[![Code Coverage](https://qlty.sh/badges/4d65e0a3-d6af-40e0-a108-acb2085c60ce/test_coverage.svg)](https://qlty.sh/gh/ChristopherBull/projects/Clear-Links)
+[![Maintainability](https://qlty.sh/badges/4d65e0a3-d6af-40e0-a108-acb2085c60ce/maintainability.svg)](https://qlty.sh/gh/ChristopherBull/projects/Clear-Links)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/481515dfad12462cbb1e6948e1ac28b9)](https://app.codacy.com/gh/ChristopherBull/Clear-Links/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/481515dfad12462cbb1e6948e1ac28b9)](https://app.codacy.com/gh/ChristopherBull/Clear-Links/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 Clear Links is a browser extension that enhances your browsing experience by displaying a customisable tooltip when you hover over a web link. This tooltip reveals the link’s destination, helping you browse with more clarity and confidence.
 

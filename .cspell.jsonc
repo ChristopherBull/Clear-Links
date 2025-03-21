@@ -44,8 +44,11 @@
         "nonconstructor",
         "webextensions",
         // Libraries / APIs (and terms related to them)
+        "Codacy",
         "commitlint",
         "monocart",
+        "Qlty",
+        "qltysh",
         "serviceworker",
         "sonarjs",
         "urlshortener",
