@@ -39,7 +39,7 @@ jobs:
   e2e-tests:
     name: E2E Tests
     timeout-minutes: 60
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -80,7 +80,7 @@ jobs:
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: ${{github.workspace}}/docs/test-results/e2e/monocart-report/coverage/lcov.info
+        coverage-reports: docs/test-results/e2e/monocart-report/coverage/lcov.info
 
   release:
     name: Release
@@ -111,7 +111,7 @@ jobs:
         env:
           AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
           AMO_API_SECRET: ${{ secrets.AMO_API_SECRET }}
-          EXTENSION_ID: ${{secrets.EXTENSION_ID}}
+          EXTENSION_ID: ${{vars.EXTENSION_ID}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_CLIENT_ID: ${{secrets.GOOGLE_CLIENT_ID}}
           GOOGLE_CLIENT_SECRET: ${{secrets.GOOGLE_CLIENT_SECRET}}
