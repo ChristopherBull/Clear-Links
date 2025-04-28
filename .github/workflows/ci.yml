@@ -35,52 +35,52 @@ jobs:
           name: Unit - Test Coverage Report
           path: docs/test-results/specs/coverage
           retention-days: 30
-  
+
   e2e-tests:
     name: E2E Tests
     timeout-minutes: 60
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        cache: 'npm'
-    - name: Install dependencies
-      run: npm ci
-    - name: Install latest Playwright Browsers
-      run: npm run test:e2e:prepare
-    - name: Build (allowing install for E2E browser tests)
-      run: make
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: E2E - Playwright Testing Report
-        path: docs/test-results/e2e/playwright-report/
-        retention-days: 30
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: E2E - Monocart Testing and Coverage Report
-        path: docs/test-results/e2e/monocart-report/
-        retention-days: 30
-    - name: Add markdown E2E coverage report to job summary
-      run: |
-        cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
-        cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
-    - name: Upload coverage report to Qlty
-      uses: qltysh/qlty-action/coverage@main
-      with:
-        coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-        files: docs/test-results/e2e/monocart-report/coverage/lcov.info
-    - name: Upload coverage report to Codacy
-      uses: codacy/codacy-coverage-reporter-action@v1
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: docs/test-results/e2e/monocart-report/coverage/lcov.info
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install latest Playwright Browsers
+        run: npm run test:e2e:prepare
+      - name: Build (allowing install for E2E browser tests)
+        run: make
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: E2E - Playwright Testing Report
+          path: docs/test-results/e2e/playwright-report/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: E2E - Monocart Testing and Coverage Report
+          path: docs/test-results/e2e/monocart-report/
+          retention-days: 30
+      - name: Add markdown E2E coverage report to job summary
+        run: |
+          cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
+          cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
+      - name: Upload coverage report to Qlty
+        uses: qltysh/qlty-action/coverage@main
+        with:
+          coverage-token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: docs/test-results/e2e/monocart-report/coverage/lcov.info
+      - name: Upload coverage report to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: docs/test-results/e2e/monocart-report/coverage/lcov.info
 
   release:
     name: Release
