@@ -4,12 +4,6 @@ import { defineConfig, devices } from '@playwright/test';
 const TESTING_WEBSERVER_BASE_URL = 'http://127.0.0.1:8080';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
@@ -34,9 +28,6 @@ export default defineConfig({
       outputFile: './docs/test-results/e2e/monocart-report/index.html',
       // global coverage report options
       coverage: {
-        // all: [ './dist' ],
-        // entryFilter: entry => !entry.url.includes('/lib/'), // Skip 3rd-party library files
-        // sourceFilter: sourcePath => sourcePath.search(/src\/.+/) !== -1,
         entryFilter: {
           '**/node_modules/**': false,
           '**/lib/**': false, // Skip any included 3rd-party libraries
@@ -72,11 +63,6 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: 'chromium',
-    //   use: { ...devices['Desktop Chrome'] },
-    // },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
@@ -89,27 +75,6 @@ export default defineConfig({
       // the global config).
       fullyParallel: false,
     },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
     {
       name: 'Google Chrome',
       use: { ...devices['Desktop Chrome'], channel: 'chrome' },
