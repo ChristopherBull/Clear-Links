@@ -18,4 +18,59 @@ test.describe('Options page', () => {
     const tab1 = await optionsPage.locator('#tab1[title="Visibility"]');
     await expect(tab1).toBeAttached();
   });
+
+  test('confirm dialog opens when clicking on "Reset to defaults"', async ({ optionsPage }) => {
+    const tabAbout = await optionsPage.locator('#tab6[title="About"]');
+    const restoreDefaultsButton = await optionsPage.locator('#restore');
+    // Click the "About" tab
+    await tabAbout.click();
+    // Wait for the "Restore Defaults" button to be visible
+    await expect(restoreDefaultsButton).toBeVisible();
+    // Click the "Restore Defaults" button
+    await restoreDefaultsButton.click();
+    // Wait for the confirm dialog to appear (it is attached when the button is clicked)
+    const confirmDialog = await optionsPage.locator('.confirm');
+    // Wait for the confirm dialog to appear
+    await expect(confirmDialog).toBeVisible();
+  });
+
+  test('confirm dialog disappears when closed', async ({ optionsPage }) => {
+    const tabAbout = await optionsPage.locator('#tab6[title="About"]');
+    const restoreDefaultsButton = await optionsPage.locator('#restore');
+    // Click the "About" tab
+    await tabAbout.click();
+    // Wait for the "Restore Defaults" button to be visible
+    await expect(restoreDefaultsButton).toBeVisible();
+    // Click the "Restore Defaults" button
+    await restoreDefaultsButton.click();
+    // Wait for the confirm dialog to appear (it is attached when the button is clicked)
+    const confirmDialog = await optionsPage.locator('.confirm');
+    // Wait for the confirm dialog to appear
+    await expect(confirmDialog).toBeVisible();
+    // Click the close button
+    const closeButton = await confirmDialog.locator('.confirm-close');
+    await closeButton.click();
+    // Wait for the confirm dialog to disappear
+    await expect(confirmDialog).not.toBeVisible();
+  });
+
+  test('confirm dialog disappears when cancelled', async ({ optionsPage }) => {
+    const tabAbout = await optionsPage.locator('#tab6[title="About"]');
+    const restoreDefaultsButton = await optionsPage.locator('#restore');
+    // Click the "About" tab
+    await tabAbout.click();
+    // Wait for the "Restore Defaults" button to be visible
+    await expect(restoreDefaultsButton).toBeVisible();
+    // Click the "Restore Defaults" button
+    await restoreDefaultsButton.click();
+    // Wait for the confirm dialog to appear (it is attached when the button is clicked)
+    const confirmDialog = await optionsPage.locator('.confirm');
+    // Wait for the confirm dialog to appear
+    await expect(confirmDialog).toBeVisible();
+    // Click the cancel button
+    const cancelButton = await confirmDialog.locator('.confirm-button-cancel');
+    await cancelButton.click();
+    // Wait for the confirm dialog to disappear
+    await expect(confirmDialog).not.toBeVisible();
+  });
 });
