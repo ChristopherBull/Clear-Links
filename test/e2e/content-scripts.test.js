@@ -69,4 +69,19 @@ test.describe('Tooltip shows', () => {
     // Check if tooltip is visible
     await expect(tooltip).toBeHidden();
   });
+
+  test('tooltip hides once observed element is externally removed', async ({ page }) => {
+    const linkSelector = 'a#link-https';
+    // Hover over link to show tooltip
+    await page.hover(linkSelector);
+    // Check if tooltip is visible
+    await expect(tooltip).toBeVisible();
+    // Remove the observed element from the DOM
+    await page.evaluate((linkSelectorPassed) => {
+      const link = document.querySelector(linkSelectorPassed);
+      link.parentNode.removeChild(link);
+    }, linkSelector);
+    // Check if tooltip is hidden
+    await expect(tooltip).toBeHidden();
+  });
 });

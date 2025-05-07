@@ -377,31 +377,65 @@ function showTooltip(elem, urlToDisplay, isSecureIcon, isJS, isMailto) {
   tooltip.style.transitionDuration = settings.durationFadeIn + 'ms';
   tooltip.style.opacity = 1; // Transition to new opacity value
 
+  // Add a recurrent check to ensure the cursor is still over a link.
+  // This is necessary because the tooltip may be shown indefinitely if the DOM element is removed,
+  // meaning the mouseleave event (for hiding the tooltip) will never fire.
+  const tooltipVisibleInterval = setInterval(() => {
+    // Check if the tooltip is not visible (e.g., already hidden by a mouseleave event)
+    // If tooltip is not visible, clear the interval check
+    if (tooltip.style.display === 'none' || tooltip.style.opacity === 0) {
+      clearInterval(tooltipVisibleInterval);
+      return;
+    }
+    // Check if the element is still in the DOM and visible, else hide the tooltip
+    const isElemVisible = elem.isConnected && elem.offsetParent !== null;
+    if (!isElemVisible) {
+      hideTooltip();
+      clearInterval(tooltipVisibleInterval);
+    }
+  }, 250); // Check every 250ms
+
   // Hide the Tooltip when mouse leaves link.
   // Add a one-time mouseleave event to the link, to cancel additional mousemove tracking when not over a link.
   elem.addEventListener('mouseleave', () => {
-    // Hide the Tooltip.
-    tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
-
-    // Sometimes the tooltip may have multiple ongoing animations (fast mouse movements),
-    // so check if the opacity is already 0 and no animations are running. Then jump straight to display=none.
-    // Otherwise, set opacity to 0 and wait for transitionend event before setting display to none.
-    if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
-      // Transition already complete, so set display to none
-      tooltip.style.display = 'none';
-    } else {
-      // Transition to new opacity value
-      tooltip.style.opacity = 0;
-      // Check again if opacity is 0 (after just setting it) and if any
-      // animations are created. This is a necessary backup check, in case
-      // transitionend/cancel event doesn't fire. For example, if the user
-      // moves the mouse quickly over multiple links, opacity may be 0 but no
-      // transitionend/cancel event may occur.
-      if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
-        tooltip.style.display = 'none';
-      }
-    }
+    hideTooltip();
   }, { once: true });
+}
+
+/**
+ * Hides the tooltip element by transitioning its opacity to 0 and eventually
+ * setting its display property to 'none'. Ensures that the tooltip is hidden
+ * even if multiple animations are ongoing or if transition events do not fire.
+ *
+ * Behavior:
+ * - If the tooltip's opacity is already 0 and no animations are running, it
+ *   immediately sets the display property to 'none'.
+ * - Otherwise, it transitions the opacity to 0 and waits for the transition
+ *   to complete before setting the display property to 'none'.
+ * - Includes a backup check to handle cases where transition events may not fire.
+ */
+function hideTooltip() {
+  // Hide the Tooltip.
+  tooltip.style.transitionDuration = settings.durationFadeOut + 'ms';
+
+  // Sometimes the tooltip may have multiple ongoing animations (fast mouse movements),
+  // so check if the opacity is already 0 and no animations are running. Then jump straight to display=none.
+  // Otherwise, set opacity to 0 and wait for transitionend event before setting display to none.
+  if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
+    // Transition already complete, so set display to none
+    tooltip.style.display = 'none';
+  } else {
+    // Transition to new opacity value
+    tooltip.style.opacity = 0;
+    // Check again if opacity is 0 (after just setting it) and if any
+    // animations are created. This is a necessary backup check, in case
+    // transitionend/cancel event doesn't fire. For example, if the user
+    // moves the mouse quickly over multiple links, opacity may be 0 but no
+    // transitionend/cancel event may occur.
+    if (tooltip.style.opacity == 0 && tooltip.getAnimations().length == 0) {
+      tooltip.style.display = 'none';
+    }
+  }
 }
 
 /**
