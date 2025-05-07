@@ -152,13 +152,14 @@ export default [
       '@html-eslint/no-multiple-empty-lines': 'error',
       '@html-eslint/no-trailing-spaces': 'warn',
       // '@html-eslint/id-naming-convention': [ 'error', 'kebab-case' ], // TODO enable and fix issues
+      '@html-eslint/use-baseline': 'off', // Flagged false-positives (such as select.size)
     },
   },
 
   // Tests
   {
     // Mocha tests
-    ...mochaPlugin.configs.flat.recommended,
+    ...mochaPlugin.configs.recommended,
     files: [ 'test/specs/**/*.{js,mjs}' ],
     languageOptions: {
       globals: {
