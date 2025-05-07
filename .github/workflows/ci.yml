@@ -6,7 +6,7 @@ permissions:
   contents: read # for checkout
 
 env:
-  NODE_VER: 20
+  NODE_VER: 22
 
 jobs:
 
