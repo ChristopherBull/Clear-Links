@@ -113,9 +113,11 @@ export default [
       'sonarjs/todo-tag': 0,
       // Broken rules
       'sonarjs/sonar-no-fallthrough': 0, // Broken in eslint-plugin-sonarjs v2.0.2
+      // False-positives
+      'sonarjs/no-hardcoded-passwords': 0,
 
       // Stylistic rules
-      ...stylistic.configs['recommended-flat'].rules,
+      ...stylistic.configs.recommended.rules,
       '@stylistic/indent': [ 'error', 2 ],
       '@stylistic/quotes': [ 'error', 'single' ],
       '@stylistic/semi': [ 'error', 'always' ],
