@@ -29,7 +29,7 @@
     "@html-eslint/parser": "^0.40.0",
     "@playwright/test": "^1.55.0",
     "@stylistic/eslint-plugin": "^4.2.0",
-    "@stylistic/stylelint-plugin": "^3.1.2",
+    "@stylistic/stylelint-plugin": "^4.0.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "cross-env": "^10.0.0",
     "cspell": "^9.2.0",
@@ -47,8 +47,8 @@
     "semantic-release": "^24.2.7",
     "semantic-release-amo": "^2.0.0",
     "semantic-release-chrome": "^3.2.0",
-    "stylelint": "^16.19.1",
-    "stylelint-config-standard": "^38.0.0",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard": "^39.0.0",
     "web-ext": "^8.9.0"
   },
   "dependencies": {
