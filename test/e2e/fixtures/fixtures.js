@@ -23,6 +23,7 @@ async function getBrowserContextWithExtension(browserName) {
   const launchOptions = {
     chromium: {
       headless: false,
+      channel: 'chromium',
       args: [
         // Browser-specific flags
         '--headless=new', // Force headless mode which is compatible with extensions
