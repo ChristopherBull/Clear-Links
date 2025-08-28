@@ -4,5 +4,6 @@
         "javascript",
         "markdown"
     ],
-    "eslint.useFlatConfig": true
+    "eslint.useFlatConfig": true,
+    "makefile.configureOnOpen": false
 }
