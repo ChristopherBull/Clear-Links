@@ -27,7 +27,7 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@html-eslint/eslint-plugin": "^0.46.1",
     "@html-eslint/parser": "^0.46.0",
-    "@playwright/test": "^1.55.0",
+    "@playwright/test": "^1.56.1",
     "@stylistic/eslint-plugin": "^5.2.3",
     "@stylistic/stylelint-plugin": "^4.0.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
