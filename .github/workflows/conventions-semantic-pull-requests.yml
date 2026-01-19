@@ -6,9 +6,12 @@ on:
       - opened
       - edited
       - synchronize
+      - labeled
+      - unlabeled
 
 permissions:
   pull-requests: write
+  statuses: write
 
 jobs:
   main:
@@ -21,7 +24,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           wip: true
-      - name: Comment on PR if issues
+          ignoreLabels: |
+            bot
+            non-squash-merge
+      
+      - name: Comment on PR if title needs adjustment
         uses: marocchino/sticky-pull-request-comment@v2
         if: always() && (steps.lint_pr_title.outputs.error_message != null)
         with:
@@ -36,8 +43,11 @@ jobs:
             ```
             ${{ steps.lint_pr_title.outputs.error_message }}
             ```
-      - name: Delete a previous comment when the issue has been resolved
-        if: ${{ steps.lint_pr_title.outputs.error_message == null }}
+            
+            **Note:** Squash merge is the default merge strategy for this repository. If you plan to use standard merge instead, add the `non-squash-merge` label to skip this check and ensure all commit messages follow Conventional Commits.
+      
+      - name: Delete comment when issue resolved
+        if: steps.lint_pr_title.outputs.error_message == null
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-title-lint-error
