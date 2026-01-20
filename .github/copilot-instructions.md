@@ -17,6 +17,7 @@
 **Build**: `make` copies `src/` and `res/` to `dist/chrome/` and `dist/firefox/`, respecting separate manifests. No minification—source is shipped as-is for faster extension store reviews.
 
 **Testing**:
+
 - Unit tests (Mocha): `npm run test:unit:coverage` — tests in [test/specs/](../test/specs/)
 - E2E tests (Playwright): `npm run test:e2e` — **must build first** (`make`). Uses fixtures in [test/e2e/fixtures/fixtures.js](../test/e2e/fixtures/fixtures.js) to load extension. Firefox uses RDP on port 12345 (no parallel tests). Chromium-only coverage via Monocart.
 - Full suite: `npm run test` (lint + spell + unit + e2e)
@@ -27,7 +28,8 @@
 
 **Commits**: [Conventional Commits](https://www.conventionalcommits.org/) enforced by Husky pre-commit hooks (e.g., `feat:`, `fix:`, `docs:`). See [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-**Settings Pattern**: 
+**Settings Pattern**:
+
 - `defaultSettings` (synced): User preferences like `displayExternalDomainsOnly`, theme, animation timings
 - `defaultSettingsLocal` (local): Activation filters (`domainWhitelist`, `domainBlacklist`), OAuth tokens, offline fallback (`syncOffline`)
 - Always use `browser.storage.sync.get(defaultSettings)` with fallback to `browser.storage.local.get({ syncOffline: ... })` if sync unavailable
@@ -35,6 +37,7 @@
 **Lazy Injection**: [src/contentScriptActivationFilter.js](../src/contentScriptActivationFilter.js) sends `activationHostname` to background on page load. Background checks allowlists/denylists before injecting via `browser.scripting.executeScript`. Pre-loaded tabs defer injection until focus event.
 
 **Message Passing Example** ([src/contentScriptSharedLib.js](../src/contentScriptSharedLib.js)):
+
 ```javascript
 // MAIN → ISOLATED: window.postMessage({ type: 'FROM_PAGE_SHORT_URL', message: {...} }, '*')
 // ISOLATED → Background: browser.runtime.sendMessage(message)
