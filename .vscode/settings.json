@@ -5,5 +5,21 @@
         "markdown"
     ],
     "eslint.useFlatConfig": true,
+    "chat.tools.terminal.autoApprove": {
+        "/^git (branch|diff|log|show|status)$/": true,
+        "/^make$/": true,
+        "/^node (--version|-v)$/": true,
+        "/^npm (--version|-v|list|outdated)$/": true,
+        "/^npm run build(:package:ff)?$/": true,
+        "/^npm run lint:(md|css|src)$/": true,
+        "/^npm run lint:web-ext:ff$/": true,
+        "/^npm run spell$/": true,
+        "/^npm run test:unit(:coverage)?$/": true,
+        "/^npm run test:e2e(:prepare|:report|:start-server)?$/": true,
+        "/^npm run release:dry-run$/": true,
+        "/^npx http-server ./test/test-sites$/": true,
+        "/^npx playwright (test|install|install --with-deps --no-shell chromium firefox|show-report)$/": true,
+        "/^npx semantic-release --dry-run$/": true
+    },
     "makefile.configureOnOpen": false
 }
