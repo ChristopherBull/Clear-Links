@@ -11,6 +11,7 @@ on:
 
 permissions:
   pull-requests: write
+  statuses: write
 
 jobs:
   main:
