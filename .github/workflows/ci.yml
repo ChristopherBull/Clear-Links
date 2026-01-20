@@ -6,7 +6,7 @@ permissions:
   contents: read # for checkout
 
 env:
-  NODE_VER: 22
+  NODE_VER: 24
 
 jobs:
 
@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Use Node.js (LTS)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VER }}
-          cache: 'npm'
+          cache: npm
       - name: Install dependencies
         run: npm ci
       - name: Check spelling
@@ -29,7 +29,7 @@ jobs:
         run: npm run lint
       - name: Test (build, run tests, and coverage report)
         run: npm run test:unit:coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: Unit - Test Coverage Report
@@ -42,11 +42,11 @@ jobs:
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
-          cache: 'npm'
+          cache: npm
       - name: Install dependencies
         run: npm ci
       - name: Install latest Playwright Browsers
@@ -55,13 +55,13 @@ jobs:
         run: make
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: E2E - Playwright Testing Report
           path: docs/test-results/e2e/playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: E2E - Monocart Testing and Coverage Report
@@ -72,7 +72,7 @@ jobs:
           cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
           cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
       - name: Upload coverage report to Qlty
-        uses: qltysh/qlty-action/coverage@v1
+        uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: docs/test-results/e2e/monocart-report/coverage/lcov.info
@@ -94,14 +94,14 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "lts/*"
-          cache: 'npm'
+          node-version: lts/*
+          cache: npm
       - name: Install dependencies
         # Install dependencies from package.json with specific versions to ensure compatibility/reliability
         run: npm clean-install
