@@ -23,15 +23,15 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
     "@html-eslint/eslint-plugin": "^0.46.1",
     "@html-eslint/parser": "^0.46.0",
     "@playwright/test": "^1.55.0",
     "@stylistic/eslint-plugin": "^5.2.3",
     "@stylistic/stylelint-plugin": "^4.0.0",
     "conventional-changelog-conventionalcommits": "^9.1.0",
-    "cross-env": "^10.0.0",
+    "cross-env": "^10.1.0",
     "cspell": "^9.2.0",
     "eslint": "^9.34.0",
     "eslint-plugin-css": "^0.11.0",
