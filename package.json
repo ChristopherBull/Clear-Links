@@ -40,7 +40,7 @@
     "eslint-plugin-sonarjs": "^3.0.5",
     "http-server": "^14.1.1",
     "husky": "^9.1.7",
-    "markdownlint-cli2": "^0.18.1",
+    "markdownlint-cli2": "^0.20.0",
     "mocha": "^11.7.1",
     "monocart-reporter": "^2.9.21",
     "nyc": "^17.1.0",
