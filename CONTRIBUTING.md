@@ -42,7 +42,7 @@ Build the extension for development:
 npm run build:test
 ```
 
-This bundles the source files from `src/` and `res/` into `dist/` with optional test helpers included. The extension can be loaded into your browser as an unpacked extension ([Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)).
+This bundles the source files from `src/` and `res/` into `dist/` with test helpers enabled for E2E testing. The extension can be loaded into your browser as an unpacked extension ([Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)).
 
 ## Commit Message Guidelines
 
