@@ -1,0 +1,84 @@
+<svg
+  width="1024"
+  height="1024"
+  viewBox="0 0 1024 1024"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Magnifying glass inspecting a chain"
+>
+
+  <style>
+    :root {
+      --accent: #1a73e8;          /* magnifying glass - accent */
+      --chain: #5f6368;           /* base chain - neutral */
+      --chain-magnified: #3c4043; /* inside lens - higher-contrast neutral */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --accent: #8ab4f8;
+        --chain: #9aa0a6;
+        --chain-magnified: #e8eaed;
+      }
+    }
+  </style>
+
+
+  <defs>
+    <!-- Lens circle -->
+    <circle id="lensShape" cx="460" cy="520" r="210" />
+
+    <!-- Clip for magnified chain -->
+    <clipPath id="lensClipMagnified">
+      <!-- include reduced radius for gap -->
+      <circle cx="460" cy="520" r="175" />
+    </clipPath>
+
+    <!-- Mask for base chain -->
+    <mask id="chainMask">
+      <rect width="100%" height="100%" fill="white"/>
+      <circle cx="460" cy="520" r="245" fill="black"/>
+    </mask>
+  </defs>
+
+  <!-- Base chain (masked), rotated -15° -->
+  <g transform="rotate(-15 460 520)" mask="url(#chainMask)" fill="none" stroke="var(--chain)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="60" y="700" width="220" height="140" rx="70" ry="70" transform="rotate(-30 170 770)" />
+    <rect x="200" y="620" width="220" height="140" rx="70" ry="70" transform="rotate(-30 310 690)" />
+    <rect x="340" y="540" width="220" height="140" rx="70" ry="70" transform="rotate(-30 450 610)" />
+    <rect x="480" y="460" width="220" height="140" rx="70" ry="70" transform="rotate(-30 590 530)" />
+    <rect x="620" y="380" width="220" height="140" rx="70" ry="70" transform="rotate(-30 730 450)" />
+    <rect x="760" y="300" width="220" height="140" rx="70" ry="70" transform="rotate(-30 870 370)" />
+  </g>
+
+  <!-- Magnified chain, using nested groups for correct order -->
+  <g clip-path="url(#lensClipMagnified)">
+    <!-- Rotate around lens centre -->
+    <g transform="rotate(-15 460 520)">
+      <!-- Shift for perspective -->
+      <g transform="translate(-40,-40)">
+        <!-- Scale for gap inside lens -->
+        <g transform="translate(460,520) scale(1.48) translate(-460,-520)" fill="none" stroke="var(--chain-magnified)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="60" y="700" width="220" height="140" rx="70" ry="70" transform="rotate(-30 170 770)" />
+          <rect x="200" y="620" width="220" height="140" rx="70" ry="70" transform="rotate(-30 310 690)" />
+          <rect x="340" y="540" width="220" height="140" rx="70" ry="70" transform="rotate(-30 450 610)" />
+          <rect x="480" y="460" width="220" height="140" rx="70" ry="70" transform="rotate(-30 590 530)" />
+          <rect x="620" y="380" width="220" height="140" rx="70" ry="70" transform="rotate(-30 730 450)" />
+          <rect x="760" y="300" width="220" height="140" rx="70" ry="70" transform="rotate(-30 870 370)" />
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Magnifying glass -->
+  <g fill="none" stroke="var(--accent)" stroke-width="44" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#lensShape" />
+    <line x1="610" y1="670" x2="800" y2="860" />
+  </g>
+
+  <!-- Handle grip -->
+  <g fill="none" stroke="var(--accent)" stroke-width="80" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="681.25" y1="741.25" x2="800" y2="860" />
+  </g>
+
+</svg>

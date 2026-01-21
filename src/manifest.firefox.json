@@ -11,9 +11,10 @@
 		}
 	},
     "icons": {
-        "16": "icon16.png",
-        "48": "icon48.png",
-        "128": "icon128.png"
+        "16": "icon_small.svg",
+        "32": "icon_small.svg",
+        "48": "icon.svg",
+        "128": "icon.svg"
     },
 	"permissions": [
 		"scripting",
@@ -40,9 +41,10 @@
 	],
 	"action": {
 		"default_icon": {
-			"16": "icon16.png",
-			"48": "icon48.png",
-			"128": "icon128.png"
+			"16": "icon_small.svg",
+        	"32": "icon_small.svg",
+			"48": "icon.svg",
+			"128": "icon.svg"
 		},
 		"default_title": "Clear Links",
 		"default_popup": "action-popup.html"
