@@ -14,6 +14,16 @@ DIST_DIR_FIREFOX_WIN := $(subst /,\,$(DIST_DIR_FIREFOX))
 
 # Function to inject test helpers into background.js
 # Usage: $(call inject_test_helpers,dist_dir)
+ifeq ($(OS),Windows_NT)
+define inject_test_helpers
+	@if "$(TEST_HELPERS)" == "1" ( \
+		copy test\build\background-test-helpers.js $(1)\background-test-helpers.js && \
+		echo import './background-test-helpers.js'; > $(1)\background.js.tmp && \
+		type $(1)\background.js >> $(1)\background.js.tmp && \
+		move /Y $(1)\background.js.tmp $(1)\background.js \
+	)
+endef
+else
 define inject_test_helpers
 	@if [ "$(TEST_HELPERS)" = "1" ]; then \
 		cp test/build/background-test-helpers.js $(1)/background-test-helpers.js; \
@@ -23,6 +33,7 @@ define inject_test_helpers
 		mv $$tmpfile $(1)/background.js; \
 	fi
 endef
+endif
 
 # Build
 build: build_prepare build_chrome build_ff
