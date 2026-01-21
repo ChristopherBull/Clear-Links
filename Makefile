@@ -3,6 +3,7 @@ SRC_DIRS := src/ res/
 SRC_DIRS_WIN := $(subst /,\,$(SRC_DIRS))
 LIB_BROWSER_POLYFILL := node_modules/webextension-polyfill/dist/browser-polyfill.min.js
 LIB_BROWSER_POLYFILL_WIN := $(subst /,\,$(LIB_BROWSER_POLYFILL))
+TEST_HELPERS ?= 0
 
 # Destination directory
 DIST_DIR := dist
@@ -10,6 +11,18 @@ DIST_DIR_CHROME := dist/chrome
 DIST_DIR_FIREFOX := dist/firefox
 DIST_DIR_CHROME_WIN := $(subst /,\,$(DIST_DIR_CHROME))
 DIST_DIR_FIREFOX_WIN := $(subst /,\,$(DIST_DIR_FIREFOX))
+
+# Function to inject test helpers into background.js
+# Usage: $(call inject_test_helpers,dist_dir)
+define inject_test_helpers
+	@if [ "$(TEST_HELPERS)" = "1" ]; then \
+		cp test/build/background-test-helpers.js $(1)/background-test-helpers.js; \
+		tmpfile=$$(mktemp); \
+		printf "import './background-test-helpers.js';\n" > $$tmpfile; \
+		cat $(1)/background.js >> $$tmpfile; \
+		mv $$tmpfile $(1)/background.js; \
+	fi
+endef
 
 # Build
 build: build_prepare build_chrome build_ff
@@ -39,6 +52,7 @@ else
 	rsync -av --exclude='.DS_Store' --exclude='manifest*.json' $^ $(DIST_DIR_CHROME)
 	@cp src/manifest.json $(DIST_DIR_CHROME)/manifest.json
 endif
+	$(call inject_test_helpers,$(DIST_DIR_CHROME))
 	@echo Done building Chrome extension
 
 # Build the firefox extension
@@ -55,6 +69,7 @@ else
 	rsync -av --exclude='.DS_Store' --exclude='manifest*.json' $^ $(DIST_DIR_FIREFOX)
 	@cp src/manifest.firefox.json $(DIST_DIR_FIREFOX)/manifest.json
 endif
+	$(call inject_test_helpers,$(DIST_DIR_FIREFOX))
 	@echo Done building Firefox extension
 
 # Clean the build directory
