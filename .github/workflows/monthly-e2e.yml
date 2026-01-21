@@ -36,7 +36,7 @@ jobs:
         if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: npm run test:e2e:prepare
       - name: Build (allowing install for E2E browser tests)
-        run: make
+        run: npm run build:test
       - name: Run Playwright tests
         run: npx playwright test
       - uses: actions/upload-artifact@v6
