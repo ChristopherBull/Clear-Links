@@ -36,13 +36,13 @@ npm run test:e2e:prepare
 
 ## Building
 
-Build the project:
+Build the extension for development:
 
 ```sh
-make
+npm run build:test
 ```
 
-The build process performs a simple copy of files from `src/` and `res/` into `dist/`. Minification is not done to improve the [extension review times](https://developer.chrome.com/docs/webstore/review-process/#review-time-factors). This can then be loaded into your browser as an unpacked extension ([Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)).
+This bundles the source files from `src/` and `res/` into `dist/` with optional test helpers included. The extension can be loaded into your browser as an unpacked extension ([Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked), [Firefox](https://extensionworkshop.com/documentation/develop/temporary-installation-in-firefox/)).
 
 ## Commit Message Guidelines
 
@@ -91,9 +91,14 @@ npm test:unit:coverage
 ### Adding End-to-End Tests with Playwright
 
 1. **Write your tests** in the `/test/e2e` directory.
-2. **Build the extension** with the command: `make`. This bundles the source files correctly into the `/dist` folder, which is loaded by browsers.
+2. **Build the extension** for testing:
+
+    ```sh
+    npm run build:test
+    ```
+
 3. **Run the tests** to ensure they pass:
 
-```sh
-npm run test:e2e
-```
+    ```sh
+    npm run test:e2e
+    ```

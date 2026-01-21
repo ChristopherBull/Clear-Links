@@ -7,10 +7,10 @@
     "eslint.useFlatConfig": true,
     "chat.tools.terminal.autoApprove": {
         "/^git (branch|diff|log|show|status)$/": true,
-        "/^make$/": true,
+        "/^make( clean| TEST_HELPERS=1)?( && make TEST_HELPERS=1)?$/": true,
         "/^node (--version|-v)$/": true,
         "/^npm (--version|-v|list|outdated)$/": true,
-        "/^npm run build(:package:ff)?$/": true,
+        "/^npm run build(:test|:package:ff)?$/": true,
         "/^npm run lint:(md|css|src)$/": true,
         "/^npm run lint:web-ext:ff$/": true,
         "/^npm run spell$/": true,
