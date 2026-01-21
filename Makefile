@@ -16,12 +16,7 @@ DIST_DIR_FIREFOX_WIN := $(subst /,\,$(DIST_DIR_FIREFOX))
 # Usage: $(call inject_test_helpers,dist_dir)
 ifeq ($(OS),Windows_NT)
 define inject_test_helpers
-	@if "$(TEST_HELPERS)" == "1" ( \
-		copy test\build\background-test-helpers.js $(1)\background-test-helpers.js && \
-		echo import './background-test-helpers.js'; > $(1)\background.js.tmp && \
-		type $(1)\background.js >> $(1)\background.js.tmp && \
-		move /Y $(1)\background.js.tmp $(1)\background.js \
-	)
+	@if "$(TEST_HELPERS)" == "1" (copy test\build\background-test-helpers.js $(1)\background-test-helpers.js & echo import './background-test-helpers.js'; > $(1)\background.js.tmp & type $(1)\background.js >> $(1)\background.js.tmp & move /Y $(1)\background.js.tmp $(1)\background.js)
 endef
 else
 define inject_test_helpers
