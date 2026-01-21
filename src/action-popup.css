@@ -15,6 +15,12 @@ h1 {
   color: #005a9c;
 }
 
+.logo {
+  float: right;
+  width: 3em;
+  height: 3em;
+}
+
 #permission-status {
   display: none;
   background-color: #fff3cd;

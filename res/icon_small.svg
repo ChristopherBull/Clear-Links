@@ -1,0 +1,59 @@
+<svg
+  width="16"
+  height="16"
+  viewBox="0 0 16 16"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="Magnifying glass inspecting a chain"
+>
+
+  <style>
+    :root {
+      --accent: #1a73e8;          /* magnifying glass - accent */
+      --chain: #5f6368;           /* base chain - neutral */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --accent: #8ab4f8;
+        --chain: #9aa0a6;
+      }
+    }
+  </style>
+  
+  <defs>
+    <!-- Mask for chain behind lens -->
+    <mask id="maskBack">
+      <rect width="16" height="16" fill="white"/>
+      <circle cx="7.5" cy="7.5" r="6" fill="black"/>
+    </mask>
+
+    <!-- Mask for chain inside lens -->
+    <mask id="maskFront">
+      <rect width="16" height="16" fill="black"/>
+      <circle cx="7.5" cy="7.5" r="2.6" fill="white"/>
+    </mask>
+  </defs>
+
+  <!-- Base chain (behind lens) -->
+  <g fill="none" stroke="var(--chain)" stroke-width="1.5" stroke-linecap="round" mask="url(#maskBack)">
+    <ellipse cx="3" cy="12" rx="2" ry="1" transform="rotate(-35 3 12)" />
+    <ellipse cx="6" cy="9" rx="2" ry="1" transform="rotate(-35 6 9)" />
+    <ellipse cx="9" cy="6" rx="2" ry="1" transform="rotate(-35 9 6)" />
+    <ellipse cx="12" cy="3" rx="2" ry="1" transform="rotate(-35 12 3)" />
+  </g>
+
+  <!-- Chain visible inside lens -->
+  <g fill="none" stroke="var(--chain)" stroke-width="1.5" stroke-linecap="round" mask="url(#maskFront)">
+    <ellipse cx="3" cy="12" rx="2" ry="1" transform="rotate(-35 3 12)" />
+    <ellipse cx="6" cy="9" rx="2" ry="1" transform="rotate(-35 6 9)" />
+    <ellipse cx="9" cy="6" rx="2" ry="1" transform="rotate(-35 9 6)" />
+    <ellipse cx="12" cy="3" rx="2" ry="1" transform="rotate(-35 12 3)" />
+  </g>
+
+  <!-- Magnifying glass -->
+  <g fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-linecap="round">
+    <circle cx="7.5" cy="7.5" r="4.25" />
+    <line x1="10.6" y1="10.6" x2="14.5" y2="14.5" />
+  </g>
+</svg>
