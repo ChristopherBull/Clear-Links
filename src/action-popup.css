@@ -101,12 +101,6 @@ button:hover {
   margin-top: .5em;
 }
 
-@media (prefers-color-scheme: dark) {
-  #link-all-settings {
-    color: #4da6ff;
-  }
-}
-
 #link-all-settings {
   color: #005a9c;
   cursor: pointer;
@@ -114,6 +108,12 @@ button:hover {
   text-decoration: none;
   font-size: smaller;
   vertical-align: middle;
+}
+
+@media (prefers-color-scheme: dark) {
+  #link-all-settings {
+    color: #4da6ff;
+  }
 }
 
 #icon-settings {
