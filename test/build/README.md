@@ -52,4 +52,4 @@ When `TEST_HELPERS=1`:
    // ... rest of original background.js
    ```
 
-3. `background-test-helpers.js` runs at startup and exposes attaches modules/code, which require the runtime context of a Service Worker, to `globalThis`
+3. `background-test-helpers.js` runs at startup and attaches modules/code, which require the runtime context of a Service Worker, to `globalThis`
