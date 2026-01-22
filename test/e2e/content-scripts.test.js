@@ -79,7 +79,7 @@ test.describe('Tooltip shows', () => {
     // Remove the observed element from the DOM
     await page.evaluate((linkSelectorPassed) => {
       const link = document.querySelector(linkSelectorPassed);
-      link.parentNode.removeChild(link);
+      link.remove();
     }, linkSelector);
     // Check if tooltip is hidden
     await expect(tooltip).toBeHidden();
