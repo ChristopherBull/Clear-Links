@@ -12,7 +12,13 @@
 
 import * as ActionBadge from './action-badge.js';
 
-// Expose ActionBadge for test runner evaluations in the service worker context
+// Expose test helpers globally
 if (typeof globalThis !== 'undefined') {
+  // E2E test runners can check for this flag to confirm they are running
+  // in a test build. Supports smoke test scenarios by allowing E2E tests to
+  // abort fast if a production build is loaded, rather than a test build.
+  globalThis.isTestBuild = true;
+
+  // Expose isolated modules for test runners
   globalThis.ActionBadge = ActionBadge;
 }

@@ -64,7 +64,14 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'smoke-test',
+      testMatch: '**/smoke.test.js',
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
       name: 'firefox',
+      dependencies: [ 'smoke-test' ],
+      testIgnore: '**/smoke.test.js',
       use: { ...devices['Desktop Firefox'] },
       // Cannot run Firefox tests in parallel due to install workaround in
       // `test/e2e/fixtures/fixtures.js` using RDP (only 1 browser instance
@@ -77,6 +84,8 @@ export default defineConfig({
     },
     {
       name: 'chromium',
+      dependencies: [ 'smoke-test' ],
+      testIgnore: '**/smoke.test.js',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
