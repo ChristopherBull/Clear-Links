@@ -136,5 +136,9 @@ export const test = base.test.extend({
     await page.goto(`chrome-extension://${extensionId}/options.html`);
     await use(page);
   },
+  actionPage: async ({ page, extensionId }, use) => {
+    await page.goto(`chrome-extension://${extensionId}/action-popup.html`);
+    await use(page);
+  },
 });
 export const expect = test.expect;
