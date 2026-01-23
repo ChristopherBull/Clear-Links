@@ -10,8 +10,6 @@
  * @see ./README.md for more information.
  */
 
-import * as ActionBadge from './action-badge.js';
-
 // Expose test helpers globally
 if (typeof globalThis !== 'undefined') {
   // E2E test runners can check for this flag to confirm they are running
@@ -20,5 +18,4 @@ if (typeof globalThis !== 'undefined') {
   globalThis.isTestBuild = true;
 
   // Expose isolated modules for test runners
-  globalThis.ActionBadge = ActionBadge;
 }
