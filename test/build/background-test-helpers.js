@@ -11,6 +11,7 @@
  */
 
 import * as ActionBadge from './action-badge.js';
+import * as Permissions from './permissions.js';
 
 // Expose test helpers globally
 if (typeof globalThis !== 'undefined') {
@@ -21,4 +22,5 @@ if (typeof globalThis !== 'undefined') {
 
   // Expose isolated modules for test runners
   globalThis.ActionBadge = ActionBadge;
+  globalThis.Permissions = Permissions;
 }
