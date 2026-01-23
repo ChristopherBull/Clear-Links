@@ -31,29 +31,20 @@ test.describe('Action popup', () => {
   // Action Badge //
   // ------------ //
 
-  test('action badge setErrorStatus sets badge text', async ({ backgroundPage }) => {
-    await backgroundPage.evaluate(() => {
-      // eslint-disable-next-line no-undef
-      return ActionBadge.setErrorStatus();
-    });
-    const badgeText = await backgroundPage.evaluate(() => {
+  test('action badge setErrorStatus sets badge text', async ({ actionPage }) => {
+    const badgeText = await actionPage.evaluate(async () => {
+      const ActionBadge = await import(chrome.runtime.getURL('action-badge.js'));
+      await ActionBadge.setErrorStatus();
       return browser.action.getBadgeText({});
     });
     await expect(badgeText).not.toEqual('');
   });
 
-  test('action badge clearStatus removes badge text', async ({ backgroundPage }) => {
-    // First set error status
-    await backgroundPage.evaluate(() => {
-      // eslint-disable-next-line no-undef
-      return ActionBadge.setErrorStatus();
-    });
-    // Then clear it
-    await backgroundPage.evaluate(() => {
-      // eslint-disable-next-line no-undef
-      return ActionBadge.clearStatus();
-    });
-    const badgeText = await backgroundPage.evaluate(() => {
+  test('action badge clearStatus removes badge text', async ({ actionPage }) => {
+    const badgeText = await actionPage.evaluate(async () => {
+      const ActionBadge = await import(chrome.runtime.getURL('action-badge.js'));
+      await ActionBadge.setErrorStatus();
+      await ActionBadge.clearStatus();
       return browser.action.getBadgeText({});
     });
     await expect(badgeText).toEqual('');
