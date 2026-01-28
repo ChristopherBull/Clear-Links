@@ -11,7 +11,7 @@ if (!manifestPath) {
 }
 
 const text = fs.readFileSync(manifestPath, 'utf8');
-const pattern = /("resources":\s*\[\s*\n\s*)/;
+const pattern = /("resources"\s*:\s*\[\s*)/;
 const insert = '"background-with-coverage-shim.html",\n\t\t\t';
 const updated = text.replace(pattern, `$1${insert}`);
 if (updated === text) {
