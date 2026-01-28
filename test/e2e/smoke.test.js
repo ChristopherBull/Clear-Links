@@ -1,8 +1,8 @@
 import { expect, test } from './fixtures/fixtures.js';
 
 test.describe('Smoke Tests', () => {
-  test('build integrity: manifest.json is bundled', async ({ optionsPage }) => {
-    const exists = await optionsPage.evaluate(async () => {
+  test('build integrity: manifest.json is bundled', async ({ backgroundPage }) => {
+    const exists = await backgroundPage.evaluate(async () => {
       const url = chrome.runtime.getURL('manifest.json');
       const response = await fetch(url);
       return response.ok;
