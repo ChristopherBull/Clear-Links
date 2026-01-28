@@ -17,5 +17,35 @@ if (typeof globalThis !== 'undefined') {
   // abort fast if a production build is loaded, rather than a test build.
   globalThis.isTestBuild = true;
 
-  // Expose isolated modules for test runners
+  // This code captures the message handler registered by background.js via
+  // browser.runtime.onMessage.addListener, allowing E2E tests to invoke the
+  // handler directly (simulating browser.runtime.sendMessage) without needing
+  // to send real extension messages, thus enabling isolated and controlled testing.
+  // This also then allows background/service workers to be correctly
+  // instrumented for coverage reports.
+  (() => {
+    if (!globalThis.browser?.runtime?.onMessage?.addListener) return;
+
+    const originalAddListener = globalThis.browser.runtime.onMessage.addListener;
+    let capturedHandler;
+
+    globalThis.browser.runtime.onMessage.addListener = (fn, ...rest) => {
+      capturedHandler = fn;
+      return originalAddListener.call(globalThis.browser.runtime.onMessage, fn, ...rest);
+    };
+
+    globalThis.clearLinksTestHooks = {
+      get runtimeMessageHandler() {
+        return capturedHandler;
+      },
+      async sendRuntimeMessage(request, sender) {
+        if (!capturedHandler) {
+          throw new Error('runtime handler not registered');
+        }
+        return await new Promise((resolve) => {
+          capturedHandler(request, sender, resolve);
+        });
+      },
+    };
+  })();
 }

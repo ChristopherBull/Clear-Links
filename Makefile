@@ -17,6 +17,10 @@ DIST_DIR_FIREFOX_WIN := $(subst /,\,$(DIST_DIR_FIREFOX))
 define inject_test_helpers
 	@if [ "$(TEST_HELPERS)" = "1" ]; then \
 		cp test/build/background-test-helpers.js $(1)/background-test-helpers.js; \
+		cp test/build/background-with-coverage-shim.html $(1)/background-with-coverage-shim.html; \
+		if ! grep -q '"background-with-coverage-shim.html"' $(1)/manifest.json; then \
+			node test/build/manifest-inject-shim.js $(1)/manifest.json; \
+		fi; \
 		tmpfile=$$(mktemp); \
 		printf "import './background-test-helpers.js';\n" > $$tmpfile; \
 		cat $(1)/background.js >> $$tmpfile; \

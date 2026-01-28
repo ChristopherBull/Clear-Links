@@ -132,6 +132,10 @@ export const test = base.test.extend({
     }
     await use(background);
   },
+  backgroundCoveragePage: async ({ page, extensionId }, use) => {
+    await page.goto(`chrome-extension://${extensionId}/background-with-coverage-shim.html`);
+    await use(page);
+  },
   optionsPage: async ({ page, extensionId }, use) => {
     await page.goto(`chrome-extension://${extensionId}/options.html`);
     await use(page);
