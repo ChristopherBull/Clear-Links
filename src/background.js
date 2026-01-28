@@ -24,11 +24,16 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
   const resultPromise = handleRuntimeMessage(request, sender);
   // Async handler path
   if (resultPromise instanceof Promise) {
-    resultPromise.then((result) => {
-      if (result !== undefined) {
-        sendResponse(result);
-      }
-    });
+    resultPromise
+      .then((result) => {
+        if (result !== undefined) {
+          sendResponse(result);
+        }
+      })
+      .catch((error) => {
+        // Ensure promise rejections from handleRuntimeMessage are not silently swallowed
+        console.error('Error while handling runtime message:', error);
+      });
     return true; // Inform caller to await async response
   }
   // Sync handler path (no response expected)
