@@ -10,7 +10,7 @@ test.describe('Smoke Tests', () => {
     expect(exists).toBe(true);
   });
 
-  test('Service Workers currently only expected in Chromium test runs', async ({ browserName, context }) => {
+  test('Service Worker expected in Chromium test runs only (Playwright limitations)', async ({ browserName, context }) => {
     // Some tests are skipped due to Playwright not yet supporting service workers in non-chromium browsers.
     // If this tests fails, it means that Playwright now supports service workers in non-chromium browsers and the skipped tests should be tested and re-enabled.
     // NB: https://playwright.dev/docs/api/class-browsercontext#browser-context-service-workers
