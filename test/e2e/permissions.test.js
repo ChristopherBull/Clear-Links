@@ -85,7 +85,6 @@ test.describe('Browser permissions', () => {
 
   test('areCriticalPermissionsGranted checks if extension has critical permissions', async ({ actionPage }) => {
     const result = await actionPage.evaluate(runAreCriticalPermissionsGrantedInPage);
-    // Result should be a boolean
     expect(typeof result).toBe('boolean');
   });
 

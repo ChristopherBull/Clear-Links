@@ -21,23 +21,26 @@ browser.storage.onChanged.addListener((changes, namespace) => {
 
 // Message Passing
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // Page activation (deny/allowlist)
-  // Background script will decide (looking at user options) if the extension should fully activate for this webpage, then inject the relevant code.
-  // Allows users to denylist/allowlist sites. Also, reduces extension's footprint.
-
-  // Tabs that preload are forced to skip injection, as we cannot work with tab URLs that start with 'chrome://' (e.g., new tabs, instead of eventual webpage)
-  // Pre-loaded tabs will be activated when they receive focus (see contentScriptActivationFilter.js)
-  if (request.activationHostname && !sender?.tab?.url.startsWith('chrome://')) {
-    // Inject the main script into the webpage (it will have DOM access, but no access to browser.* APIs)
-    injectExtension(sender.tab.id, request.activationHostname);
-    // URL expansion request
-  } else if (request.shortURL) {
-    expandURL(request.shortURL, request.checkCache, (response) => {
-      // TODO - Store response.result.longUrl into a cache/map
-      sendResponse(response);
-    });
-    return true; // Necessary to inform contentScript to expect an Async message response
+  const resultPromise = handleRuntimeMessage(request, sender);
+  // Async handler path
+  if (resultPromise instanceof Promise) {
+    resultPromise
+      .then((result) => {
+        if (result !== undefined) {
+          sendResponse(result);
+        }
+      })
+      .catch((error) => {
+        // Ensure promise rejections from handleRuntimeMessage are not silently swallowed
+        console.error('Error while handling runtime message:', error);
+      });
+    return true; // Inform caller to await async response
   }
+  // Sync handler path (no response expected)
+  if (resultPromise !== undefined) {
+    sendResponse(resultPromise);
+  }
+  return false;
 });
 
 // Some sites may preload (firing a premature onload event before attached to a tab) and later replace a tab's content (but no new onload event would fire).
@@ -51,6 +54,32 @@ browser.webNavigation.onTabReplaced.addListener(async (details) => {
     console.error(error);
   }
 });
+
+/**
+ * Shared runtime message handler so tests can call the same logic without relying on the service worker process.
+ * @param {object} request - The incoming message payload.
+ * @param {object} sender - The sender metadata from browser.runtime.onMessage.
+ * @returns {Promise<object|undefined>|object|undefined} - The response payload, or undefined when no response is required.
+ */
+function handleRuntimeMessage(request, sender) {
+  // Tabs that preload are forced to skip injection, as we cannot work with tab URLs that start with 'chrome://' (e.g., new tabs, instead of eventual webpage)
+  // Pre-loaded tabs will be activated when they receive focus (see contentScriptActivationFilter.js)
+  if (request.activationHostname && !sender?.tab?.url?.startsWith('chrome://')) {
+    injectExtension(sender.tab.id, request.activationHostname);
+    return undefined;
+  }
+
+  if (request.shortURL) {
+    return new Promise((resolve) => {
+      expandURL(request.shortURL, request.checkCache, (response) => {
+        // TODO - Store response.result.longUrl into a cache/map
+        resolve(response);
+      });
+    });
+  }
+
+  return undefined;
+}
 
 /**
  * Initializes the extension by loading local and synced settings.
