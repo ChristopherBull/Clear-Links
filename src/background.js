@@ -7,7 +7,6 @@ import { defaultSettings, defaultSettingsLocal } from './defaultSettings.js';
 let currentLocalSettingsValues = defaultSettingsLocal;
 // Synced settings (e.g. user preferences)
 let currentSyncSettingsValues = defaultSettings;
-let runtimeListenerRegistered = false;
 
 initialise();
 
@@ -21,26 +20,23 @@ browser.storage.onChanged.addListener((changes, namespace) => {
 });
 
 // Message Passing
-if (!runtimeListenerRegistered) {
-  browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    const resultPromise = handleRuntimeMessage(request, sender);
-    // Async handler path
-    if (resultPromise instanceof Promise) {
-      resultPromise.then((result) => {
-        if (result !== undefined) {
-          sendResponse(result);
-        }
-      });
-      return true; // Inform caller to await async response
-    }
-    // Sync handler path (no response expected)
-    if (resultPromise !== undefined) {
-      sendResponse(resultPromise);
-    }
-    return false;
-  });
-  runtimeListenerRegistered = true;
-}
+browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  const resultPromise = handleRuntimeMessage(request, sender);
+  // Async handler path
+  if (resultPromise instanceof Promise) {
+    resultPromise.then((result) => {
+      if (result !== undefined) {
+        sendResponse(result);
+      }
+    });
+    return true; // Inform caller to await async response
+  }
+  // Sync handler path (no response expected)
+  if (resultPromise !== undefined) {
+    sendResponse(resultPromise);
+  }
+  return false;
+});
 
 // Some sites may preload (firing a premature onload event before attached to a tab) and later replace a tab's content (but no new onload event would fire).
 // Code can't be injected into a DOM that has no tab, so simultaneously listen here for onTabReplaced, as well as the standard passed message request above.
