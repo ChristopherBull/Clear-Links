@@ -46,7 +46,7 @@
     "mocha": "^11.7.5",
     "monocart-reporter": "^2.10.0",
     "nyc": "^17.1.0",
-    "semantic-release": "^25.0.2",
+    "semantic-release": "^25.0.3",
     "semantic-release-amo": "^2.0.1",
     "semantic-release-chrome": "^3.2.0",
     "stylelint": "^17.0.0",
