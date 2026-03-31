@@ -57,4 +57,49 @@ test.describe('Service worker', () => {
     expect(result.hasPermissions).toBe(true);
     expect(result.badgeText).toBe('');
   });
+
+  test('onTabReplaced triggers injection for replaced tab', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { tabsGet: 0, executeScript: 0 };
+
+      // Capture the listener background.js registers so we can call it manually.
+      const originalAddListener = browser.webNavigation.onTabReplaced.addListener;
+      let capturedListener;
+      browser.webNavigation.onTabReplaced.addListener = (fn) => {
+        capturedListener = fn;
+      };
+
+      // Stub tabs.get to return a replaced tab URL and count invocations (background.js calls it twice: onTabReplaced + tabExists).
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = (tabId) => {
+        calls.tabsGet += 1;
+        return { id: tabId, url: 'https://replaced.example/' };
+      };
+
+      // Count content-script injections; delegate to real executeScript if present to avoid breaking internals.
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args) ?? [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      if (!capturedListener) {
+        throw new Error('onTabReplaced listener not registered');
+      }
+
+      await capturedListener({ tabId: 5 });
+
+      browser.webNavigation.onTabReplaced.addListener = originalAddListener;
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return calls;
+    });
+
+    // Two tabs.get calls: one in onTabReplaced handler, one in background.tabExists.
+    expect(result.tabsGet).toBe(2);
+    expect(result.executeScript).toBe(2);
+  });
 });
