@@ -110,19 +110,19 @@ test.describe('Service worker', () => {
 
       const originalStorageLocalGet = browser.storage.local.get;
       const originalStorageSyncGet = browser.storage.sync.get;
-      browser.storage.local.get = async () => ({
+      browser.storage.local.get = () => ({
         activationFilter: 2,
         domainWhitelist: [ 'allowed.example' ],
         domainBlacklist: [],
         OAuthBitLy: { enabled: false, token: '' },
         syncOffline: {},
       });
-      browser.storage.sync.get = async () => ({
+      browser.storage.sync.get = () => ({
         displayExternalDomainsOnly: true,
       });
 
       const originalTabsGet = browser.tabs.get;
-      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://allowed.example/page' });
+      browser.tabs.get = tabId => ({ id: tabId, url: 'https://allowed.example/page' });
 
       const originalExecuteScript = browser.scripting.executeScript;
       browser.scripting.executeScript = (...args) => {
@@ -155,19 +155,19 @@ test.describe('Service worker', () => {
 
       const originalStorageLocalGet = browser.storage.local.get;
       const originalStorageSyncGet = browser.storage.sync.get;
-      browser.storage.local.get = async () => ({
+      browser.storage.local.get = () => ({
         activationFilter: 2,
         domainWhitelist: [ 'allowed.example' ],
         domainBlacklist: [],
         OAuthBitLy: { enabled: false, token: '' },
         syncOffline: {},
       });
-      browser.storage.sync.get = async () => ({
+      browser.storage.sync.get = () => ({
         displayExternalDomainsOnly: true,
       });
 
       const originalTabsGet = browser.tabs.get;
-      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://blocked.example/' });
+      browser.tabs.get = tabId => ({ id: tabId, url: 'https://blocked.example/' });
 
       const originalExecuteScript = browser.scripting.executeScript;
       browser.scripting.executeScript = (...args) => {
@@ -199,19 +199,19 @@ test.describe('Service worker', () => {
 
       const originalStorageLocalGet = browser.storage.local.get;
       const originalStorageSyncGet = browser.storage.sync.get;
-      browser.storage.local.get = async () => ({
+      browser.storage.local.get = () => ({
         activationFilter: 3,
         domainWhitelist: [],
         domainBlacklist: [ 'deny.example' ],
         OAuthBitLy: { enabled: false, token: '' },
         syncOffline: {},
       });
-      browser.storage.sync.get = async () => ({
+      browser.storage.sync.get = () => ({
         displayExternalDomainsOnly: true,
       });
 
       const originalTabsGet = browser.tabs.get;
-      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://ok.example/' });
+      browser.tabs.get = tabId => ({ id: tabId, url: 'https://ok.example/' });
 
       const originalExecuteScript = browser.scripting.executeScript;
       browser.scripting.executeScript = (...args) => {
@@ -244,19 +244,19 @@ test.describe('Service worker', () => {
 
       const originalStorageLocalGet = browser.storage.local.get;
       const originalStorageSyncGet = browser.storage.sync.get;
-      browser.storage.local.get = async () => ({
+      browser.storage.local.get = () => ({
         activationFilter: 3,
         domainWhitelist: [],
         domainBlacklist: [ 'deny.example' ],
         OAuthBitLy: { enabled: false, token: '' },
         syncOffline: {},
       });
-      browser.storage.sync.get = async () => ({
+      browser.storage.sync.get = () => ({
         displayExternalDomainsOnly: true,
       });
 
       const originalTabsGet = browser.tabs.get;
-      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://deny.example/' });
+      browser.tabs.get = tabId => ({ id: tabId, url: 'https://deny.example/' });
 
       const originalExecuteScript = browser.scripting.executeScript;
       browser.scripting.executeScript = (...args) => {
