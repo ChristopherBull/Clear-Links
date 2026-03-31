@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Dev tooling for the Clear Links browser extension",
   "author": "Christopher Bull",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChristopherBull/Clear-Links.git"
+  },
   "type": "module",
   "scripts": {
     "build": "make",
