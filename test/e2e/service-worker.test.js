@@ -38,4 +38,23 @@ test.describe('Service worker', () => {
     expect(expansionResult.ignore).toBe(true);
     expect(expansionResult.source.url).toBe('https://bit.ly/example');
   });
+
+  test('ActionBadge error status is clear when critical permissions are granted', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      // eslint-disable-next-line sonarjs/no-clear-text-protocols
+      const criticalPermissions = { origins: [ 'http://*/', 'https://*/' ] };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      const [ hasPermissions, badgeText ] = await Promise.all([
+        browser.permissions.contains(criticalPermissions),
+        browser.action.getBadgeText({}),
+      ]);
+
+      return { hasPermissions, badgeText };
+    });
+
+    expect(result.hasPermissions).toBe(true);
+    expect(result.badgeText).toBe('');
+  });
 });
