@@ -36,6 +36,10 @@
     ],
     "overrides": [
         {
+            "filename": "test/e2e/service-worker.test.js",
+            "ignoreWords": [ "newtab" ]
+        },
+        {
             "filename": "Makefile",
             "ignoreWords": [ "webextension", "xcopy" ]
         },
