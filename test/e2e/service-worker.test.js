@@ -26,7 +26,7 @@ test.describe('Service worker', () => {
     expect(loaded).toBe(true);
   });
 
-  test('short URL expansion returns ignore when Bitly OAuth is disabled', async ({ backgroundCoveragePage }) => {
+  test('short URL expansion (for bit.ly) returns ignore when Bitly OAuth is disabled', async ({ backgroundCoveragePage }) => {
     const expansionResult = await backgroundCoveragePage.evaluate(async () => {
       await import(chrome.runtime.getURL('background.js'));
       return globalThis.clearLinksTestHooks.sendRuntimeMessage(
