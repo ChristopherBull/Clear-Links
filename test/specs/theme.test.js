@@ -7,7 +7,7 @@ import { themes } from '../../src/themes.js';
 
 /**
  * Checks if the given item is an object.
- * @param {*} item - The item to be checked.
+ * @param {unknown} item - The item to be checked.
  * @returns {boolean} - Returns true if the item is an object, false otherwise.
  */
 function isObject(item) {
