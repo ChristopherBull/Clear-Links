@@ -281,4 +281,80 @@ test.describe('Service worker', () => {
 
     expect(result.executeScript).toBe(0);
   });
+
+  test('handleRuntimeMessage ignores activationHostname for chrome:// tabs', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { tabsGet: 0, executeScript: 0 };
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = (...args) => {
+        calls.tabsGet += 1;
+        return originalTabsGet?.(...args);
+      };
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args);
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      const handlerReturn = globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'example.com' },
+        { tab: { id: 1, url: 'chrome://newtab/' } },
+      );
+
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return { handlerReturn, calls };
+    });
+
+    expect(result.handlerReturn).toBe(false); // Coverage shim's wrapper returns false; inner handler would return undefined
+    expect(result.calls.tabsGet).toBe(0);
+    expect(result.calls.executeScript).toBe(0);
+  });
+
+  test('handleRuntimeMessage injects on activationHostname for https tabs', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { tabsGet: 0, executeScript: 0 };
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = (tabId) => {
+        calls.tabsGet += 1;
+        return { id: tabId, url: 'https://example.com' };
+      };
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = () => {
+        calls.executeScript += 1;
+        return [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      const handlerReturn = globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'example.com' },
+        { tab: { id: 1, url: 'https://example.com' } },
+      );
+
+      // Wait for both executeScript injections to run
+      const end = Date.now() + 200;
+      while (calls.executeScript < 2 && Date.now() < end) {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 0);
+        });
+      }
+
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return { handlerReturn, calls };
+    });
+
+    expect(result.handlerReturn).toBe(false); // Coverage shim's wrapper returns false; inner handler would return undefined
+    expect(result.calls.tabsGet).toBe(1);
+    expect(result.calls.executeScript).toBe(2);
+  });
 });
