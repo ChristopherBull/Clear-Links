@@ -100,6 +100,185 @@ test.describe('Service worker', () => {
 
     // Two tabs.get calls: one in onTabReplaced handler, one in background.tabExists.
     expect(result.tabsGet).toBe(2);
+    // Two injections expected: shared lib + main content script.
     expect(result.executeScript).toBe(2);
+  });
+
+  test('activationFilter allowlist injects only allowlisted host', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { executeScript: 0 };
+
+      const originalStorageLocalGet = browser.storage.local.get;
+      const originalStorageSyncGet = browser.storage.sync.get;
+      browser.storage.local.get = async () => ({
+        activationFilter: 2,
+        domainWhitelist: [ 'allowed.example' ],
+        domainBlacklist: [],
+        OAuthBitLy: { enabled: false, token: '' },
+        syncOffline: {},
+      });
+      browser.storage.sync.get = async () => ({
+        displayExternalDomainsOnly: true,
+      });
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://allowed.example/page' });
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args) ?? [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      await globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'allowed.example' },
+        { tab: { id: 1, url: 'https://allowed.example/page' } },
+      );
+
+      browser.storage.local.get = originalStorageLocalGet;
+      browser.storage.sync.get = originalStorageSyncGet;
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return calls;
+    });
+
+    // Two injections expected: shared lib + main content script.
+    expect(result.executeScript).toBe(2);
+  });
+
+  test('activationFilter allowlist blocks non-allowlisted host', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { executeScript: 0 };
+
+      const originalStorageLocalGet = browser.storage.local.get;
+      const originalStorageSyncGet = browser.storage.sync.get;
+      browser.storage.local.get = async () => ({
+        activationFilter: 2,
+        domainWhitelist: [ 'allowed.example' ],
+        domainBlacklist: [],
+        OAuthBitLy: { enabled: false, token: '' },
+        syncOffline: {},
+      });
+      browser.storage.sync.get = async () => ({
+        displayExternalDomainsOnly: true,
+      });
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://blocked.example/' });
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args) ?? [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      await globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'blocked.example' },
+        { tab: { id: 1, url: 'https://blocked.example/' } },
+      );
+
+      browser.storage.local.get = originalStorageLocalGet;
+      browser.storage.sync.get = originalStorageSyncGet;
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return calls;
+    });
+
+    expect(result.executeScript).toBe(0);
+  });
+
+  test('activationFilter denylist injects when host not denylisted', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { executeScript: 0 };
+
+      const originalStorageLocalGet = browser.storage.local.get;
+      const originalStorageSyncGet = browser.storage.sync.get;
+      browser.storage.local.get = async () => ({
+        activationFilter: 3,
+        domainWhitelist: [],
+        domainBlacklist: [ 'deny.example' ],
+        OAuthBitLy: { enabled: false, token: '' },
+        syncOffline: {},
+      });
+      browser.storage.sync.get = async () => ({
+        displayExternalDomainsOnly: true,
+      });
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://ok.example/' });
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args) ?? [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      await globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'ok.example' },
+        { tab: { id: 1, url: 'https://ok.example/' } },
+      );
+
+      browser.storage.local.get = originalStorageLocalGet;
+      browser.storage.sync.get = originalStorageSyncGet;
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return calls;
+    });
+
+    // Two injections expected: shared lib + main content script.
+    expect(result.executeScript).toBe(2);
+  });
+
+  test('activationFilter denylist blocks denylisted host', async ({ backgroundCoveragePage }) => {
+    const result = await backgroundCoveragePage.evaluate(async () => {
+      const calls = { executeScript: 0 };
+
+      const originalStorageLocalGet = browser.storage.local.get;
+      const originalStorageSyncGet = browser.storage.sync.get;
+      browser.storage.local.get = async () => ({
+        activationFilter: 3,
+        domainWhitelist: [],
+        domainBlacklist: [ 'deny.example' ],
+        OAuthBitLy: { enabled: false, token: '' },
+        syncOffline: {},
+      });
+      browser.storage.sync.get = async () => ({
+        displayExternalDomainsOnly: true,
+      });
+
+      const originalTabsGet = browser.tabs.get;
+      browser.tabs.get = async (tabId) => ({ id: tabId, url: 'https://deny.example/' });
+
+      const originalExecuteScript = browser.scripting.executeScript;
+      browser.scripting.executeScript = (...args) => {
+        calls.executeScript += 1;
+        return originalExecuteScript?.(...args) ?? [];
+      };
+
+      await import(chrome.runtime.getURL('background.js'));
+
+      await globalThis.clearLinksTestHooks.runtimeMessageHandler(
+        { activationHostname: 'deny.example' },
+        { tab: { id: 1, url: 'https://deny.example/' } },
+      );
+
+      browser.storage.local.get = originalStorageLocalGet;
+      browser.storage.sync.get = originalStorageSyncGet;
+      browser.tabs.get = originalTabsGet;
+      browser.scripting.executeScript = originalExecuteScript;
+
+      return calls;
+    });
+
+    expect(result.executeScript).toBe(0);
   });
 });
