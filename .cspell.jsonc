@@ -2,10 +2,13 @@
     "language": "en",
     "dictionaries": [
         "en-gb",
-        // "companies",
+        "makefile",
+        "bash",
+        "shellscript",
         "softwareTerms",
         "typescript", // inc. JS
         "html",
+        "html-symbol-entities",
         "css",
         "misc"
     ],
@@ -26,32 +29,30 @@
         "dist/**",
         "docs/test-results/**",
         "res/lib/**",
-        "Makefile",
+        "swark-output/**",
         "node_modules/**",
         "package.json",
         "playwright-report/**"
     ],
+    "overrides": [
+        {
+            "filename": "Makefile",
+            "ignoreWords": [ "webextension", "xcopy" ]
+        },
+        {
+            "filename": "README.md",
+            "ignoreWords": [ "Codacy" ]
+        }
+    ],
     "words": [
         // Browser extension IDs
         "banknjcfbmhcbebgekpcenheaghfcood",
-        // Brands, names
-        "Swark",
-        // Technical terms
-        "IIFE",
-        "liniting",
         // ESlint terms and rule name
-        "camelcase",
         "nonconstructor",
-        "webextensions",
         // Libraries / APIs (and terms related to them)
-        "Codacy",
-        "commitlint",
         "monocart",
-        "Qlty",
-        "qltysh",
         "serviceworker",
         "sonarjs",
-        "urlshortener",
         "bitlink",
         // Simple words
         "checkmarks"
