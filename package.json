@@ -44,7 +44,7 @@
     "husky": "^9.1.7",
     "markdownlint-cli2": "^0.20.0",
     "mocha": "^11.7.5",
-    "monocart-reporter": "^2.9.23",
+    "monocart-reporter": "^2.10.0",
     "nyc": "^17.1.0",
     "semantic-release": "^25.0.2",
     "semantic-release-amo": "^2.0.1",
