@@ -1,0 +1,9 @@
+{
+	"name": "Clear Links",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+	"mounts": [
+		"source=clear-links-npm-cache,target=/home/vscode/.npm,type=volume",
+		"source=clear-links-playwright-cache,target=/home/vscode/.cache/ms-playwright,type=volume"
+	],
+	"postCreateCommand": "npm install && npx playwright install --with-deps --no-shell chromium firefox"
+}
