@@ -5,5 +5,5 @@
 		"source=clear-links-npm-cache,target=/home/vscode/.npm,type=volume",
 		"source=clear-links-playwright-cache,target=/home/vscode/.cache/ms-playwright,type=volume"
 	],
-	"postCreateCommand": "npm install && npx playwright install --with-deps --no-shell chromium firefox"
+	"postCreateCommand": "npm ci && npm run test:e2e:prepare"
 }
