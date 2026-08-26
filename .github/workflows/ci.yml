@@ -88,6 +88,18 @@ jobs:
         # The Playwright image is minimal and doesn't include make/rsync (used by `npm run build:test`)
         # or xz-utils (needed by the Qlty CLI installer's .tar.xz archive)
         run: apt-get update && apt-get install -y --no-install-recommends make rsync xz-utils
+      - name: Install GitHub CLI
+        # Without `gh` present, the Qlty coverage-upload action can't verify its own Sigstore
+        # attestation and silently skips that check (a warning, not a failure) - installed here
+        # via GitHub's official apt repo since the minimal Playwright image doesn't ship it.
+        run: |
+          apt-get install -y --no-install-recommends curl ca-certificates gnupg
+          mkdir -p -m 755 /etc/apt/keyrings
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
+          apt-get update
+          apt-get install -y gh
       - name: Build (allowing install for E2E browser tests)
         run: npm run build:test
       - name: Run Playwright tests
