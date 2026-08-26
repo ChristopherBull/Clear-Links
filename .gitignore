@@ -14,7 +14,7 @@ node_modules/
 /blob-report/
 /docs/test-results/
 # Testing cache directories
-.nyc_output
+.c8_output
 /playwright/.cache/
 
 # Documentation generation
