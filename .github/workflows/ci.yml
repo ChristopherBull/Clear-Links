@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Use Node.js (LTS)
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ env.NODE_VER }}
           cache: npm
@@ -35,7 +35,16 @@ jobs:
         run: npm run lint
       - name: Test (build, run tests, and coverage report)
         run: npm run test:unit:coverage
-      - uses: actions/upload-artifact@v6
+      - name: Add unit coverage summary to job summary
+        # Re-renders a text-summary from the coverage data already collected above (no re-test),
+        # since test:unit:coverage's reporters (html/text/lcovonly) don't include a concise one.
+        if: ${{ !cancelled() }}
+        run: |
+          echo "## Coverage Report - Unit Tests" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          npx nyc report --reporter=text-summary >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: Unit - Test Coverage Report
@@ -48,7 +57,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Only the lockfile is needed to resolve the version
           sparse-checkout: package-lock.json
@@ -77,8 +86,8 @@ jobs:
       # Firefox refuses to launch in the container otherwise, since $HOME isn't owned by the running user (root)
       HOME: /root
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: npm
@@ -91,13 +100,13 @@ jobs:
         run: npm run build:test
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: E2E - Playwright Testing Report
           path: docs/test-results/e2e/playwright-report/
           retention-days: 30
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: E2E - Monocart Testing and Coverage Report
@@ -117,18 +126,19 @@ jobs:
     # ubuntu-latest already has gh/xz preinstalled and normal non-root file ownership, so none of that
     # is needed here - report on a plain runner, only run the browsers where they're actually required.
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v6
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           name: E2E - Monocart Testing and Coverage Report
           path: docs/test-results/e2e/monocart-report
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: Unit - Test Coverage Report
           path: docs/test-results/specs/coverage
       - name: Add markdown E2E coverage report to job summary
-        # Unit coverage doesn't get its own section here - nyc only produces an lcov report, not
-        # a markdown one - but both are combined below when uploading to Qlty/Codacy.
+        # Unit coverage gets its own summary section in the Quality Checks job instead, since nyc
+        # only produces an lcov report here, not a markdown one - but both are combined below when
+        # uploading to Qlty/Codacy.
         run: |
           cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
           cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
@@ -157,11 +167,11 @@ jobs:
       id-token: write # to enable use of OIDC for npm provenance
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: npm
