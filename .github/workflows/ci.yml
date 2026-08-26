@@ -73,6 +73,11 @@ jobs:
       HOME: /root
     steps:
       - uses: actions/checkout@v6
+      - name: Mark workspace as a safe git directory
+        # The Qlty CLI uses libgit2 (via the git2 Rust crate) to read commit metadata, which
+        # enforces its own ownership check and doesn't reliably pick up what actions/checkout
+        # configures, so the checkout is rejected as "not owned by current user" without this.
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: actions/setup-node@v6
         with:
           node-version: lts/*
