@@ -78,11 +78,6 @@ jobs:
       HOME: /root
     steps:
       - uses: actions/checkout@v6
-      - name: Mark workspace as a safe git directory
-        # The Qlty CLI uses libgit2 (via the git2 Rust crate) to read commit metadata, which
-        # enforces its own ownership check and doesn't reliably pick up what actions/checkout
-        # configures, so the checkout is rejected as "not owned by current user" without this.
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - uses: actions/setup-node@v6
         with:
           node-version: lts/*
@@ -90,21 +85,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install build tools
-        # The Playwright image is minimal and doesn't include make/rsync (used by `npm run build:test`)
-        # or xz-utils (needed by the Qlty CLI installer's .tar.xz archive)
-        run: apt-get update && apt-get install -y --no-install-recommends make rsync xz-utils
-      - name: Install GitHub CLI
-        # Without `gh` present, the Qlty coverage-upload action can't verify its own Sigstore
-        # attestation and silently skips that check (a warning, not a failure) - installed here
-        # via GitHub's official apt repo since the minimal Playwright image doesn't ship it.
-        run: |
-          apt-get install -y --no-install-recommends curl ca-certificates gnupg
-          mkdir -p -m 755 /etc/apt/keyrings
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
-          chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list
-          apt-get update
-          apt-get install -y gh
+        # The Playwright image is minimal and doesn't include make/rsync, used by `npm run build:test`
+        run: apt-get update && apt-get install -y --no-install-recommends make rsync
       - name: Build (allowing install for E2E browser tests)
         run: npm run build:test
       - name: Run Playwright tests
@@ -121,6 +103,25 @@ jobs:
           name: E2E - Monocart Testing and Coverage Report
           path: docs/test-results/e2e/monocart-report/
           retention-days: 30
+
+  coverage-upload:
+    name: Coverage Upload
+    needs: [e2e-tests]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # for checkout
+      actions: read # to download the artifact uploaded by e2e-tests
+    # Deliberately kept out of the Playwright container: it's minimal (no gh, no xz) and root-owned,
+    # which needed fragile workarounds (installing gh via a third-party apt repo, xz-utils, a git
+    # safe.directory override) purely to satisfy this reporting step, not the E2E tests themselves.
+    # ubuntu-latest already has gh/xz preinstalled and normal non-root file ownership, so none of that
+    # is needed here - report on a plain runner, only run the browsers where they're actually required.
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v6
+        with:
+          name: E2E - Monocart Testing and Coverage Report
+          path: docs/test-results/e2e/monocart-report
       - name: Add markdown E2E coverage report to job summary
         run: |
           cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
@@ -138,7 +139,7 @@ jobs:
 
   release:
     name: Release
-    needs: [quality_checks, e2e-tests]
+    needs: [quality_checks, e2e-tests, coverage-upload]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     permissions:
