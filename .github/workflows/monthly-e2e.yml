@@ -42,6 +42,9 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Install make
+        # The Playwright image is minimal and doesn't include build tools like make, used by `npm run build:test`
+        run: apt-get update && apt-get install -y --no-install-recommends make
       - name: Build (allowing install for E2E browser tests)
         run: npm run build:test
       - name: Run Playwright tests
