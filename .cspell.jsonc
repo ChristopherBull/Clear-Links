@@ -42,10 +42,6 @@
         {
             "filename": "Makefile",
             "ignoreWords": [ "webextension", "xcopy" ]
-        },
-        {
-            "filename": "README.md",
-            "ignoreWords": [ "Codacy" ]
         }
     ],
     "words": [
