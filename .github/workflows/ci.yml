@@ -138,22 +138,17 @@ jobs:
       - name: Add markdown E2E coverage report to job summary
         # Unit coverage gets its own summary section in the Quality Checks job instead, since c8
         # only produces an lcov report here, not a markdown one - but both are combined below when
-        # uploading to Qlty/Codacy.
+        # uploading to Qlty.
         run: |
           cat docs/test-results/e2e/monocart-report/coverage/coverage-summary.md >> $GITHUB_STEP_SUMMARY
           cat docs/test-results/e2e/monocart-report/coverage/coverage-details.md >> $GITHUB_STEP_SUMMARY
       - name: Upload coverage report to Qlty
-        # Previously only uploaded E2E coverage; both actions accept a comma-separated file list
-        # and combine them server-side, so unit coverage counts toward the total too now.
+        # Previously only uploaded E2E coverage; the action accepts a comma-separated file list
+        # and combines them server-side, so unit coverage counts toward the total too now.
         uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: docs/test-results/specs/coverage/lcov.info,docs/test-results/e2e/monocart-report/coverage/lcov.info
-      - name: Upload coverage report to Codacy
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: docs/test-results/specs/coverage/lcov.info,docs/test-results/e2e/monocart-report/coverage/lcov.info
 
   release:
     name: Release
