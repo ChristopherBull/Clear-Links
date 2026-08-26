@@ -56,7 +56,12 @@ jobs:
       - id: version
         # Read the resolved version from the lockfile so the container image below can never drift from what's installed
         run: |
+          set -euo pipefail
           VERSION=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Could not resolve @playwright/test version from package-lock.json" >&2
+            exit 1
+          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   e2e-tests:
