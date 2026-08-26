@@ -68,6 +68,9 @@ jobs:
       # Use official Playwright image rather than downloading/installing Playwright browsers (which can be flakey and slower in CIs)
       image: mcr.microsoft.com/playwright:v${{ needs.playwright-version.outputs.version }}
       options: --init --ipc=host
+    env:
+      # Firefox refuses to launch in the container otherwise, since $HOME isn't owned by the running user (root)
+      HOME: /root
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
