@@ -14,7 +14,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Only the lockfile is needed to resolve the version
           sparse-checkout: package-lock.json
@@ -43,8 +43,8 @@ jobs:
       # Firefox refuses to launch in the container otherwise, since $HOME isn't owned by the running user (root)
       HOME: /root
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: lts/*
           cache: npm
@@ -57,7 +57,7 @@ jobs:
         run: npm run build:test
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
