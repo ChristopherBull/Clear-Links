@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "## Coverage Report - Unit Tests" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          npx nyc report --reporter=text-summary >> $GITHUB_STEP_SUMMARY
+          npx c8 report --reporter=text-summary >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
       - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
@@ -136,7 +136,7 @@ jobs:
           name: Unit - Test Coverage Report
           path: docs/test-results/specs/coverage
       - name: Add markdown E2E coverage report to job summary
-        # Unit coverage gets its own summary section in the Quality Checks job instead, since nyc
+        # Unit coverage gets its own summary section in the Quality Checks job instead, since c8
         # only produces an lcov report here, not a markdown one - but both are combined below when
         # uploading to Qlty/Codacy.
         run: |

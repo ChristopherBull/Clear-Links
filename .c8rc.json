@@ -4,6 +4,7 @@
         "src/**/*.js"
     ],
     "report-dir": "./docs/test-results/specs/coverage",
+    "temp-directory": "./.c8_output",
     "reporter": [
         "lcov",
         "text-summary"
